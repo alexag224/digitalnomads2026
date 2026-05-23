@@ -1,0 +1,1846 @@
+<html lang="en"><head><script type="application/json" id="cowork-artifact-meta">
+{
+  "name": "Digital Nomads 2026",
+  "schemaVersion": 1,
+  "description": "Digital Nomads 2026 travel dashboard for Branden + Alexa. Shows full Northeast Trip (May–June) and Pacific Northwest road trip (June–October) itineraries, auto-detected current stop, budget summaries, and booking checklist. Editable with localStorage persistence and Export for GitHub button."
+}
+</script>
+
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Digital Nomads 2026 · Branden + Alexa</title>
+<style>
+:root {
+  color-scheme: light;
+  --cream:     #faf7f2;
+  --sand:      #f0e8dc;
+  --ww:        #ffffff;
+  --glass:     rgba(255,255,255,0.88);
+  --glass2:    rgba(255,255,255,0.6);
+  --gb:        rgba(255,255,255,0.9);
+  --sb:        rgba(180,155,130,0.2);
+  --div:       rgba(180,155,130,0.16);
+  --text:      #1a1410;
+  --t2:        #3d342e;
+  --t3:        #7a6a60;
+  --t4:        #a89880;
+  --accent:    #d96830;
+  --acc-lt:    rgba(217,104,48,0.1);
+  --acc-md:    rgba(217,104,48,0.18);
+  --green:     #2e7d52;
+  --glt:       rgba(46,125,82,0.1);
+  --amber:     #b07020;
+  --alt:       rgba(176,112,32,0.1);
+  --purple:    #6b4aae;
+  --plt:       rgba(107,74,174,0.1);
+  --blue:      #2255b8;
+  --blt:       rgba(34,85,184,0.1);
+  --teal:      #1a7868;
+  --tlt:       rgba(26,120,104,0.1);
+  --red:       #c0392b;
+  --rlt:       rgba(192,57,43,0.1);
+  --drop-line: rgba(217,104,48,0.6);
+  --s1: 0 2px 8px rgba(0,0,0,0.05), 0 8px 28px rgba(0,0,0,0.07);
+  --s2: 0 1px 4px rgba(0,0,0,0.04), 0 4px 14px rgba(0,0,0,0.06);
+  --r-sm:12px; --r-md:18px; --r-lg:24px; --r-xl:30px; --pill:100px;
+}
+*{margin:0;padding:0;box-sizing:border-box;}
+body{background:var(--cream);color:var(--text);font-family:-apple-system,BlinkMacSystemFont,'Segoe UI','Helvetica Neue',sans-serif;font-size:14px;line-height:1.6;min-height:100vh;overflow-x:hidden;}
+body::before{content:'';position:fixed;top:-160px;right:-100px;width:480px;height:480px;border-radius:50%;background:radial-gradient(circle at 38% 38%,#f5b890,#e07848 38%,#c85a28 62%,rgba(200,90,40,0) 75%);opacity:.22;pointer-events:none;z-index:0;}
+body::after{content:'';position:fixed;bottom:-180px;left:-120px;width:440px;height:440px;border-radius:50%;background:radial-gradient(circle at 62% 62%,#f5e0b8,#dfc070 42%,rgba(220,190,80,0) 70%);opacity:.18;pointer-events:none;z-index:0;}
+
+/* ── Header ── */
+.hdr{position:sticky;top:0;z-index:300;background:rgba(250,247,242,0.9);backdrop-filter:blur(20px) saturate(1.5);-webkit-backdrop-filter:blur(20px) saturate(1.5);border-bottom:1px solid var(--sb);padding:0 32px;height:62px;display:flex;align-items:center;justify-content:space-between;}
+.hdr-brand{display:flex;align-items:center;gap:13px;}
+.hdr-logo{width:34px;height:34px;border-radius:10px;background:linear-gradient(135deg,#e07848,#c85a28);display:flex;align-items:center;justify-content:center;font-size:15px;color:#fff;box-shadow:0 2px 8px rgba(200,90,40,.3);flex-shrink:0;}
+.hdr-title{font-size:15px;font-weight:700;letter-spacing:-.3px;color:var(--text);}
+.hdr-sub{font-size:11px;color:var(--t3);margin-top:1px;}
+.hdr-right{display:flex;gap:8px;align-items:center;}
+.hdr-date{font-size:12px;color:var(--t3);margin-right:4px;}
+
+/* ── Buttons ── */
+.btn{height:34px;padding:0 17px;border-radius:var(--pill);border:1px solid var(--sb);background:var(--glass);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);color:var(--t2);font-size:12px;font-weight:600;cursor:pointer;letter-spacing:.1px;transition:all .18s ease;white-space:nowrap;box-shadow:var(--s2);}
+.btn:hover{background:var(--ww);border-color:rgba(180,150,120,.4);color:var(--text);box-shadow:var(--s1);}
+.btn-dark{background:var(--text);color:#fff;border-color:var(--text);box-shadow:0 2px 10px rgba(26,20,16,.18);}
+.btn-dark:hover{background:#2e2420;border-color:#2e2420;color:#fff;}
+.btn-save{background:var(--alt);border-color:rgba(176,112,32,.3);color:var(--amber);}
+.btn-save:hover{background:rgba(176,112,32,.18);color:var(--amber);}
+.btn-danger{background:var(--rlt);border-color:rgba(192,57,43,.25);color:var(--red);}
+.btn-danger:hover{background:rgba(192,57,43,.18);border-color:rgba(192,57,43,.4);}
+.edit-on .btn-reorder{background:var(--alt);border-color:rgba(176,112,32,.3);color:var(--amber);}
+
+/* ── Main ── */
+.main{position:relative;z-index:1;max-width:1140px;margin:0 auto;padding:28px 24px 60px;}
+
+/* ── You Are Here ── */
+.here-card{background:var(--glass);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);border:1px solid var(--gb);border-radius:var(--r-xl);padding:26px 30px;margin-bottom:22px;display:flex;align-items:center;gap:22px;box-shadow:var(--s1);position:relative;overflow:hidden;}
+.here-card::before{content:'';position:absolute;right:-50px;top:-50px;width:200px;height:200px;border-radius:50%;background:radial-gradient(circle,rgba(217,104,48,.14),rgba(217,104,48,0) 65%);pointer-events:none;}
+.here-dot{width:10px;height:10px;border-radius:50%;background:var(--accent);flex-shrink:0;box-shadow:0 0 0 4px rgba(217,104,48,.2);animation:pulse 2.2s ease-in-out infinite;}
+@keyframes pulse{0%,100%{box-shadow:0 0 0 4px rgba(217,104,48,.2)}50%{box-shadow:0 0 0 10px rgba(217,104,48,.06)}}
+.here-chip{font-size:10px;text-transform:uppercase;letter-spacing:1px;color:var(--accent);font-weight:700;}
+.here-loc{font-size:24px;font-weight:700;letter-spacing:-.5px;margin-top:4px;color:var(--text);}
+.here-sub{font-size:13px;color:var(--t2);margin-top:5px;line-height:1.5;max-width:520px;}
+.here-badge{margin-left:auto;flex-shrink:0;background:rgba(255,255,255,.92);border:1px solid var(--sb);border-radius:var(--r-md);padding:13px 20px;text-align:center;box-shadow:var(--s2);}
+.here-badge .hbd{font-size:13px;font-weight:700;color:var(--accent);}
+.here-badge .hbt{font-size:11px;color:var(--t3);margin-top:3px;}
+
+/* ── Progress ── */
+.prog-wrap{margin-bottom:26px;}
+.prog-row{display:flex;justify-content:space-between;margin-bottom:8px;font-size:12px;color:var(--t3);}
+.prog-track{height:4px;border-radius:2px;background:rgba(180,155,130,.25);overflow:hidden;}
+.prog-fill{height:100%;border-radius:2px;background:linear-gradient(90deg,var(--accent),#b87030);}
+
+/* ── Stats ── */
+.stats-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:26px;}
+.stat-card{background:var(--glass);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);border:1px solid var(--gb);border-radius:var(--r-lg);padding:16px 20px;box-shadow:var(--s2);}
+.s-label{font-size:11px;text-transform:uppercase;letter-spacing:.7px;color:var(--t3);font-weight:600;}
+.s-val  {font-size:27px;font-weight:700;letter-spacing:-.8px;margin-top:5px;}
+.s-sub  {font-size:11px;color:var(--t3);margin-top:2px;}
+.ca{color:var(--accent)}.cg{color:var(--green)}.cam{color:var(--amber)}.ct{color:var(--teal)}.cb{color:var(--blue)}
+
+/* ── Tab bar ── */
+.tab-bar{display:inline-flex;gap:4px;background:rgba(255,255,255,.65);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);border:1px solid var(--gb);border-radius:var(--pill);padding:4px;margin-bottom:26px;box-shadow:var(--s2);}
+.tab-btn{padding:8px 20px;border-radius:var(--pill);font-size:13px;font-weight:600;color:var(--t3);cursor:pointer;transition:all .18s ease;border:none;background:none;letter-spacing:.1px;}
+.tab-btn.active{background:var(--ww);color:var(--text);box-shadow:var(--s2);}
+.tab-btn:not(.active):hover{color:var(--t2);}
+
+/* ── Reorder hint ── */
+.reorder-hint{display:none;background:rgba(176,112,32,.08);border:1px solid rgba(176,112,32,.22);border-radius:var(--r-md);padding:10px 18px;font-size:12px;color:var(--amber);margin-bottom:20px;}
+.edit-on .reorder-hint{display:block;}
+
+/* ── Section blocks ── */
+.sec-block{margin-bottom:18px;}
+.sec-label{display:flex;align-items:center;gap:10px;padding:10px 18px;background:rgba(255,255,255,.55);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);border:1px solid var(--gb);border-radius:var(--r-md) var(--r-md) 0 0;font-size:11px;font-weight:700;letter-spacing:.7px;text-transform:uppercase;color:var(--t2);}
+.sec-pip{width:8px;height:8px;border-radius:50%;flex-shrink:0;}
+.pip-leg{background:var(--teal)}.pip-anchor{background:var(--accent)}.pip-pre{background:var(--blue)}.pip-return{background:var(--purple)}
+.sec-label-right{margin-left:auto;font-size:10px;color:var(--t3);font-weight:500;letter-spacing:0;text-transform:none;}
+
+/* ── Stop table ── */
+.stop-tbl{width:100%;border-collapse:collapse;background:var(--glass);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);border:1px solid var(--gb);border-top:none;overflow:hidden;box-shadow:var(--s2);}
+.stop-tbl th{background:rgba(255,255,255,.5);padding:7px 14px;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.6px;color:var(--t3);text-align:left;border-bottom:1px solid var(--div);white-space:nowrap;}
+.stop-tbl th.th-handle{width:32px;padding:7px 8px;}
+.stop-tbl th.th-edit{width:38px;}
+.stop-tbl td{padding:12px 14px;border-bottom:1px solid var(--div);vertical-align:top;font-size:13px;color:var(--t2);}
+.stop-tbl tr:last-child td{border-bottom:none;}
+.stop-tbl tr.is-past td{opacity:.4;}
+.stop-tbl tr.is-current{background:rgba(217,104,48,.06);}
+.stop-tbl tr.is-current td:first-child+td{border-left:3px solid var(--accent);}
+.stop-tbl tr.row-open td{background:rgba(255,255,255,.5);}
+.stop-tbl tr.data-row:not(.detail-row):hover td{background:rgba(255,255,255,.5);}
+.stop-tbl tr.drag-over-top   td{box-shadow:inset 0 2px 0 var(--drop-line);}
+.stop-tbl tr.drag-over-bottom td{box-shadow:inset 0 -2px 0 var(--drop-line);}
+.stop-tbl tr.dragging{opacity:.35;background:rgba(217,104,48,.04);}
+
+/* ── Add-stop footer row ── */
+tr.add-stop-row td{padding:0;border-bottom:none;background:rgba(255,255,255,.35);}
+.add-stop-inner{display:flex;align-items:center;padding:10px 16px;border-top:1px dashed rgba(180,155,130,.3);}
+.add-stop-btn{display:inline-flex;align-items:center;gap:7px;background:none;border:1px dashed rgba(180,155,130,.4);border-radius:10px;padding:7px 16px;font-size:12px;color:var(--t3);cursor:pointer;transition:all .16s;font-family:inherit;font-weight:600;}
+.add-stop-btn:hover{border-color:var(--accent);color:var(--accent);background:var(--acc-lt);}
+.add-stop-btn .plus{font-size:15px;line-height:1;}
+.tbl-wrap{border-radius:0 0 var(--r-md) var(--r-md);overflow:hidden;}
+
+/* column widths */
+.col-handle{width:32px;padding:12px 6px 12px 10px;text-align:center;}
+.col-edit  {width:38px;padding:10px 6px 10px 4px;text-align:center;}
+.col-dates {width:130px;font-weight:600;color:var(--text);white-space:nowrap;}
+.col-stop  {width:175px;font-weight:700;color:var(--text);}
+.col-drive {width:108px;font-size:12px;color:var(--t3);white-space:nowrap;}
+.col-nights{width:52px;text-align:center;}
+.col-detail{color:var(--t2);line-height:1.55;}
+.col-house {width:148px;font-size:12px;color:var(--t2);}
+.col-cost  {width:110px;text-align:right;font-weight:700;white-space:nowrap;}
+
+/* row edit button */
+.row-edit-btn{width:28px;height:28px;border-radius:7px;border:none;background:rgba(255,255,255,.7);cursor:pointer;display:inline-flex;align-items:center;justify-content:center;font-size:13px;color:var(--t3);transition:all .15s;box-shadow:0 1px 3px rgba(0,0,0,.07);opacity:0;}
+tr:hover .row-edit-btn{opacity:1;}
+.row-edit-btn:hover{background:var(--acc-lt);color:var(--accent);box-shadow:0 1px 5px rgba(217,104,48,.18);}
+
+/* drag handle */
+.drag-handle{display:inline-flex;flex-direction:column;gap:2px;cursor:grab;padding:4px;border-radius:6px;opacity:.35;transition:opacity .15s;}
+.drag-handle:active{cursor:grabbing;}
+.drag-handle span{display:block;width:12px;height:2px;background:var(--t3);border-radius:1px;}
+tr:hover .drag-handle{opacity:.7;}
+.drag-handle:hover{opacity:1;background:rgba(0,0,0,.05);}
+
+/* nights pill */
+.nights-pill{display:inline-block;background:rgba(160,140,120,.12);border:1px solid rgba(160,140,120,.22);border-radius:var(--pill);padding:1px 9px;font-size:11px;color:var(--t3);}
+
+/* cost */
+.cost-free{color:var(--green);font-weight:700;}
+.cost-paid{color:var(--t2);}
+.cost-tbd {color:var(--t4);font-style:italic;}
+
+/* badges */
+.badge{display:inline-block;padding:2px 8px;border-radius:var(--pill);font-size:10px;font-weight:700;letter-spacing:.3px;margin-left:5px;vertical-align:middle;}
+.b-conf  {background:var(--blt);color:var(--blue)}
+.b-now   {background:var(--acc-lt);color:var(--accent)}
+.b-opt   {background:var(--plt);color:var(--purple)}
+.b-anch  {background:var(--tlt);color:var(--teal)}
+.b-booked{background:var(--glt);color:var(--green)}
+
+/* booked toggle (modal) */
+.booked-toggle-wrap{display:flex;align-items:center;gap:12px;padding:12px 14px;border-radius:12px;border:1px solid rgba(46,125,82,.2);background:var(--glt);margin-top:4px;cursor:pointer;}
+.booked-toggle-wrap:has(input:not(:checked)){background:rgba(180,155,130,.07);border-color:rgba(180,150,120,.2);}
+.booked-cb{width:18px;height:18px;accent-color:var(--green);cursor:pointer;flex-shrink:0;}
+.booked-toggle-lbl{font-size:13px;font-weight:600;color:var(--green);cursor:pointer;line-height:1.3;}
+.booked-toggle-wrap:has(input:not(:checked)) .booked-toggle-lbl{color:var(--t3);}
+
+/* airbnb link in table */
+.house-link{color:var(--blue);text-decoration:none;font-weight:600;}
+.house-link:hover{text-decoration:underline;}
+
+/* ── Budget ── */
+.budget-row{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-top:26px;}
+.bcard{background:var(--glass);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);border:1px solid var(--gb);border-radius:var(--r-xl);padding:22px 24px;box-shadow:var(--s1);}
+.bcard-title{font-size:11px;text-transform:uppercase;letter-spacing:.7px;color:var(--t3);font-weight:700;margin-bottom:16px;}
+.bline{display:flex;justify-content:space-between;align-items:baseline;padding:8px 0;border-bottom:1px solid var(--div);font-size:13px;}
+.bline:last-child{border-bottom:none;}
+.bline .bl{color:var(--t2);flex:1;padding-right:16px;}
+.bline .bv{font-weight:700;color:var(--text);white-space:nowrap;}
+.bline.b-total .bv{color:var(--amber);font-size:17px;}
+.bline.b-net   .bv{color:var(--green);font-size:17px;}
+.bline.b-free  .bv{color:var(--green);}
+.bbar-wrap{margin-top:16px;}
+.bbar-lbl{display:flex;justify-content:space-between;font-size:11px;color:var(--t3);margin-bottom:6px;}
+.bbar-track{height:5px;border-radius:3px;background:rgba(180,155,130,.22);overflow:hidden;}
+.bbar-fill{height:100%;border-radius:3px;background:linear-gradient(90deg,var(--green),var(--teal));}
+
+/* ── Notes box ── */
+.notes-box{background:rgba(26,120,104,.06);border:1px solid rgba(26,120,104,.18);border-radius:var(--r-md);padding:14px 18px;margin-top:16px;font-size:13px;color:var(--t2);line-height:1.7;}
+.notes-box strong{color:var(--text);}
+
+/* ── Checklist ── */
+.checklist{background:var(--glass);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);border:1px solid var(--gb);border-radius:var(--r-xl);padding:22px 24px;margin-bottom:14px;box-shadow:var(--s2);}
+.cl-title{font-size:11px;text-transform:uppercase;letter-spacing:.7px;color:var(--t3);font-weight:700;margin-bottom:16px;}
+.cl-item{display:flex;align-items:flex-start;gap:12px;padding:9px 0;border-bottom:1px solid var(--div);font-size:13px;}
+.cl-item:last-child{border-bottom:none;}
+.cl-item input[type=checkbox]{width:16px;height:16px;accent-color:var(--green);cursor:pointer;flex-shrink:0;margin-top:2px;}
+.cl-label{flex:1;color:var(--t2);line-height:1.5;}
+.cl-label.done{text-decoration:line-through;color:var(--t4);}
+.cl-cost{font-size:12px;color:var(--t3);white-space:nowrap;margin-left:8px;font-weight:600;}
+
+/* ── Trip info bar ── */
+.trip-bar{background:rgba(255,255,255,.55);border:1px solid var(--gb);border-radius:var(--r-md);padding:12px 18px;margin-bottom:20px;font-size:13px;color:var(--t2);display:flex;gap:22px;flex-wrap:wrap;backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);}
+
+/* ── Stop edit modal ── */
+.edit-modal-wrap{position:fixed;inset:0;background:rgba(26,20,16,.35);backdrop-filter:blur(4px);z-index:500;display:flex;align-items:center;justify-content:center;}
+.edit-modal{background:var(--ww);border-radius:var(--r-xl);padding:28px 30px;width:500px;max-width:calc(100vw - 40px);max-height:90vh;overflow-y:auto;box-shadow:0 8px 40px rgba(0,0,0,.18);position:relative;}
+.edit-modal h3{font-size:16px;font-weight:700;color:var(--text);margin-bottom:6px;letter-spacing:-.3px;}
+.modal-section-lbl{font-size:10px;text-transform:uppercase;letter-spacing:.7px;color:var(--t3);font-weight:700;margin-bottom:14px;margin-top:4px;}
+.field-group{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:12px;}
+.field-group.single{grid-template-columns:1fr;}
+.field-group.triple{grid-template-columns:1fr 1fr 1fr;}
+.field-wrap label{display:block;font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.6px;color:var(--t3);margin-bottom:6px;}
+.field-wrap input,.field-wrap textarea,.field-wrap select{width:100%;background:var(--cream);border:1px solid rgba(180,150,120,.3);border-radius:10px;padding:9px 12px;font-size:13px;color:var(--text);outline:none;font-family:inherit;transition:border-color .15s;}
+.field-wrap input:focus,.field-wrap textarea:focus,.field-wrap select:focus{border-color:var(--accent);box-shadow:0 0 0 3px rgba(217,104,48,.1);}
+.field-wrap textarea{resize:vertical;min-height:72px;line-height:1.5;}
+.modal-divider{height:1px;background:var(--div);margin:18px 0;}
+.modal-actions{display:flex;gap:10px;align-items:center;margin-top:20px;padding-top:16px;border-top:1px solid var(--div);}
+.modal-actions-right{margin-left:auto;display:flex;gap:8px;}
+.close-modal{position:absolute;top:18px;right:20px;background:none;border:none;font-size:18px;color:var(--t3);cursor:pointer;width:28px;height:28px;display:flex;align-items:center;justify-content:center;border-radius:50%;transition:background .15s;}
+.close-modal:hover{background:var(--cream);}
+
+/* ── Lever rows ── */
+.lever-row{display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid var(--div);font-size:13px;}
+.lever-row:last-child{border-bottom:none;}
+.lever-label{color:var(--t2);}
+.lever-val{font-weight:700;}
+
+/* ── Toast ── */
+.toast{position:fixed;bottom:22px;right:22px;z-index:999;background:var(--text);color:#fff;padding:11px 20px;border-radius:var(--pill);font-size:13px;font-weight:600;box-shadow:0 4px 20px rgba(0,0,0,.2);animation:ti .22s ease;}
+@keyframes ti{from{transform:translateY(10px);opacity:0}to{transform:translateY(0);opacity:1}}
+
+/* ── Detail Panel ── */
+tr.detail-row > td{padding:0 !important;border-bottom:1px solid var(--div) !important;background:rgba(248,244,238,0.97) !important;}
+.detail-panel{padding:18px 24px 22px;border-top:1px solid var(--div);}
+.detail-grid{display:grid;grid-template-columns:1fr 300px;gap:28px;}
+.detail-section-label{font-size:10px;text-transform:uppercase;letter-spacing:.8px;color:var(--t3);font-weight:700;margin-bottom:12px;}
+.act-list{display:flex;flex-direction:column;gap:5px;}
+.act-item{display:flex;align-items:flex-start;gap:10px;font-size:12px;color:var(--t2);padding:7px 10px;border-radius:10px;background:rgba(255,255,255,.7);border:1px solid rgba(180,155,130,.14);}
+.act-icon{width:28px;height:28px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:13px;flex-shrink:0;margin-top:1px;}
+.act-name{font-weight:600;color:var(--text);line-height:1.4;}
+.act-desc{font-size:11px;color:var(--t3);margin-top:2px;line-height:1.4;}
+.act-empty{font-size:12px;color:var(--t4);font-style:italic;padding:8px 0;}
+.friend-chips{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:10px;min-height:28px;}
+.friend-chip{display:inline-flex;align-items:center;gap:5px;background:var(--acc-lt);border:1px solid rgba(217,104,48,.25);border-radius:var(--pill);padding:4px 8px 4px 12px;font-size:12px;font-weight:600;color:var(--accent);}
+.friend-chip button{background:none;border:none;cursor:pointer;color:var(--accent);font-size:11px;line-height:1;padding:0;opacity:.55;transition:opacity .12s;}
+.friend-chip button:hover{opacity:1;}
+.friend-add-row{display:flex;gap:6px;margin-top:8px;}
+.friend-add-row input{flex:1;background:var(--ww);border:1px solid rgba(180,150,120,.28);border-radius:10px;padding:7px 12px;font-size:12px;color:var(--text);outline:none;font-family:inherit;}
+.friend-add-row input:focus{border-color:var(--accent);box-shadow:0 0 0 3px rgba(217,104,48,.1);}
+.friend-add-row input::placeholder{color:var(--t4);}
+.friend-empty{font-size:12px;color:var(--t4);font-style:italic;}
+.friend-btn{height:32px;padding:0 13px;font-size:11px;border-radius:var(--pill);border:1px solid rgba(217,104,48,.3);background:var(--acc-lt);color:var(--accent);cursor:pointer;font-weight:700;white-space:nowrap;transition:all .15s;}
+.friend-btn:hover{background:var(--acc-md);}
+
+/* ── Calendar ── */
+.cal-wrap{background:var(--glass);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);border:1px solid var(--gb);border-radius:var(--r-xl);padding:26px 28px;box-shadow:var(--s1);}
+.cal-hdr{display:flex;align-items:center;gap:14px;margin-bottom:22px;}
+.cal-month-label{flex:1;font-size:20px;font-weight:700;letter-spacing:-.4px;text-align:center;color:var(--text);}
+.cal-nav-btn{width:36px;height:36px;border-radius:var(--pill);border:1px solid var(--sb);background:var(--glass);cursor:pointer;font-size:16px;display:flex;align-items:center;justify-content:center;color:var(--t2);transition:all .15s;flex-shrink:0;box-shadow:var(--s2);}
+.cal-nav-btn:hover:not(:disabled){background:var(--ww);box-shadow:var(--s1);}
+.cal-nav-btn:disabled{opacity:.28;cursor:not-allowed;}
+.cal-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:5px;}
+.cal-dow{text-align:center;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.6px;color:var(--t3);padding:5px 0 10px;}
+.cal-day{min-height:78px;border-radius:10px;padding:8px 9px;border:1px solid transparent;transition:box-shadow .15s,transform .12s;}
+.cal-day:not(.cal-empty):not(.cal-off):hover{box-shadow:var(--s1);transform:translateY(-1px);}
+.cal-empty{background:transparent;border-color:transparent;}
+.cal-off{background:rgba(255,255,255,.3);opacity:.3;}
+.cal-day-num{font-size:11px;font-weight:700;margin-bottom:4px;width:20px;height:20px;display:flex;align-items:center;justify-content:center;border-radius:50%;line-height:1;}
+.cal-today-num{background:var(--accent)!important;color:#fff!important;font-weight:800;}
+.cal-stop-nm{font-size:11px;font-weight:700;line-height:1.35;overflow:hidden;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;}
+.cal-leg-lbl{font-size:9px;font-weight:700;letter-spacing:.4px;text-transform:uppercase;margin-top:4px;opacity:.6;}
+.cal-legend{display:flex;flex-wrap:wrap;gap:10px;margin-top:20px;padding-top:16px;border-top:1px solid var(--div);}
+.cal-legend-item{display:flex;align-items:center;gap:7px;font-size:11px;color:var(--t2);font-weight:600;}
+.cal-legend-swatch{width:12px;height:12px;border-radius:4px;flex-shrink:0;}
+
+@media(max-width:900px){.stats-grid{grid-template-columns:repeat(2,1fr)}.budget-row{grid-template-columns:1fr}.col-drive,.col-nights{display:none}.hdr{padding:0 16px}.main{padding:18px 14px 40px}.detail-grid{grid-template-columns:1fr}.cal-day{min-height:56px;padding:5px 6px}.cal-stop-nm{font-size:10px}.cal-leg-lbl{display:none}}
+@media(max-width:580px){.col-house{display:none}.here-badge{display:none}.here-loc{font-size:20px}.tab-bar{width:100%;justify-content:center}.cal-day{min-height:44px}.cal-stop-nm{-webkit-line-clamp:1}}
+</style>
+</head>
+<body>
+
+<header class="hdr">
+  <div class="hdr-brand">
+    <div class="hdr-logo">✈</div>
+    <div>
+      <div class="hdr-title">Digital Nomads 2026</div>
+      <div class="hdr-sub">Branden + Alexa · Charlie + Dee Dee · May – October</div>
+    </div>
+  </div>
+  <div class="hdr-right">
+    <span class="hdr-date" id="today-display">Sat, May 23, 2026</span>
+    <button class="btn btn-reorder" onclick="toggleReorder()">⠿ Reorder Stops</button>
+    <button class="btn btn-dark" onclick="exportHTML()">↓ Export for GitHub</button>
+  </div>
+</header>
+
+<main class="main">
+
+  <div class="here-card">
+    <div class="here-dot"></div>
+    <div style="flex:1">
+      <div class="here-chip">📍 You are here</div>
+      <div class="here-loc" id="here-loc">Lloyd Harbor (Wayside)</div>
+      <div class="here-sub" id="here-sub">Dad's house, w/o pets · Trevgela Engagement Party Sunday · Memorial Day</div>
+    </div>
+    <div class="here-badge">
+      <div class="hbd" id="here-dates-d">Sat–Mon 5/23–25</div>
+      <div class="hbt" id="here-dates-t">Free</div>
+    </div>
+  </div>
+
+  <div class="prog-wrap">
+    <div class="prog-row">
+      <span>May 14, 2026</span>
+      <span id="prog-pct" style="color:var(--accent);font-weight:700">6% complete</span>
+      <span>Oct 3, 2026</span>
+    </div>
+    <div class="prog-track"><div class="prog-fill" id="prog-fill" style="width: 6%;"></div></div>
+  </div>
+
+  <div class="stats-grid">
+    <div class="stat-card"><div class="s-label">Days traveled</div><div class="s-val ca" id="stat-days">9</div><div class="s-sub">of ~143 total</div></div>
+    <div class="stat-card"><div class="s-label">Stops remaining</div><div class="s-val ct" id="stat-stops">38</div><div class="s-sub">across both trips</div></div>
+    <div class="stat-card"><div class="s-label">Locations booked</div><div class="s-val cg" id="stat-booked">14/41</div><div class="s-sub" id="stat-booked-sub">27 still need booking</div></div>
+    <div class="stat-card"><div class="s-label">Free nights saved</div><div class="s-val cg">$3.8k+</div><div class="s-sub">Eugene ×2, Venice, family</div></div>
+  </div>
+
+  <div class="tab-bar">
+    <button class="tab-btn" onclick="switchTab('ne')">🗺 Northeast Trip</button>
+    <button class="tab-btn active" onclick="switchTab('pnw')">🌲 Pacific Northwest</button>
+    <button class="tab-btn" onclick="switchTab('book')">📋 Booking Checklist</button>
+    <button class="tab-btn" onclick="switchTab('cal')">📅 Calendar</button>
+  </div>
+
+  <div class="reorder-hint">⠿ Reorder mode — grab the handles to drag stops. Click ✏ on any row to edit it.</div>
+
+  <!-- NORTHEAST -->
+  <div id="tab-ne" class="tab-content" style="display: none;">
+    <div class="sec-block">
+      <div class="sec-label"><span class="sec-pip pip-pre"></span>Arrival + Events — Long Island<span class="sec-label-right">✏ click any row to edit · click row to expand</span></div>
+      <div class="tbl-wrap">
+        <table class="stop-tbl"><thead><tr><th class="th-handle"></th><th class="th-edit"></th><th class="col-dates">Dates</th><th class="col-stop">Stop</th><th class="col-detail">Details</th><th class="col-house">Housing</th><th class="col-cost">Cost</th></tr></thead><tbody id="ne-arrival"><tr class="data-row is-past" onclick="rowClick('ne-arrival',0,this,7)">
+      <td class="col-handle"><div class="drag-handle" draggable="true" style="display:none"><span></span><span></span><span></span></div></td>
+      <td class="col-edit"><button class="row-edit-btn" title="Edit this stop" onclick="openModal('ne-arrival',0,event)">✏</button></td>
+      <td class="col-dates">Fri–Sat 5/15–16</td>
+      <td class="col-stop">Montvale, NJ<span class="badge b-conf">confirmed</span></td>
+      
+      <td class="col-detail">Bat Mitzvah (2 Nights)</td>
+      <td class="col-house">Hotel (confirmed)</td>
+      <td class="col-cost"><span class="cost-free">Free</span></td>
+    </tr><tr class="data-row is-past" onclick="rowClick('ne-arrival',1,this,7)">
+      <td class="col-handle"><div class="drag-handle" draggable="true" style="display:none"><span></span><span></span><span></span></div></td>
+      <td class="col-edit"><button class="row-edit-btn" title="Edit this stop" onclick="openModal('ne-arrival',1,event)">✏</button></td>
+      <td class="col-dates">Sun–Thu 5/17–22</td>
+      <td class="col-stop">Centerport</td>
+      
+      <td class="col-detail">Mom's house — settle in with pets</td>
+      <td class="col-house">Free</td>
+      <td class="col-cost"><span class="cost-free">Free</span></td>
+    </tr><tr class="data-row is-current" onclick="rowClick('ne-arrival',2,this,7)">
+      <td class="col-handle"><div class="drag-handle" draggable="true" style="display:none"><span></span><span></span><span></span></div></td>
+      <td class="col-edit"><button class="row-edit-btn" title="Edit this stop" onclick="openModal('ne-arrival',2,event)">✏</button></td>
+      <td class="col-dates">Sat–Mon 5/23–25</td>
+      <td class="col-stop">Lloyd Harbor (Wayside)<span class="badge b-booked">✓ booked</span></td>
+      
+      <td class="col-detail">Dad's house, w/o pets · Trevgela Engagement Party Sunday · Memorial Day</td>
+      <td class="col-house">Free</td>
+      <td class="col-cost"><span class="cost-free">Free</span></td>
+    </tr><tr class="data-row is-past" onclick="rowClick('ne-arrival',3,this,7)">
+      <td class="col-handle"><div class="drag-handle" draggable="true" style="display:none"><span></span><span></span><span></span></div></td>
+      <td class="col-edit"><button class="row-edit-btn" title="Edit this stop" onclick="openModal('ne-arrival',3,event)">✏</button></td>
+      <td class="col-dates">Thu 5/14</td>
+      <td class="col-stop">Fly JFK → Centerport</td>
+      
+      <td class="col-detail">Uber to Centerport, sleep the night, drop the pets off. Take Subaru or rent a car.</td>
+      <td class="col-house">N/A</td>
+      <td class="col-cost"><span class="cost-tbd">TBD</span></td>
+    </tr><tr class="data-row " onclick="rowClick('ne-arrival',4,this,7)">
+      <td class="col-handle"><div class="drag-handle" draggable="true" style="display:none"><span></span><span></span><span></span></div></td>
+      <td class="col-edit"><button class="row-edit-btn" title="Edit this stop" onclick="openModal('ne-arrival',4,event)">✏</button></td>
+      <td class="col-dates">Mon 5/26</td>
+      <td class="col-stop">Lloyd Harbor → Centerport<span class="badge b-booked">✓ booked</span></td>
+      
+      <td class="col-detail">Memorial Day · Pick Up Rental Car in Woodbury</td>
+      <td class="col-house">Free</td>
+      <td class="col-cost"><span class="cost-free">Free</span></td>
+    </tr><tr class="add-stop-row"><td colspan="7"><div class="add-stop-inner"><button class="add-stop-btn" onclick="addStop('ne-arrival')"><span class="plus">＋</span> Add a new stop to this section</button></div></td></tr></tbody></table>
+      </div>
+    </div>
+    <div class="sec-block">
+      <div class="sec-label"><span class="sec-pip pip-leg"></span>Road Trip — With Pets<span class="sec-label-right">✏ click any row to edit · click row to expand</span></div>
+      <div class="tbl-wrap">
+        <table class="stop-tbl"><thead><tr><th class="th-handle"></th><th class="th-edit"></th><th class="col-dates">Dates</th><th class="col-stop">Stop</th><th class="col-drive">Drive</th><th class="col-detail">Details</th><th class="col-house">Housing</th><th class="col-cost">Cost</th></tr></thead><tbody id="ne-roadtrip"><tr class="data-row " onclick="rowClick('ne-roadtrip',0,this,8)">
+      <td class="col-handle"><div class="drag-handle" draggable="true" style="display:none"><span></span><span></span><span></span></div></td>
+      <td class="col-edit"><button class="row-edit-btn" title="Edit this stop" onclick="openModal('ne-roadtrip',0,event)">✏</button></td>
+      <td class="col-dates">Tues–Fri 5/27–29</td>
+      <td class="col-stop">Becket, MA</td>
+      <td class="col-drive">~3 hrs</td>
+      <td class="col-detail">Big Bass Lane | 4 Nights · Barrington + Kripalu + Fly Fishing</td>
+      <td class="col-house">Free</td>
+      <td class="col-cost"><span class="cost-free">Free</span></td>
+    </tr><tr class="data-row " onclick="rowClick('ne-roadtrip',1,this,8)">
+      <td class="col-handle"><div class="drag-handle" draggable="true" style="display:none"><span></span><span></span><span></span></div></td>
+      <td class="col-edit"><button class="row-edit-btn" title="Edit this stop" onclick="openModal('ne-roadtrip',1,event)">✏</button></td>
+      <td class="col-dates">Fri 5/29–Tues 6/2</td>
+      <td class="col-stop">Elmore, VT (Stowe/Burlington)</td>
+      <td class="col-drive">~3.5 hrs</td>
+      <td class="col-detail">Chic Farm House | 4 Nights · Sunday Farmer's Market in Stowe · 45 min drive to Burlington</td>
+      <td class="col-house">Airbnb</td>
+      <td class="col-cost"><span class="cost-paid">$1,251</span></td>
+    </tr><tr class="data-row " onclick="rowClick('ne-roadtrip',2,this,8)">
+      <td class="col-handle"><div class="drag-handle" draggable="true" style="display:none"><span></span><span></span><span></span></div></td>
+      <td class="col-edit"><button class="row-edit-btn" title="Edit this stop" onclick="openModal('ne-roadtrip',2,event)">✏</button></td>
+      <td class="col-dates">Tues 6/2–Fri 6/5</td>
+      <td class="col-stop">Newfane, VT (Brattleboro)</td>
+      <td class="col-drive">~2 hrs</td>
+      <td class="col-detail">Pondside Retreat | 3 Nights · Saturday Farmer's Market</td>
+      <td class="col-house">Airbnb</td>
+      <td class="col-cost"><span class="cost-paid">$776</span></td>
+    </tr><tr class="data-row " onclick="rowClick('ne-roadtrip',3,this,8)">
+      <td class="col-handle"><div class="drag-handle" draggable="true" style="display:none"><span></span><span></span><span></span></div></td>
+      <td class="col-edit"><button class="row-edit-btn" title="Edit this stop" onclick="openModal('ne-roadtrip',3,event)">✏</button></td>
+      <td class="col-dates">Fri 6/5–Sun 6/7</td>
+      <td class="col-stop">Becket, MA → Long Island</td>
+      <td class="col-drive">~2 hrs</td>
+      <td class="col-detail">Spend Fri/Sat at Becket solo, drive back to LI Sunday for Concert</td>
+      <td class="col-house">Free</td>
+      <td class="col-cost"><span class="cost-free">Free</span></td>
+    </tr><tr class="add-stop-row"><td colspan="8"><div class="add-stop-inner"><button class="add-stop-btn" onclick="addStop('ne-roadtrip')"><span class="plus">＋</span> Add a new stop to this section</button></div></td></tr></tbody></table>
+      </div>
+    </div>
+    <div class="sec-block">
+      <div class="sec-label"><span class="sec-pip pip-return"></span>Return — Long Island<span class="sec-label-right">✏ click any row to edit · click row to expand</span></div>
+      <div class="tbl-wrap">
+        <table class="stop-tbl"><thead><tr><th class="th-handle"></th><th class="th-edit"></th><th class="col-dates">Dates</th><th class="col-stop">Stop</th><th class="col-detail">Details</th><th class="col-house">Housing</th><th class="col-cost">Cost</th></tr></thead><tbody id="ne-return"><tr class="data-row " onclick="rowClick('ne-return',0,this,7)">
+      <td class="col-handle"><div class="drag-handle" draggable="true" style="display:none"><span></span><span></span><span></span></div></td>
+      <td class="col-edit"><button class="row-edit-btn" title="Edit this stop" onclick="openModal('ne-return',0,event)">✏</button></td>
+      <td class="col-dates">Mon 6/8–Weds 6/10</td>
+      <td class="col-stop">Lloyd Harbor / Centerport</td>
+      
+      <td class="col-detail">Drop off Rental Car · Regroup in Centerport</td>
+      <td class="col-house">Free</td>
+      <td class="col-cost"><span class="cost-free">Free</span></td>
+    </tr><tr class="data-row " onclick="rowClick('ne-return',1,this,7)">
+      <td class="col-handle"><div class="drag-handle" draggable="true" style="display:none"><span></span><span></span><span></span></div></td>
+      <td class="col-edit"><button class="row-edit-btn" title="Edit this stop" onclick="openModal('ne-return',1,event)">✏</button></td>
+      <td class="col-dates">Weds 6/10–Thurs 6/11</td>
+      <td class="col-stop">Sag Harbor / Hamptons</td>
+      
+      <td class="col-detail">1.5 Hour Drive · Leave Animals</td>
+      <td class="col-house">TBD</td>
+      <td class="col-cost"><span class="cost-tbd">TBD</span></td>
+    </tr><tr class="data-row " onclick="rowClick('ne-return',2,this,7)">
+      <td class="col-handle"><div class="drag-handle" draggable="true" style="display:none"><span></span><span></span><span></span></div></td>
+      <td class="col-edit"><button class="row-edit-btn" title="Edit this stop" onclick="openModal('ne-return',2,event)">✏</button></td>
+      <td class="col-dates">Fri 6/12–Weds 6/17</td>
+      <td class="col-stop">Lloyd Harbor &amp; Centerport</td>
+      
+      <td class="col-detail">Return Rental Car in Huntington · Last Stint with Parents | 5 Nights</td>
+      <td class="col-house">Free</td>
+      <td class="col-cost"><span class="cost-free">Free</span></td>
+    </tr><tr class="add-stop-row"><td colspan="7"><div class="add-stop-inner"><button class="add-stop-btn" onclick="addStop('ne-return')"><span class="plus">＋</span> Add a new stop to this section</button></div></td></tr></tbody></table>
+      </div>
+    </div>
+    <div class="budget-row">
+      <div class="bcard">
+        <div class="bcard-title">Northeast Budget</div>
+        <div class="bline"><div class="bl">Airbnb + Car Budget</div><div class="bv cb">$5,000</div></div>
+        <div class="bline"><div class="bl">Rental Car — 19 Days (May 26–June 8)</div><div class="bv">~$1,444</div></div>
+        <div class="bline"><div class="bl">Elmore, VT (Stowe) — 4 nights</div><div class="bv">$1,251</div></div>
+        <div class="bline"><div class="bl">Newfane, VT (Brattleboro) — 3 nights</div><div class="bv">$776</div></div>
+        <div class="bline b-total"><div class="bl">Total (Airbnbs + Car)</div><div class="bv">~$3,461</div></div>
+      </div>
+      <div class="bcard">
+        <div class="bcard-title">Notes</div>
+        <p style="font-size:13px;color:var(--t2);line-height:1.7">Portsmouth Airbnb and Sag Harbor Airbnb still TBD. Concert on 6/7 is optional — route from Becket to Long Island is ~3 hrs.</p>
+        <div class="bbar-wrap">
+          <div class="bbar-lbl"><span>Budget used</span><span style="font-weight:700;color:var(--text)">$3,461 / $5,000</span></div>
+          <div class="bbar-track"><div class="bbar-fill" style="width:69%"></div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- PNW -->
+  <div id="tab-pnw" class="tab-content" style="display: block;">
+    <div class="trip-bar">
+      <span>🐕 Charlie (Maltipoo)</span><span>🐈 Dee Dee (cat)</span><span>🚗 Own car</span>
+      <span>🌊 Swim spots · farmers markets · community roots</span><span>📅 June 17 – ~Oct 3, 2026</span>
+    </div>
+    <div id="pnw-sections"><div class="sec-block">
+      <div class="sec-label"><span class="sec-pip pip-pre"></span>Pre-Trip — Los Angeles / Venice<span class="sec-label-right">✏ click row to edit · click row to expand activities</span></div>
+      <div class="tbl-wrap"><table class="stop-tbl">
+        <thead><tr><th class="th-handle"></th><th class="th-edit"></th><th class="col-dates">Dates</th><th class="col-stop">Stop</th><th class="col-nights">Nights</th><th class="col-drive">Drive</th><th class="col-detail">Details</th><th class="col-house">Housing / Airbnb</th><th class="col-cost">Cost</th></tr></thead>
+        <tbody id="tbody-pnw-0"><tr class="data-row " onclick="rowClick('pnw-0',0,this,9)">
+        <td class="col-handle"><div class="drag-handle" draggable="true" style="display:none"><span></span><span></span><span></span></div></td>
+        <td class="col-edit"><button class="row-edit-btn" title="Edit this stop" onclick="openModal('pnw-0',0,event)">✏</button></td>
+        <td class="col-dates">Wed 6/17</td>
+        <td class="col-stop">Land in LA — Venice</td>
+        <td class="col-nights"><span class="nights-pill">2n</span></td>
+        <td class="col-drive">—</td>
+        <td class="col-detail">Return from Northeast trip. Settle in, regroup before the big road trip begins.</td>
+        <td class="col-house">Venice home</td>
+        <td class="col-cost"><span class="cost-free">Free</span></td>
+      </tr><tr class="data-row " onclick="rowClick('pnw-0',1,this,9)">
+        <td class="col-handle"><div class="drag-handle" draggable="true" style="display:none"><span></span><span></span><span></span></div></td>
+        <td class="col-edit"><button class="row-edit-btn" title="Edit this stop" onclick="openModal('pnw-0',1,event)">✏</button></td>
+        <td class="col-dates">Fri 6/19</td>
+        <td class="col-stop">Depart for Joshua Tree</td>
+        <td class="col-nights">—</td>
+        <td class="col-drive">~2.5 hrs</td>
+        <td class="col-detail">Pack the car and animals, head east into the desert.</td>
+        <td class="col-house">—</td>
+        <td class="col-cost"><span class="cost-tbd">TBD</span></td>
+      </tr><tr class="add-stop-row"><td colspan="9"><div class="add-stop-inner"><button class="add-stop-btn" onclick="addStop('pnw-0')"><span class="plus">＋</span> Add a new stop to this section</button></div></td></tr></tbody>
+      </table></div>
+    </div><div class="sec-block">
+      <div class="sec-label"><span class="sec-pip pip-leg"></span>Leg 1 — California Desert<span class="sec-label-right">✏ click row to edit · click row to expand activities</span></div>
+      <div class="tbl-wrap"><table class="stop-tbl">
+        <thead><tr><th class="th-handle"></th><th class="th-edit"></th><th class="col-dates">Dates</th><th class="col-stop">Stop</th><th class="col-nights">Nights</th><th class="col-drive">Drive</th><th class="col-detail">Details</th><th class="col-house">Housing / Airbnb</th><th class="col-cost">Cost</th></tr></thead>
+        <tbody id="tbody-pnw-1"><tr class="data-row " onclick="rowClick('pnw-1',0,this,9)">
+        <td class="col-handle"><div class="drag-handle" draggable="true" style="display:none"><span></span><span></span><span></span></div></td>
+        <td class="col-edit"><button class="row-edit-btn" title="Edit this stop" onclick="openModal('pnw-1',0,event)">✏</button></td>
+        <td class="col-dates">Fri 6/19–Mon 6/22</td>
+        <td class="col-stop">Joshua Tree, CA<span class="badge b-booked">✓ booked</span></td>
+        <td class="col-nights"><span class="nights-pill">3n</span></td>
+        <td class="col-drive">~2.5 hrs from LA</td>
+        <td class="col-detail">Desert decompression. Joshua Tree National Park, Pioneertown, Pappy &amp; Harriet's. Great stargazing and sunrise hikes.</td>
+        <td class="col-house"><a class="house-link" href="https://www.airbnb.com/rooms/1238611828849311315?source_impression_id=p3_1779550866_P3yTe5lKVxbpGZou" target="_blank" rel="noopener" onclick="event.stopPropagation()" title="Open Airbnb listing">Airbnb needed ↗</a></td>
+        <td class="col-cost"><span class="cost-paid">$600</span></td>
+      </tr><tr class="add-stop-row"><td colspan="9"><div class="add-stop-inner"><button class="add-stop-btn" onclick="addStop('pnw-1')"><span class="plus">＋</span> Add a new stop to this section</button></div></td></tr></tbody>
+      </table></div>
+    </div><div class="sec-block">
+      <div class="sec-label"><span class="sec-pip pip-leg"></span>Leg 2 — Sierra Nevada<span class="sec-label-right">✏ click row to edit · click row to expand activities</span></div>
+      <div class="tbl-wrap"><table class="stop-tbl">
+        <thead><tr><th class="th-handle"></th><th class="th-edit"></th><th class="col-dates">Dates</th><th class="col-stop">Stop</th><th class="col-nights">Nights</th><th class="col-drive">Drive</th><th class="col-detail">Details</th><th class="col-house">Housing / Airbnb</th><th class="col-cost">Cost</th></tr></thead>
+        <tbody id="tbody-pnw-2"><tr class="data-row " onclick="rowClick('pnw-2',0,this,9)">
+        <td class="col-handle"><div class="drag-handle" draggable="true" style="display:none"><span></span><span></span><span></span></div></td>
+        <td class="col-edit"><button class="row-edit-btn" title="Edit this stop" onclick="openModal('pnw-2',0,event)">✏</button></td>
+        <td class="col-dates">Mon 6/22–Wed 6/24</td>
+        <td class="col-stop">Three Rivers, CA</td>
+        <td class="col-nights"><span class="nights-pill">2n</span></td>
+        <td class="col-drive">~2.5 hrs from JTree</td>
+        <td class="col-detail">Sequoia / Kings Canyon gateway. General Sherman Tree, Giant Forest, Moro Rock. Roaring River swim spots.</td>
+        <td class="col-house">Airbnb</td>
+        <td class="col-cost"><span class="cost-paid">$350</span></td>
+      </tr><tr class="data-row " onclick="rowClick('pnw-2',1,this,9)">
+        <td class="col-handle"><div class="drag-handle" draggable="true" style="display:none"><span></span><span></span><span></span></div></td>
+        <td class="col-edit"><button class="row-edit-btn" title="Edit this stop" onclick="openModal('pnw-2',1,event)">✏</button></td>
+        <td class="col-dates">Wed 6/24–Fri 6/26</td>
+        <td class="col-stop">Santa Cruz, CA</td>
+        <td class="col-nights"><span class="nights-pill">2n</span></td>
+        <td class="col-drive">~3 hrs via CA-99/CA-152</td>
+        <td class="col-detail">Surf town layover. Boardwalk, Henry Cowell Redwoods, San Lorenzo River swim spots, farmers market.</td>
+        <td class="col-house">Airbnb</td>
+        <td class="col-cost"><span class="cost-paid">$400</span></td>
+      </tr><tr class="add-stop-row"><td colspan="9"><div class="add-stop-inner"><button class="add-stop-btn" onclick="addStop('pnw-2')"><span class="plus">＋</span> Add a new stop to this section</button></div></td></tr></tbody>
+      </table></div>
+    </div><div class="sec-block">
+      <div class="sec-label"><span class="sec-pip pip-anchor"></span>⚓ Anchor 1 — SF / Marin / Stinson Beach<span class="sec-label-right">✏ click row to edit · click row to expand activities</span></div>
+      <div class="tbl-wrap"><table class="stop-tbl">
+        <thead><tr><th class="th-handle"></th><th class="th-edit"></th><th class="col-dates">Dates</th><th class="col-stop">Stop</th><th class="col-nights">Nights</th><th class="col-drive">Drive</th><th class="col-detail">Details</th><th class="col-house">Housing / Airbnb</th><th class="col-cost">Cost</th></tr></thead>
+        <tbody id="tbody-pnw-3"><tr class="data-row " onclick="rowClick('pnw-3',0,this,9)">
+        <td class="col-handle"><div class="drag-handle" draggable="true" style="display:none"><span></span><span></span><span></span></div></td>
+        <td class="col-edit"><button class="row-edit-btn" title="Edit this stop" onclick="openModal('pnw-3',0,event)">✏</button></td>
+        <td class="col-dates">Fri 6/26–Wed 7/1</td>
+        <td class="col-stop">SF / Marin / Stinson Beach<span class="badge b-anch">anchor</span></td>
+        <td class="col-nights"><span class="nights-pill">5n</span></td>
+        <td class="col-drive">~1.5 hrs from Santa Cruz</td>
+        <td class="col-detail">Stinson Beach and Bolinas corridor — most Ojai-adjacent community on this route. Tennessee Valley trails, Mill Valley, Fairfax. Farmers market in Marin.</td>
+        <td class="col-house">Airbnb</td>
+        <td class="col-cost"><span class="cost-paid">$1,250</span></td>
+      </tr><tr class="add-stop-row"><td colspan="9"><div class="add-stop-inner"><button class="add-stop-btn" onclick="addStop('pnw-3')"><span class="plus">＋</span> Add a new stop to this section</button></div></td></tr></tbody>
+      </table></div>
+    </div><div class="sec-block">
+      <div class="sec-label"><span class="sec-pip pip-leg"></span>Leg 3 — Wine Country &amp; N. California Foothills<span class="sec-label-right">✏ click row to edit · click row to expand activities</span></div>
+      <div class="tbl-wrap"><table class="stop-tbl">
+        <thead><tr><th class="th-handle"></th><th class="th-edit"></th><th class="col-dates">Dates</th><th class="col-stop">Stop</th><th class="col-nights">Nights</th><th class="col-drive">Drive</th><th class="col-detail">Details</th><th class="col-house">Housing / Airbnb</th><th class="col-cost">Cost</th></tr></thead>
+        <tbody id="tbody-pnw-4"><tr class="data-row " onclick="rowClick('pnw-4',0,this,9)">
+        <td class="col-handle"><div class="drag-handle" draggable="true" style="display:none"><span></span><span></span><span></span></div></td>
+        <td class="col-edit"><button class="row-edit-btn" title="Edit this stop" onclick="openModal('pnw-4',0,event)">✏</button></td>
+        <td class="col-dates">Wed 7/1–Sat 7/4</td>
+        <td class="col-stop">Russian River / Guerneville</td>
+        <td class="col-nights"><span class="nights-pill">3n</span></td>
+        <td class="col-drive">~1.5 hrs from Marin</td>
+        <td class="col-detail">Funky redwood river town. Swimming holes on the Russian River. Arts community, farmers market.</td>
+        <td class="col-house">Airbnb</td>
+        <td class="col-cost"><span class="cost-paid">$525</span></td>
+      </tr><tr class="data-row " onclick="rowClick('pnw-4',1,this,9)">
+        <td class="col-handle"><div class="drag-handle" draggable="true" style="display:none"><span></span><span></span><span></span></div></td>
+        <td class="col-edit"><button class="row-edit-btn" title="Edit this stop" onclick="openModal('pnw-4',1,event)">✏</button></td>
+        <td class="col-dates">Sat 7/4–Mon 7/6</td>
+        <td class="col-stop">Napa Valley</td>
+        <td class="col-nights"><span class="nights-pill">2n</span></td>
+        <td class="col-drive">~1 hr from Guerneville</td>
+        <td class="col-detail">Stay with friends (confirm pet policy). World-class food and wine.</td>
+        <td class="col-house">Friends' place (TBD)</td>
+        <td class="col-cost"><span class="cost-free">Free</span></td>
+      </tr><tr class="data-row " onclick="rowClick('pnw-4',2,this,9)">
+        <td class="col-handle"><div class="drag-handle" draggable="true" style="display:none"><span></span><span></span><span></span></div></td>
+        <td class="col-edit"><button class="row-edit-btn" title="Edit this stop" onclick="openModal('pnw-4',2,event)">✏</button></td>
+        <td class="col-dates">Mon 7/6–Sat 7/11</td>
+        <td class="col-stop">Nevada City, CA</td>
+        <td class="col-nights"><span class="nights-pill">5n</span></td>
+        <td class="col-drive">~1.5 hrs from Napa</td>
+        <td class="col-detail">Best 'could we live here' stop in CA. Victorian arts town, South Yuba River State Park — best swimming holes in NorCal. Saturday farmers market.</td>
+        <td class="col-house">Airbnb</td>
+        <td class="col-cost"><span class="cost-paid">$750</span></td>
+      </tr><tr class="data-row " onclick="rowClick('pnw-4',3,this,9)">
+        <td class="col-handle"><div class="drag-handle" draggable="true" style="display:none"><span></span><span></span><span></span></div></td>
+        <td class="col-edit"><button class="row-edit-btn" title="Edit this stop" onclick="openModal('pnw-4',3,event)">✏</button></td>
+        <td class="col-dates">Sat 7/11–Tue 7/15</td>
+        <td class="col-stop">Incline Village, NV<span class="badge b-now">⚠ book now</span></td>
+        <td class="col-nights"><span class="nights-pill">4n</span></td>
+        <td class="col-drive">~1 hr from Nevada City</td>
+        <td class="col-detail">Splurge stop. Nevada side of Lake Tahoe — Sand Harbor, Kings Beach, crystal blue water.</td>
+        <td class="col-house">Airbnb (splurge)</td>
+        <td class="col-cost"><span class="cost-paid">$1,400</span></td>
+      </tr><tr class="add-stop-row"><td colspan="9"><div class="add-stop-inner"><button class="add-stop-btn" onclick="addStop('pnw-4')"><span class="plus">＋</span> Add a new stop to this section</button></div></td></tr></tbody>
+      </table></div>
+    </div><div class="sec-block">
+      <div class="sec-label"><span class="sec-pip pip-leg"></span>Leg 4 — Northern California<span class="sec-label-right">✏ click row to edit · click row to expand activities</span></div>
+      <div class="tbl-wrap"><table class="stop-tbl">
+        <thead><tr><th class="th-handle"></th><th class="th-edit"></th><th class="col-dates">Dates</th><th class="col-stop">Stop</th><th class="col-nights">Nights</th><th class="col-drive">Drive</th><th class="col-detail">Details</th><th class="col-house">Housing / Airbnb</th><th class="col-cost">Cost</th></tr></thead>
+        <tbody id="tbody-pnw-5"><tr class="data-row " onclick="rowClick('pnw-5',0,this,9)">
+        <td class="col-handle"><div class="drag-handle" draggable="true" style="display:none"><span></span><span></span><span></span></div></td>
+        <td class="col-edit"><button class="row-edit-btn" title="Edit this stop" onclick="openModal('pnw-5',0,event)">✏</button></td>
+        <td class="col-dates">Tue 7/15–Mon 7/21</td>
+        <td class="col-stop">Mount Shasta, CA</td>
+        <td class="col-nights"><span class="nights-pill">6n</span></td>
+        <td class="col-drive">~2.5 hrs from Incline</td>
+        <td class="col-detail">Spiritual mountain town — intentional community, Castle Lake, Black Bear Diner, Headwaters spring. Strong 'could we live here' candidate.</td>
+        <td class="col-house">Airbnb</td>
+        <td class="col-cost"><span class="cost-paid">$800</span></td>
+      </tr><tr class="data-row " onclick="rowClick('pnw-5',1,this,9)">
+        <td class="col-handle"><div class="drag-handle" draggable="true" style="display:none"><span></span><span></span><span></span></div></td>
+        <td class="col-edit"><button class="row-edit-btn" title="Edit this stop" onclick="openModal('pnw-5',1,event)">✏</button></td>
+        <td class="col-dates">Mon 7/21–Tue 7/22</td>
+        <td class="col-stop">Ashland, OR</td>
+        <td class="col-nights"><span class="nights-pill">1n</span></td>
+        <td class="col-drive">~1.5 hrs from Shasta</td>
+        <td class="col-detail">Routing overnight only. Shakespeare festival town — good dinner, rest, easy drive into Eugene.</td>
+        <td class="col-house">Airbnb</td>
+        <td class="col-cost"><span class="cost-paid">$175</span></td>
+      </tr><tr class="add-stop-row"><td colspan="9"><div class="add-stop-inner"><button class="add-stop-btn" onclick="addStop('pnw-5')"><span class="plus">＋</span> Add a new stop to this section</button></div></td></tr></tbody>
+      </table></div>
+    </div><div class="sec-block">
+      <div class="sec-label"><span class="sec-pip pip-anchor"></span>⚓ Anchor 2 — Eugene, OR — Visit 1 (Pallas) 🎂<span class="sec-label-right">✏ click row to edit · click row to expand activities</span></div>
+      <div class="tbl-wrap"><table class="stop-tbl">
+        <thead><tr><th class="th-handle"></th><th class="th-edit"></th><th class="col-dates">Dates</th><th class="col-stop">Stop</th><th class="col-nights">Nights</th><th class="col-drive">Drive</th><th class="col-detail">Details</th><th class="col-house">Housing / Airbnb</th><th class="col-cost">Cost</th></tr></thead>
+        <tbody id="tbody-pnw-6"><tr class="data-row " onclick="rowClick('pnw-6',0,this,9)">
+        <td class="col-handle"><div class="drag-handle" draggable="true" style="display:none"><span></span><span></span><span></span></div></td>
+        <td class="col-edit"><button class="row-edit-btn" title="Edit this stop" onclick="openModal('pnw-6',0,event)">✏</button></td>
+        <td class="col-dates">Tue 7/22–Mon 7/28</td>
+        <td class="col-stop">Eugene, OR<span class="badge b-anch">anchor</span></td>
+        <td class="col-nights"><span class="nights-pill">6n</span></td>
+        <td class="col-drive">~1 hr from Ashland</td>
+        <td class="col-detail">Stay with Pallas. Arrive just before her birthday on 7/23. Eugene Saturday Market — legendary. McKenzie River swimming holes. Rest, regroup, celebrate.</td>
+        <td class="col-house">Pallas — Free</td>
+        <td class="col-cost"><span class="cost-free">Free</span></td>
+      </tr><tr class="add-stop-row"><td colspan="9"><div class="add-stop-inner"><button class="add-stop-btn" onclick="addStop('pnw-6')"><span class="plus">＋</span> Add a new stop to this section</button></div></td></tr></tbody>
+      </table></div>
+    </div><div class="sec-block">
+      <div class="sec-label"><span class="sec-pip pip-anchor"></span>⚓ Anchor 3 — Bend / Sunriver, OR<span class="sec-label-right">✏ click row to edit · click row to expand activities</span></div>
+      <div class="tbl-wrap"><table class="stop-tbl">
+        <thead><tr><th class="th-handle"></th><th class="th-edit"></th><th class="col-dates">Dates</th><th class="col-stop">Stop</th><th class="col-nights">Nights</th><th class="col-drive">Drive</th><th class="col-detail">Details</th><th class="col-house">Housing / Airbnb</th><th class="col-cost">Cost</th></tr></thead>
+        <tbody id="tbody-pnw-7"><tr class="data-row " onclick="rowClick('pnw-7',0,this,9)">
+        <td class="col-handle"><div class="drag-handle" draggable="true" style="display:none"><span></span><span></span><span></span></div></td>
+        <td class="col-edit"><button class="row-edit-btn" title="Edit this stop" onclick="openModal('pnw-7',0,event)">✏</button></td>
+        <td class="col-dates">Mon 7/28–Thu 8/7</td>
+        <td class="col-stop">Bend / Sunriver, OR<span class="badge b-anch">anchor</span></td>
+        <td class="col-nights"><span class="nights-pill">10n</span></td>
+        <td class="col-drive">~2.5 hrs from Eugene</td>
+        <td class="col-detail">Ojai of the Pacific Northwest. 10 nights. Deschutes River float, Smith Rock State Park, Cascade Lakes Scenic Byway. Hood River day trip (1.5 hrs).</td>
+        <td class="col-house">Airbnb — one rental</td>
+        <td class="col-cost"><span class="cost-paid">$1,500</span></td>
+      </tr><tr class="add-stop-row"><td colspan="9"><div class="add-stop-inner"><button class="add-stop-btn" onclick="addStop('pnw-7')"><span class="plus">＋</span> Add a new stop to this section</button></div></td></tr></tbody>
+      </table></div>
+    </div><div class="sec-block">
+      <div class="sec-label"><span class="sec-pip pip-leg"></span>Leg 5 — Idaho<span class="sec-label-right">✏ click row to edit · click row to expand activities</span></div>
+      <div class="tbl-wrap"><table class="stop-tbl">
+        <thead><tr><th class="th-handle"></th><th class="th-edit"></th><th class="col-dates">Dates</th><th class="col-stop">Stop</th><th class="col-nights">Nights</th><th class="col-drive">Drive</th><th class="col-detail">Details</th><th class="col-house">Housing / Airbnb</th><th class="col-cost">Cost</th></tr></thead>
+        <tbody id="tbody-pnw-8"><tr class="data-row " onclick="rowClick('pnw-8',0,this,9)">
+        <td class="col-handle"><div class="drag-handle" draggable="true" style="display:none"><span></span><span></span><span></span></div></td>
+        <td class="col-edit"><button class="row-edit-btn" title="Edit this stop" onclick="openModal('pnw-8',0,event)">✏</button></td>
+        <td class="col-dates">Thu 8/7–Sun 8/10</td>
+        <td class="col-stop">Twin Falls, ID</td>
+        <td class="col-nights"><span class="nights-pill">3n</span></td>
+        <td class="col-drive">~3 hrs from Bend via US-20/I-84</td>
+        <td class="col-detail">Shoshone Falls — larger than Niagara, one of the great swim spots. Snake River Canyon, Perrine Bridge (BASE jumping).</td>
+        <td class="col-house">Airbnb</td>
+        <td class="col-cost"><span class="cost-paid">$400</span></td>
+      </tr><tr class="data-row " onclick="rowClick('pnw-8',1,this,9)">
+        <td class="col-handle"><div class="drag-handle" draggable="true" style="display:none"><span></span><span></span><span></span></div></td>
+        <td class="col-edit"><button class="row-edit-btn" title="Edit this stop" onclick="openModal('pnw-8',1,event)">✏</button></td>
+        <td class="col-dates">Sun 8/10–Sun 8/17</td>
+        <td class="col-stop">Boise, ID</td>
+        <td class="col-nights"><span class="nights-pill">7n</span></td>
+        <td class="col-drive">~2 hrs from Twin Falls</td>
+        <td class="col-detail">Arts scene, Boise River Greenbelt, Basque Block, exceptional food. Off-grid comedian friend's land nearby.</td>
+        <td class="col-house">Airbnb</td>
+        <td class="col-cost"><span class="cost-paid">$1,050</span></td>
+      </tr><tr class="data-row " onclick="rowClick('pnw-8',2,this,9)">
+        <td class="col-handle"><div class="drag-handle" draggable="true" style="display:none"><span></span><span></span><span></span></div></td>
+        <td class="col-edit"><button class="row-edit-btn" title="Edit this stop" onclick="openModal('pnw-8',2,event)">✏</button></td>
+        <td class="col-dates">Sun 8/17–Thu 8/21</td>
+        <td class="col-stop">McCall, ID</td>
+        <td class="col-nights"><span class="nights-pill">4n</span></td>
+        <td class="col-drive">~2.5 hrs from Boise via Hwy 55</td>
+        <td class="col-detail">Hidden gem. Payette Lake — pristine mountain swim spot. Feels like Tahoe 30 years ago.</td>
+        <td class="col-house">Airbnb</td>
+        <td class="col-cost"><span class="cost-paid">$700</span></td>
+      </tr><tr class="data-row " onclick="rowClick('pnw-8',3,this,9)">
+        <td class="col-handle"><div class="drag-handle" draggable="true" style="display:none"><span></span><span></span><span></span></div></td>
+        <td class="col-edit"><button class="row-edit-btn" title="Edit this stop" onclick="openModal('pnw-8',3,event)">✏</button></td>
+        <td class="col-dates">Thu 8/21–Mon 8/25</td>
+        <td class="col-stop">Coeur d'Alene, ID</td>
+        <td class="col-nights"><span class="nights-pill">4n</span></td>
+        <td class="col-drive">~2.5 hrs from McCall via US-95 N</td>
+        <td class="col-detail">Beautiful lake town on the Idaho panhandle. Lake Coeur d'Alene is stunning. Charming walkable downtown, watersports.</td>
+        <td class="col-house">Airbnb</td>
+        <td class="col-cost"><span class="cost-paid">$700</span></td>
+      </tr><tr class="add-stop-row"><td colspan="9"><div class="add-stop-inner"><button class="add-stop-btn" onclick="addStop('pnw-8')"><span class="plus">＋</span> Add a new stop to this section</button></div></td></tr></tbody>
+      </table></div>
+    </div><div class="sec-block">
+      <div class="sec-label"><span class="sec-pip pip-leg"></span>Leg 6 — Washington State<span class="sec-label-right">✏ click row to edit · click row to expand activities</span></div>
+      <div class="tbl-wrap"><table class="stop-tbl">
+        <thead><tr><th class="th-handle"></th><th class="th-edit"></th><th class="col-dates">Dates</th><th class="col-stop">Stop</th><th class="col-nights">Nights</th><th class="col-drive">Drive</th><th class="col-detail">Details</th><th class="col-house">Housing / Airbnb</th><th class="col-cost">Cost</th></tr></thead>
+        <tbody id="tbody-pnw-9"><tr class="data-row " onclick="rowClick('pnw-9',0,this,9)">
+        <td class="col-handle"><div class="drag-handle" draggable="true" style="display:none"><span></span><span></span><span></span></div></td>
+        <td class="col-edit"><button class="row-edit-btn" title="Edit this stop" onclick="openModal('pnw-9',0,event)">✏</button></td>
+        <td class="col-dates">Mon 8/25–Fri 8/29</td>
+        <td class="col-stop">Winthrop, WA</td>
+        <td class="col-nights"><span class="nights-pill">4n</span></td>
+        <td class="col-drive">~3.5 hrs from CdA via Spokane/WA-20</td>
+        <td class="col-detail">North Cascades Highway — one of the most spectacular drives in America. Old west aesthetic, Methow River swim spots, wildflower meadows.</td>
+        <td class="col-house">Airbnb</td>
+        <td class="col-cost"><span class="cost-paid">$700</span></td>
+      </tr><tr class="data-row " onclick="rowClick('pnw-9',1,this,9)">
+        <td class="col-handle"><div class="drag-handle" draggable="true" style="display:none"><span></span><span></span><span></span></div></td>
+        <td class="col-edit"><button class="row-edit-btn" title="Edit this stop" onclick="openModal('pnw-9',1,event)">✏</button></td>
+        <td class="col-dates">Fri 8/29–Tue 9/2</td>
+        <td class="col-stop">Seattle, WA</td>
+        <td class="col-nights"><span class="nights-pill">4n</span></td>
+        <td class="col-drive">~3 hrs from Winthrop</td>
+        <td class="col-detail">City stop. Pike Place Market, Capitol Hill, waterfront, music scene. Gateway to Port Townsend ferry.</td>
+        <td class="col-house">Airbnb</td>
+        <td class="col-cost"><span class="cost-paid">$900</span></td>
+      </tr><tr class="add-stop-row"><td colspan="9"><div class="add-stop-inner"><button class="add-stop-btn" onclick="addStop('pnw-9')"><span class="plus">＋</span> Add a new stop to this section</button></div></td></tr></tbody>
+      </table></div>
+    </div><div class="sec-block">
+      <div class="sec-label"><span class="sec-pip pip-anchor"></span>⚓ Anchor 4 — Port Townsend, WA<span class="sec-label-right">✏ click row to edit · click row to expand activities</span></div>
+      <div class="tbl-wrap"><table class="stop-tbl">
+        <thead><tr><th class="th-handle"></th><th class="th-edit"></th><th class="col-dates">Dates</th><th class="col-stop">Stop</th><th class="col-nights">Nights</th><th class="col-drive">Drive</th><th class="col-detail">Details</th><th class="col-house">Housing / Airbnb</th><th class="col-cost">Cost</th></tr></thead>
+        <tbody id="tbody-pnw-10"><tr class="data-row " onclick="rowClick('pnw-10',0,this,9)">
+        <td class="col-handle"><div class="drag-handle" draggable="true" style="display:none"><span></span><span></span><span></span></div></td>
+        <td class="col-edit"><button class="row-edit-btn" title="Edit this stop" onclick="openModal('pnw-10',0,event)">✏</button></td>
+        <td class="col-dates">Tue 9/2–Sun 9/14</td>
+        <td class="col-stop">Port Townsend, WA<span class="badge b-anch">anchor</span></td>
+        <td class="col-nights"><span class="nights-pill">12n</span></td>
+        <td class="col-drive">~2 hrs from Seattle via Kingston ferry</td>
+        <td class="col-detail">Washington's most Ojai-adjacent community. Victorian seaport — largest arts community in the state, intentional living, weekly farmers market, stunning water views. Ask for monthly Airbnb rate.</td>
+        <td class="col-house">Airbnb — ask for monthly</td>
+        <td class="col-cost"><span class="cost-paid">$1,800</span></td>
+      </tr><tr class="add-stop-row"><td colspan="9"><div class="add-stop-inner"><button class="add-stop-btn" onclick="addStop('pnw-10')"><span class="plus">＋</span> Add a new stop to this section</button></div></td></tr></tbody>
+      </table></div>
+    </div><div class="sec-block">
+      <div class="sec-label"><span class="sec-pip pip-leg"></span>Leg 7 — San Juan Islands<span class="sec-label-right">✏ click row to edit · click row to expand activities</span></div>
+      <div class="tbl-wrap"><table class="stop-tbl">
+        <thead><tr><th class="th-handle"></th><th class="th-edit"></th><th class="col-dates">Dates</th><th class="col-stop">Stop</th><th class="col-nights">Nights</th><th class="col-drive">Drive</th><th class="col-detail">Details</th><th class="col-house">Housing / Airbnb</th><th class="col-cost">Cost</th></tr></thead>
+        <tbody id="tbody-pnw-11"><tr class="data-row " onclick="rowClick('pnw-11',0,this,9)">
+        <td class="col-handle"><div class="drag-handle" draggable="true" style="display:none"><span></span><span></span><span></span></div></td>
+        <td class="col-edit"><button class="row-edit-btn" title="Edit this stop" onclick="openModal('pnw-11',0,event)">✏</button></td>
+        <td class="col-dates">Sun 9/14–Fri 9/19</td>
+        <td class="col-stop">San Juan Islands, WA<span class="badge b-now">⚠ book now</span></td>
+        <td class="col-nights"><span class="nights-pill">5n</span></td>
+        <td class="col-drive">Ferry from Anacortes (~1.5 hrs)</td>
+        <td class="col-detail">San Juan, Lopez, or Orcas Island. Washington State Ferry takes cars and pets. Book ferry reservation well in advance.</td>
+        <td class="col-house">Airbnb — book early</td>
+        <td class="col-cost"><span class="cost-paid">$900</span></td>
+      </tr><tr class="add-stop-row"><td colspan="9"><div class="add-stop-inner"><button class="add-stop-btn" onclick="addStop('pnw-11')"><span class="plus">＋</span> Add a new stop to this section</button></div></td></tr></tbody>
+      </table></div>
+    </div><div class="sec-block">
+      <div class="sec-label"><span class="sec-pip pip-return"></span>↩ Return — Southbound<span class="sec-label-right">✏ click row to edit · click row to expand activities</span></div>
+      <div class="tbl-wrap"><table class="stop-tbl">
+        <thead><tr><th class="th-handle"></th><th class="th-edit"></th><th class="col-dates">Dates</th><th class="col-stop">Stop</th><th class="col-nights">Nights</th><th class="col-drive">Drive</th><th class="col-detail">Details</th><th class="col-house">Housing / Airbnb</th><th class="col-cost">Cost</th></tr></thead>
+        <tbody id="tbody-pnw-12"><tr class="data-row " onclick="rowClick('pnw-12',0,this,9)">
+        <td class="col-handle"><div class="drag-handle" draggable="true" style="display:none"><span></span><span></span><span></span></div></td>
+        <td class="col-edit"><button class="row-edit-btn" title="Edit this stop" onclick="openModal('pnw-12',0,event)">✏</button></td>
+        <td class="col-dates">Fri 9/19–Tue 9/23</td>
+        <td class="col-stop">Olympia, WA</td>
+        <td class="col-nights"><span class="nights-pill">4n</span></td>
+        <td class="col-drive">~1.5 hrs from Anacortes</td>
+        <td class="col-detail">Intentional stop. One of the oldest farmers markets in WA. Capitol Lake, Puget Sound access, arts scene.</td>
+        <td class="col-house">Airbnb</td>
+        <td class="col-cost"><span class="cost-paid">$600</span></td>
+      </tr><tr class="data-row " onclick="rowClick('pnw-12',1,this,9)">
+        <td class="col-handle"><div class="drag-handle" draggable="true" style="display:none"><span></span><span></span><span></span></div></td>
+        <td class="col-edit"><button class="row-edit-btn" title="Edit this stop" onclick="openModal('pnw-12',1,event)">✏</button></td>
+        <td class="col-dates">Tue 9/23–Thu 9/25</td>
+        <td class="col-stop">Astoria, OR — OPTIONAL<span class="badge b-opt">optional</span></td>
+        <td class="col-nights"><span class="nights-pill">2n</span></td>
+        <td class="col-drive">~3 hrs from Olympia</td>
+        <td class="col-detail">Victorian fishing port at the mouth of the Columbia River. Add if time and energy allow.</td>
+        <td class="col-house">Airbnb if going</td>
+        <td class="col-cost"><span class="cost-paid">$350</span></td>
+      </tr><tr class="data-row " onclick="rowClick('pnw-12',2,this,9)">
+        <td class="col-handle"><div class="drag-handle" draggable="true" style="display:none"><span></span><span></span><span></span></div></td>
+        <td class="col-edit"><button class="row-edit-btn" title="Edit this stop" onclick="openModal('pnw-12',2,event)">✏</button></td>
+        <td class="col-dates">Tue 9/23–Sat 9/27</td>
+        <td class="col-stop">Eugene — Visit 2 (Pallas)</td>
+        <td class="col-nights"><span class="nights-pill">4n</span></td>
+        <td class="col-drive">~3 hrs from Olympia</td>
+        <td class="col-detail">Second stay with Pallas on the way back. Rest before the final coastal push south.</td>
+        <td class="col-house">Pallas — Free</td>
+        <td class="col-cost"><span class="cost-free">Free</span></td>
+      </tr><tr class="data-row " onclick="rowClick('pnw-12',3,this,9)">
+        <td class="col-handle"><div class="drag-handle" draggable="true" style="display:none"><span></span><span></span><span></span></div></td>
+        <td class="col-edit"><button class="row-edit-btn" title="Edit this stop" onclick="openModal('pnw-12',3,event)">✏</button></td>
+        <td class="col-dates">Sat 9/27–Tue 9/30</td>
+        <td class="col-stop">Crescent City / Smith River, CA</td>
+        <td class="col-nights"><span class="nights-pill">3n</span></td>
+        <td class="col-drive">~2.5 hrs from Eugene</td>
+        <td class="col-detail">Coastal 101 southbound. Smith River — most pristine river in the lower 48. Redwood National Park, Avenue of the Giants.</td>
+        <td class="col-house">Airbnb</td>
+        <td class="col-cost"><span class="cost-paid">$500</span></td>
+      </tr><tr class="data-row " onclick="rowClick('pnw-12',4,this,9)">
+        <td class="col-handle"><div class="drag-handle" draggable="true" style="display:none"><span></span><span></span><span></span></div></td>
+        <td class="col-edit"><button class="row-edit-btn" title="Edit this stop" onclick="openModal('pnw-12',4,event)">✏</button></td>
+        <td class="col-dates">Tue 9/30–Wed 10/1</td>
+        <td class="col-stop">Big Sur, CA</td>
+        <td class="col-nights"><span class="nights-pill">1n</span></td>
+        <td class="col-drive">~3.5 hrs from Crescent City</td>
+        <td class="col-detail">One night on the way home. A single well-chosen Airbnb or inn on the cliffs.</td>
+        <td class="col-house">Airbnb or inn</td>
+        <td class="col-cost"><span class="cost-paid">$350</span></td>
+      </tr><tr class="data-row " onclick="rowClick('pnw-12',5,this,9)">
+        <td class="col-handle"><div class="drag-handle" draggable="true" style="display:none"><span></span><span></span><span></span></div></td>
+        <td class="col-edit"><button class="row-edit-btn" title="Edit this stop" onclick="openModal('pnw-12',5,event)">✏</button></td>
+        <td class="col-dates">Wed 10/1–Thu 10/3</td>
+        <td class="col-stop">Drive to Ojai</td>
+        <td class="col-nights"><span class="nights-pill">1n</span></td>
+        <td class="col-drive">~2.5 hrs from Big Sur</td>
+        <td class="col-detail">Final transit day. Stop in SLO or Ventura if needed. Then home.</td>
+        <td class="col-house">Airbnb if needed</td>
+        <td class="col-cost"><span class="cost-paid">$150</span></td>
+      </tr><tr class="data-row " onclick="rowClick('pnw-12',6,this,9)">
+        <td class="col-handle"><div class="drag-handle" draggable="true" style="display:none"><span></span><span></span><span></span></div></td>
+        <td class="col-edit"><button class="row-edit-btn" title="Edit this stop" onclick="openModal('pnw-12',6,event)">✏</button></td>
+        <td class="col-dates">~Thu 10/3</td>
+        <td class="col-stop">Ojai / Venice, CA</td>
+        <td class="col-nights">—</td>
+        <td class="col-drive">—</td>
+        <td class="col-detail">Home. Trip complete. 🎉</td>
+        <td class="col-house">Home</td>
+        <td class="col-cost"><span class="cost-free">Free</span></td>
+      </tr><tr class="add-stop-row"><td colspan="9"><div class="add-stop-inner"><button class="add-stop-btn" onclick="addStop('pnw-12')"><span class="plus">＋</span> Add a new stop to this section</button></div></td></tr></tbody>
+      </table></div>
+    </div></div>
+    <div class="budget-row" style="margin-top:26px">
+      <div class="bcard">
+        <div class="bcard-title">PNW Budget Summary</div>
+        <div class="bline"><div class="bl">Housing budget (base)</div><div class="bv cb">$8,000 + flex</div></div>
+        <div class="bline"><div class="bl">Total estimated (all paid nights)</div><div class="bv">~$17,200</div></div>
+        <div class="bline b-free"><div class="bl">Free nights — Venice, Eugene ×2, Napa</div><div class="bv">~$2,000+ saved</div></div>
+        <div class="bline b-net"><div class="bl">Net estimate after free nights</div><div class="bv">~$15,200</div></div>
+      </div>
+      <div class="bcard">
+        <div class="bcard-title">Key Cost Levers</div>
+        <div class="lever-row"><span class="lever-label">Monthly rate at Port Townsend</span><span class="lever-val cg">Save $300–500</span></div>
+        <div class="lever-row"><span class="lever-label">Incline Village July 4th (peak)</span><span class="lever-val cam">⚠ Book now</span></div>
+        <div class="lever-row"><span class="lever-label">Monthly rate at Bend/Sunriver</span><span class="lever-val cam">Save 20–30%</span></div>
+        <div class="lever-row"><span class="lever-label">Napa friends confirm</span><span class="lever-val cg">Saves ~$400</span></div>
+        <div class="lever-row"><span class="lever-label">Idaho stops</span><span class="lever-val cg">Very affordable</span></div>
+      </div>
+    </div>
+    <div class="notes-box"><strong>Routing notes:</strong> Shasta→Eugene (~4 hrs) is an intentional exception to the 3-hr preference. CdA→Winthrop via Spokane is ~3.5 hrs — consider a night in Spokane. Olympia→Eugene direct is ~3.5 hrs — break near Salem or Albany, OR. San Juan Islands ferry books fast — reserve well in advance. Port Townsend via Kingston ferry (Seattle) or Keystone ferry (Whidbey Island). Ask for monthly Airbnb rates at Port Townsend and Bend (20–30% less). Confirm pet policy with Napa friends. Vancouver Island possible if extending — requires passports + pet health certificates.</div>
+  </div>
+
+  <!-- CHECKLIST -->
+  <div id="tab-book" class="tab-content" style="display: none;">
+    <div class="checklist"><div class="cl-title">🚨 Book Immediately — Time Sensitive</div><div id="checklist-urgent"><div class="cl-item"><input type="checkbox" onchange="saveCheck('checklist-urgent',0,this.checked)"><div class="cl-label ">Incline Village, NV — Lake Tahoe July 4th week (peak pricing, $350–600+/night)</div><div class="cl-cost">~$1,400</div></div><div class="cl-item"><input type="checkbox" onchange="saveCheck('checklist-urgent',1,this.checked)"><div class="cl-label ">San Juan Islands ferry reservation — Washington State Ferry (books up fast in summer)</div><div class="cl-cost">Book early</div></div><div class="cl-item"><input type="checkbox" onchange="saveCheck('checklist-urgent',2,this.checked)"><div class="cl-label ">Joshua Tree, CA Airbnb — June 19–22</div><div class="cl-cost">~$600</div></div></div></div>
+    <div class="checklist"><div class="cl-title">📌 Still To Book</div><div id="checklist-tbd"><div class="cl-item"><input type="checkbox" onchange="saveCheck('checklist-tbd',0,this.checked)"><div class="cl-label ">Three Rivers, CA (Sequoia gateway) — June 22–24</div><div class="cl-cost">~$350</div></div><div class="cl-item"><input type="checkbox" onchange="saveCheck('checklist-tbd',1,this.checked)"><div class="cl-label ">Santa Cruz, CA — June 24–26</div><div class="cl-cost">~$400</div></div><div class="cl-item"><input type="checkbox" onchange="saveCheck('checklist-tbd',2,this.checked)"><div class="cl-label ">SF / Marin / Stinson Beach — June 26–July 1 (5 nights)</div><div class="cl-cost">~$1,250</div></div><div class="cl-item"><input type="checkbox" onchange="saveCheck('checklist-tbd',3,this.checked)"><div class="cl-label ">Russian River / Guerneville — July 1–4</div><div class="cl-cost">~$525</div></div><div class="cl-item"><input type="checkbox" onchange="saveCheck('checklist-tbd',4,this.checked)"><div class="cl-label ">Napa Valley — confirm pet policy with friends (July 4–6)</div><div class="cl-cost">Free if confirmed</div></div><div class="cl-item"><input type="checkbox" onchange="saveCheck('checklist-tbd',5,this.checked)"><div class="cl-label ">Nevada City, CA — July 6–11 (5 nights)</div><div class="cl-cost">~$750</div></div><div class="cl-item"><input type="checkbox" onchange="saveCheck('checklist-tbd',6,this.checked)"><div class="cl-label ">Mount Shasta, CA — July 15–21 (6 nights)</div><div class="cl-cost">~$800</div></div><div class="cl-item"><input type="checkbox" onchange="saveCheck('checklist-tbd',7,this.checked)"><div class="cl-label ">Ashland, OR — July 21–22 (routing overnight)</div><div class="cl-cost">~$175</div></div><div class="cl-item"><input type="checkbox" onchange="saveCheck('checklist-tbd',8,this.checked)"><div class="cl-label ">Bend / Sunriver, OR — July 28–Aug 7 (ask for weekly rate)</div><div class="cl-cost">~$1,500</div></div><div class="cl-item"><input type="checkbox" onchange="saveCheck('checklist-tbd',9,this.checked)"><div class="cl-label ">Twin Falls, ID — Aug 7–10</div><div class="cl-cost">~$400</div></div><div class="cl-item"><input type="checkbox" onchange="saveCheck('checklist-tbd',10,this.checked)"><div class="cl-label ">Boise, ID — Aug 10–17 (contact off-grid comedian friend)</div><div class="cl-cost">~$1,050</div></div><div class="cl-item"><input type="checkbox" onchange="saveCheck('checklist-tbd',11,this.checked)"><div class="cl-label ">McCall, ID — Aug 17–21</div><div class="cl-cost">~$700</div></div><div class="cl-item"><input type="checkbox" onchange="saveCheck('checklist-tbd',12,this.checked)"><div class="cl-label ">Coeur d'Alene, ID — Aug 21–25</div><div class="cl-cost">~$700</div></div><div class="cl-item"><input type="checkbox" onchange="saveCheck('checklist-tbd',13,this.checked)"><div class="cl-label ">Winthrop, WA — Aug 25–29</div><div class="cl-cost">~$700</div></div><div class="cl-item"><input type="checkbox" onchange="saveCheck('checklist-tbd',14,this.checked)"><div class="cl-label ">Seattle, WA — Aug 29–Sep 2</div><div class="cl-cost">~$900</div></div><div class="cl-item"><input type="checkbox" onchange="saveCheck('checklist-tbd',15,this.checked)"><div class="cl-label ">Port Townsend, WA — Sep 2–14 (ask for monthly rate: 20–30% off)</div><div class="cl-cost">~$1,800</div></div><div class="cl-item"><input type="checkbox" onchange="saveCheck('checklist-tbd',16,this.checked)"><div class="cl-label ">Olympia, WA — Sep 19–23</div><div class="cl-cost">~$600</div></div><div class="cl-item"><input type="checkbox" onchange="saveCheck('checklist-tbd',17,this.checked)"><div class="cl-label ">Crescent City / Smith River, CA — Sep 27–30</div><div class="cl-cost">~$500</div></div><div class="cl-item"><input type="checkbox" onchange="saveCheck('checklist-tbd',18,this.checked)"><div class="cl-label ">Big Sur, CA — Sep 30–Oct 1</div><div class="cl-cost">~$350</div></div><div class="cl-item"><input type="checkbox" onchange="saveCheck('checklist-tbd',19,this.checked)"><div class="cl-label ">Portsmouth, NH Airbnb (Northeast trip)</div><div class="cl-cost">TBD</div></div><div class="cl-item"><input type="checkbox" onchange="saveCheck('checklist-tbd',20,this.checked)"><div class="cl-label ">Sag Harbor / Hamptons Airbnb — June 10–11</div><div class="cl-cost">TBD</div></div></div></div>
+    <div class="checklist"><div class="cl-title">✅ Confirmed</div><div id="checklist-done"><div class="cl-item"><input type="checkbox" checked="" onchange="saveCheck('checklist-done',0,this.checked)"><div class="cl-label done">Montvale, NJ — Bat Mitzvah hotel (May 15–16)</div><div class="cl-cost">Confirmed</div></div><div class="cl-item"><input type="checkbox" checked="" onchange="saveCheck('checklist-done',1,this.checked)"><div class="cl-label done">Elmore, VT (Stowe) — Chic Farm House, May 29–June 2</div><div class="cl-cost">$1,251</div></div><div class="cl-item"><input type="checkbox" checked="" onchange="saveCheck('checklist-done',2,this.checked)"><div class="cl-label done">Newfane, VT (Brattleboro) — Pondside Retreat, June 2–5</div><div class="cl-cost">$776</div></div></div></div>
+    <div class="notes-box"><strong>Ferry reminders:</strong> San Juan Islands Washington State Ferry books up fast in summer — reserve car + pets well in advance from Anacortes. Port Townsend via Kingston ferry from Seattle or Keystone ferry from Whidbey Island. Vancouver Island requires passports + pet health certificates.</div>
+  </div>
+
+  <!-- CALENDAR -->
+  <div id="tab-cal" class="tab-content" style="display: none;">
+    <div class="cal-wrap">
+      <div class="cal-hdr">
+        <button class="cal-nav-btn" id="cal-prev" onclick="calNav(-1)" disabled="">‹</button>
+        <div class="cal-month-label" id="cal-month-label">May 2026</div>
+        <button class="cal-nav-btn" id="cal-next" onclick="calNav(1)">›</button>
+      </div>
+      <div class="cal-grid" id="cal-grid"><div class="cal-dow">Sun</div><div class="cal-dow">Mon</div><div class="cal-dow">Tue</div><div class="cal-dow">Wed</div><div class="cal-dow">Thu</div><div class="cal-dow">Fri</div><div class="cal-dow">Sat</div><div class="cal-day cal-empty"></div><div class="cal-day cal-empty"></div><div class="cal-day cal-empty"></div><div class="cal-day cal-empty"></div><div class="cal-day cal-empty"></div><div class="cal-day cal-off"><div class="cal-day-num">1</div></div><div class="cal-day cal-off"><div class="cal-day-num">2</div></div><div class="cal-day cal-off"><div class="cal-day-num">3</div></div><div class="cal-day cal-off"><div class="cal-day-num">4</div></div><div class="cal-day cal-off"><div class="cal-day-num">5</div></div><div class="cal-day cal-off"><div class="cal-day-num">6</div></div><div class="cal-day cal-off"><div class="cal-day-num">7</div></div><div class="cal-day cal-off"><div class="cal-day-num">8</div></div><div class="cal-day cal-off"><div class="cal-day-num">9</div></div><div class="cal-day cal-off"><div class="cal-day-num">10</div></div><div class="cal-day cal-off"><div class="cal-day-num">11</div></div><div class="cal-day cal-off"><div class="cal-day-num">12</div></div><div class="cal-day cal-off"><div class="cal-day-num">13</div></div><div class="cal-day" style="background:rgba(34,85,184,.11);border-color:rgba(34,85,184,.22)">
+        <div class="cal-day-num" style="color:var(--blue)">14</div>
+        <div class="cal-stop-nm" style="color:var(--blue)">Fly JFK</div>
+      </div><div class="cal-day" style="background:rgba(34,85,184,.11);border-color:rgba(34,85,184,.22)">
+        <div class="cal-day-num" style="color:var(--blue)">15</div>
+        <div class="cal-stop-nm" style="color:var(--blue)">Montvale</div>
+      </div><div class="cal-day" style="background:rgba(34,85,184,.11);border-color:rgba(34,85,184,.22)">
+        <div class="cal-day-num" style="color:var(--blue)">16</div>
+        <div class="cal-stop-nm" style="color:var(--blue)">Montvale</div>
+      </div><div class="cal-day" style="background:rgba(34,85,184,.11);border-color:rgba(34,85,184,.22)">
+        <div class="cal-day-num" style="color:var(--blue)">17</div>
+        <div class="cal-stop-nm" style="color:var(--blue)">Centerport</div>
+      </div><div class="cal-day" style="background:rgba(34,85,184,.11);border-color:rgba(34,85,184,.22)">
+        <div class="cal-day-num" style="color:var(--blue)">18</div>
+        <div class="cal-stop-nm" style="color:var(--blue)">Centerport</div>
+      </div><div class="cal-day" style="background:rgba(34,85,184,.11);border-color:rgba(34,85,184,.22)">
+        <div class="cal-day-num" style="color:var(--blue)">19</div>
+        <div class="cal-stop-nm" style="color:var(--blue)">Centerport</div>
+      </div><div class="cal-day" style="background:rgba(34,85,184,.11);border-color:rgba(34,85,184,.22)">
+        <div class="cal-day-num" style="color:var(--blue)">20</div>
+        <div class="cal-stop-nm" style="color:var(--blue)">Centerport</div>
+      </div><div class="cal-day" style="background:rgba(34,85,184,.11);border-color:rgba(34,85,184,.22)">
+        <div class="cal-day-num" style="color:var(--blue)">21</div>
+        <div class="cal-stop-nm" style="color:var(--blue)">Centerport</div>
+      </div><div class="cal-day" style="background:rgba(34,85,184,.11);border-color:rgba(34,85,184,.22)">
+        <div class="cal-day-num" style="color:var(--blue)">22</div>
+        <div class="cal-stop-nm" style="color:var(--blue)">Centerport</div>
+      </div><div class="cal-day" style="background:rgba(34,85,184,.11);border-color:rgba(34,85,184,.22)">
+        <div class="cal-day-num cal-today-num" style="color:#fff">23</div>
+        <div class="cal-stop-nm" style="color:var(--blue)">Lloyd Harbor</div>
+      </div><div class="cal-day" style="background:rgba(34,85,184,.11);border-color:rgba(34,85,184,.22)">
+        <div class="cal-day-num" style="color:var(--blue)">24</div>
+        <div class="cal-stop-nm" style="color:var(--blue)">Lloyd Harbor</div>
+      </div><div class="cal-day" style="background:rgba(34,85,184,.11);border-color:rgba(34,85,184,.22)">
+        <div class="cal-day-num" style="color:var(--blue)">25</div>
+        <div class="cal-stop-nm" style="color:var(--blue)">Lloyd Harbor</div>
+      </div><div class="cal-day" style="background:rgba(34,85,184,.11);border-color:rgba(34,85,184,.22)">
+        <div class="cal-day-num" style="color:var(--blue)">26</div>
+        <div class="cal-stop-nm" style="color:var(--blue)">Lloyd Harbor</div>
+      </div><div class="cal-day" style="background:rgba(26,120,104,.11);border-color:rgba(26,120,104,.22)">
+        <div class="cal-day-num" style="color:var(--teal)">27</div>
+        <div class="cal-stop-nm" style="color:var(--teal)">Becket</div>
+      </div><div class="cal-day" style="background:rgba(26,120,104,.11);border-color:rgba(26,120,104,.22)">
+        <div class="cal-day-num" style="color:var(--teal)">28</div>
+        <div class="cal-stop-nm" style="color:var(--teal)">Becket</div>
+      </div><div class="cal-day" style="background:rgba(26,120,104,.11);border-color:rgba(26,120,104,.22)">
+        <div class="cal-day-num" style="color:var(--teal)">29</div>
+        <div class="cal-stop-nm" style="color:var(--teal)">Becket</div>
+      </div><div class="cal-day" style="background:rgba(26,120,104,.11);border-color:rgba(26,120,104,.22)">
+        <div class="cal-day-num" style="color:var(--teal)">30</div>
+        <div class="cal-stop-nm" style="color:var(--teal)">Elmore</div>
+      </div><div class="cal-day" style="background:rgba(26,120,104,.11);border-color:rgba(26,120,104,.22)">
+        <div class="cal-day-num" style="color:var(--teal)">31</div>
+        <div class="cal-stop-nm" style="color:var(--teal)">Elmore</div>
+      </div></div>
+      <div class="cal-legend" id="cal-legend"><div class="cal-legend-item"><div class="cal-legend-swatch" style="background:rgba(34,85,184,.11);border:1px solid rgba(34,85,184,.22)"></div>NE Arrival &amp; Events</div><div class="cal-legend-item"><div class="cal-legend-swatch" style="background:rgba(26,120,104,.11);border:1px solid rgba(26,120,104,.22)"></div>NE Road Trip</div><div class="cal-legend-item"><div class="cal-legend-swatch" style="background:rgba(107,74,174,.11);border:1px solid rgba(107,74,174,.22)"></div>NE Return</div><div class="cal-legend-item"><div class="cal-legend-swatch" style="background:rgba(34,85,184,.11);border:1px solid rgba(34,85,184,.22)"></div>Pre-Trip (LA)</div><div class="cal-legend-item"><div class="cal-legend-swatch" style="background:rgba(217,104,48,.11);border:1px solid rgba(217,104,48,.22)"></div>PNW Legs</div><div class="cal-legend-item"><div class="cal-legend-swatch" style="background:rgba(46,125,82,.11);border:1px solid rgba(46,125,82,.22)"></div>Anchor Stops</div><div class="cal-legend-item"><div class="cal-legend-swatch" style="background:rgba(107,74,174,.11);border:1px solid rgba(107,74,174,.22)"></div>Return South</div></div>
+    </div>
+  </div>
+
+</main>
+
+<!-- Edit modal -->
+<div class="edit-modal-wrap" id="edit-modal" style="display: none;" onclick="closeModalBg(event)">
+  <div class="edit-modal">
+    <button class="close-modal" onclick="document.getElementById('edit-modal').style.display='none'">✕</button>
+    <h3 id="modal-title">Edit Stop</h3>
+    <div class="modal-section-lbl">Stop details</div>
+
+    <div class="field-group">
+      <div class="field-wrap"><label>Stop / Location Name</label><input id="f-stop" type="text" placeholder="e.g. Joshua Tree, CA"></div>
+      <div class="field-wrap"><label>Dates</label><input id="f-dates" type="text" placeholder="e.g. Fri 6/19–Mon 6/22"></div>
+    </div>
+    <div class="field-group single">
+      <div class="field-wrap"><label>Details / Notes</label><textarea id="f-details" rows="3" placeholder="What's happening here — hikes, events, highlights…"></textarea></div>
+    </div>
+
+    <div class="modal-divider"></div>
+    <div class="modal-section-lbl">Logistics &amp; Cost</div>
+
+    <div class="field-group">
+      <div class="field-wrap"><label>Airbnb / Housing</label><input id="f-housing" type="text" placeholder="e.g. Airbnb, Hotel, Free, Friends"></div>
+      <div class="field-wrap"><label>Cost ($)</label><input id="f-cost" type="number" placeholder="0" min="0" step="1"></div>
+    </div>
+    <div class="field-group">
+      <div class="field-wrap"><label>Drive Time</label><input id="f-drive" type="text" placeholder="e.g. ~2.5 hrs from LA"></div>
+      <div class="field-wrap"><label>Nights</label><input id="f-nights" type="number" placeholder="e.g. 3" min="0"></div>
+    </div>
+
+    <div class="modal-divider"></div>
+    <div class="modal-section-lbl">Booking Status</div>
+
+    <div class="field-group single">
+      <div class="field-wrap"><label>Airbnb / Listing URL</label><input id="f-airbnb" type="url" placeholder="https://airbnb.com/rooms/… (paste link here)"></div>
+    </div>
+    <label class="booked-toggle-wrap" for="f-booked">
+      <input type="checkbox" id="f-booked" class="booked-cb">
+      <span class="booked-toggle-lbl">✓ Mark this location as booked / confirmed</span>
+    </label>
+
+    <div class="modal-actions">
+      <button class="btn btn-danger" onclick="deleteStop()">🗑 Delete stop</button>
+      <div class="modal-actions-right">
+        <button class="btn" onclick="document.getElementById('edit-modal').style.display='none'">Cancel</button>
+        <button class="btn btn-dark" onclick="saveModal()">Save stop ✓</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+// ── ACTIVITIES LOOKUP ─────────────────────────────────
+const ACTS = {
+  'Centerport': [
+    {t:'swim', n:'Centerport Harbor Beach', d:'Local family swim spot, calm water'},
+    {t:'hike', n:'Caumsett State Historic Preserve', d:'Stunning bluffs, beaches, and birding — 1,520 acres'},
+    {t:'scenic', n:'Cold Spring Harbor', d:'Charming waterfront village with galleries & cafés nearby'},
+  ],
+  'Montvale, NJ': [
+    {t:'eat', n:'Park West Tavern', d:'Farm-forward American, locally sourced ingredients'},
+    {t:'other', n:'NYC Day Trip', d:'~30 min to Midtown via NJ Transit'},
+  ],
+  'Lloyd Harbor (Wayside)': [
+    {t:'hike', n:'Caumsett State Park', d:'Largest undeveloped coastal area on Long Island — spectacular'},
+    {t:'swim', n:'Target Rock National Wildlife Refuge Beach', d:'Secluded and rare on Long Island'},
+    {t:'scenic', n:'Lloyd Neck lanes', d:'Quiet roads, water views, historic estates — great morning walk'},
+  ],
+  'Lloyd Harbor & Centerport': [
+    {t:'hike', n:'Caumsett State Park', d:'Largest undeveloped coastal area on Long Island'},
+    {t:'swim', n:'Centerport Harbor', d:'Family swim spot, calm water'},
+    {t:'eat', n:'Roots Bistro Gourmand (Huntington)', d:'Farm-to-table, excellent seasonal menu'},
+    {t:'market', n:'Huntington Village Farmers Market', d:'Saturday mornings, year-round'},
+  ],
+  'Becket, MA': [
+    {t:'eat', n:'Prairie Whale (Great Barrington)', d:'James Beard–recognized farm-to-table — one of the best in New England'},
+    {t:'eat', n:'Baba Louie\'s (Great Barrington)', d:'Wood-fired sourdough pizza, beloved local spot'},
+    {t:'hike', n:'October Mountain State Forest', d:'28,000-acre forest with AT crossing — excellent trails'},
+    {t:'swim', n:'Housatonic River', d:'Fly fishing + cool summer swimming holes throughout the Berkshires'},
+    {t:'culture', n:'Kripalu Center for Yoga & Health', d:'World-renowned wellness center — day passes available'},
+    {t:'culture', n:'Barrington Stage Company', d:'Tony Award-winning regional theater in Pittsfield'},
+    {t:'market', n:'Great Barrington Farmers Market', d:'Saturday mornings May–Nov — one of the best in western MA'},
+  ],
+  'Elmore, VT (Stowe/Burlington)': [
+    {t:'market', n:'Stowe Farmers Market', d:'Sundays late May–Oct — widely considered Vermont\'s best'},
+    {t:'eat', n:'Hen of the Wood (Waterbury)', d:'Vermont\'s finest farm-to-table restaurant — seasonal, locally sourced'},
+    {t:'hike', n:'Nebraska Notch Trail', d:'5.4 mi round trip — waterfall, cliff bands, classic Stowe'},
+    {t:'swim', n:'Sterling Falls Gorge', d:'Natural swimming hole near Morrisville, 15 min from Stowe'},
+    {t:'hike', n:'Stowe Recreation Path', d:'5.5 mi paved riverside path — beautiful morning run or bike'},
+    {t:'other', n:'Cold Hollow Cider Mill', d:'Fresh-pressed cider and legendary donuts — must stop in Waterbury'},
+  ],
+  'Newfane, VT (Brattleboro)': [
+    {t:'market', n:'Brattleboro Farmers Market', d:'Saturday year-round — one of the finest in all of New England'},
+    {t:'eat', n:'Whetstone Station', d:'Riverside brewpub with great food and beer garden on the Connecticut River'},
+    {t:'swim', n:'West River swimming holes', d:'Multiple access points near Newfane and Townshend'},
+    {t:'hike', n:'Black Mountain, Dummerston', d:'Short steep climb, panoramic views of the Connecticut River Valley'},
+    {t:'wine', n:'Hermit Thrush Brewery', d:'Vermont craft cider and sour ales — excellent'},
+  ],
+  'Sag Harbor / Hamptons': [
+    {t:'swim', n:'Long Beach, Sag Harbor', d:'Dog-friendly, less crowded than ocean-facing beaches'},
+    {t:'eat', n:'The Corner Bar', d:'Classic Sag Harbor gathering spot, good food and character'},
+    {t:'market', n:'Southampton Farmers Market', d:'Saturday mornings, June–Oct — excellent Hamptons produce'},
+    {t:'scenic', n:'Sag Harbor Village walk', d:'Historic whaling village — beautiful Federal-style architecture'},
+    {t:'wine', n:'South Fork wineries', d:'Channing Daughters, Wolffer Estate nearby for tastings'},
+  ],
+  'Land in LA — Venice': [
+    {t:'eat', n:'Gjusta Bakery & Deli', d:'Venice institution — arrive early for pastries, smoked fish, grain bowls'},
+    {t:'eat', n:'Rose Café', d:'Airy brunch and coffee, beloved neighborhood spot'},
+    {t:'swim', n:'Santa Monica Beach', d:'Wide beach with bike path — great for decompression'},
+    {t:'market', n:'Venice Farmers Market', d:'Fridays year-round on Venice Blvd — excellent produce'},
+  ],
+  'Joshua Tree, CA': [
+    {t:'hike', n:'Skull Rock Nature Trail', d:'1.7 mi loop through surreal boulder formations'},
+    {t:'hike', n:'Barker Dam Trail', d:'1.3 mi easy hike to petroglyphs and reflective pool'},
+    {t:'scenic', n:'Keys View Overlook', d:'Sweeping Coachella Valley and Salton Sea panorama'},
+    {t:'eat', n:'Pappy & Harriet\'s Pioneertown Palace', d:'Legendary roadhouse — BBQ, live music, incredible atmosphere'},
+    {t:'eat', n:'Natural Sisters Café', d:'Organic, plant-forward, great smoothies in JTree village'},
+    {t:'other', n:'Stargazing at Cap Rock', d:'One of the darkest skies in Southern CA — Milky Way visible'},
+    {t:'other', n:'Pioneertown', d:'1940s western movie set turned living community'},
+  ],
+  'Three Rivers, CA': [
+    {t:'hike', n:'General Sherman Tree', d:'Largest tree on earth by volume — humbling'},
+    {t:'hike', n:'Moro Rock Trail', d:'0.5 mi, 350-step granite dome — 360° views'},
+    {t:'swim', n:'Roaring River Falls', d:'Short hike to a mist-filled gorge with excellent swimming hole'},
+    {t:'swim', n:'Kaweah River', d:'Local swimming holes right near Three Rivers — warm in summer'},
+    {t:'hike', n:'Congress Trail Loop', d:'2 mi through the greatest sequoia grove in the world'},
+  ],
+  'Santa Cruz, CA': [
+    {t:'swim', n:'Natural Bridges State Beach', d:'Tide pools, monarch butterfly sanctuary, great swimming'},
+    {t:'swim', n:'Seabright Beach', d:'Calmer bay side — less surf, good for dogs in off-season'},
+    {t:'hike', n:'Henry Cowell Redwoods — Big Trees Loop', d:'1.5 mi through 1,500-year-old redwoods'},
+    {t:'eat', n:'Bantam', d:'Wood-fired, hyper-seasonal — one of the best farm-to-table spots on this route'},
+    {t:'eat', n:'Penny Ice Creamery', d:'Craft small-batch ice cream — beloved local institution'},
+    {t:'market', n:'Santa Cruz Certified Farmers Market', d:'Wednesday & Saturday downtown'},
+  ],
+  'SF / Marin / Stinson Beach': [
+    {t:'swim', n:'Stinson Beach', d:'Best swimming beach in the Bay Area — 3.5 miles of sand, lifeguards in summer'},
+    {t:'hike', n:'Tennessee Valley Trail', d:'4 mi round trip through Marin Headlands to a wild beach'},
+    {t:'hike', n:'Dipsea Trail', d:'Historic 7.1 mi trail Marin to Stinson — one of America\'s most iconic'},
+    {t:'eat', n:'Osteria Stellina (Point Reyes Station)', d:'Outstanding farm-to-table Italian — worth the drive'},
+    {t:'eat', n:'Rustic Bakery (Mill Valley)', d:'Exceptional pastries and lunch in a beautiful Marin setting'},
+    {t:'market', n:'Marin Civic Center Farmers Market', d:'Thursdays & Sundays year-round — one of California\'s best'},
+    {t:'scenic', n:'Bolinas & Olema', d:'Off-the-map communities — Ojai-adjacent energy, local art'},
+  ],
+  'Russian River / Guerneville': [
+    {t:'swim', n:'Johnsons Beach', d:'Classic Guerneville river beach — the heart of the community'},
+    {t:'swim', n:'Sunset Beach', d:'Quieter, locals\' favorite swimming hole on the Russian River'},
+    {t:'eat', n:'Applewood Restaurant', d:'Farm-to-table dining in a charming inn setting surrounded by redwoods'},
+    {t:'eat', n:'Big Bottom Market', d:'Beloved local deli — famous biscuits, great sandwiches'},
+    {t:'wine', n:'Russian River Pinot country', d:'Bedrock, Merry Edwards, Hartford Family — excellent tasting rooms'},
+    {t:'hike', n:'Armstrong Redwoods State Reserve', d:'Ancient old-growth grove 2 mi from town — free to walk'},
+    {t:'market', n:'Guerneville Farmers Market', d:'Thursdays May–Oct, downtown plaza'},
+  ],
+  'Napa Valley': [
+    {t:'eat', n:'Oxbow Public Market', d:'Napa\'s best artisan food hall — ideal casual lunch or grazing'},
+    {t:'eat', n:'Farmstead at Long Meadow Ranch', d:'Stunning farm-to-table using estate-grown ingredients'},
+    {t:'wine', n:'Frog\'s Leap Winery', d:'Organic, dry-farmed — excellent Sauvignon Blanc'},
+    {t:'wine', n:'Hall Wines', d:'Striking sculpture garden + world-class Cabernet Sauvignon'},
+    {t:'market', n:'Napa Downtown Farmers Market', d:'Tuesday & Saturday year-round mornings'},
+  ],
+  'Nevada City, CA': [
+    {t:'swim', n:'Edwards Crossing — South Yuba River', d:'Best swimming hole in NorCal — wide granite pools, jade-green river'},
+    {t:'swim', n:'Purdon Crossing', d:'Another legendary South Yuba spot — less crowded'},
+    {t:'hike', n:'South Yuba River State Park Trail', d:'39 miles of river trail — world class year-round hiking'},
+    {t:'eat', n:'New Moon Café', d:'Farm-to-table pioneer, organic & local — Nevada City institution'},
+    {t:'market', n:'Nevada City Farmers Market', d:'Saturday year-round + Tuesday June–Oct'},
+    {t:'other', n:'Victorian Downtown', d:'Gold rush-era architecture, antiques, galleries, independent bookshops'},
+  ],
+  'Incline Village, NV': [
+    {t:'swim', n:'Kings Beach, CA', d:'Best swimming on Lake Tahoe\'s north shore — sandy, clear, warm in summer'},
+    {t:'swim', n:'Speedboat Beach (Incline)', d:'Quieter local spot right in Incline Village'},
+    {t:'hike', n:'Tahoe Meadows Rim Trail', d:'Beautiful sub-alpine meadow loop — wildflowers and lake views'},
+    {t:'hike', n:'Tunnel Creek / Flume Trail', d:'Epic ridge trail with jaw-dropping lake views'},
+    {t:'scenic', n:'Sand Harbor State Park', d:'Crystal-clear turquoise water and granite boulders — stunning'},
+    {t:'eat', n:'Lone Eagle Grille', d:'Lakefront dining at Hyatt Regency — spectacular views'},
+  ],
+  'Mount Shasta, CA': [
+    {t:'swim', n:'Castle Lake', d:'Pristine mountain lake at 5,440 ft — cold and perfect for a morning dip'},
+    {t:'hike', n:'Heart Lake Trail', d:'2 mi each way to alpine lake with Shasta reflections — magical'},
+    {t:'hike', n:'Bunny Flat to Helen Lake', d:'6 mi round trip — stunning upper mountain terrain and views'},
+    {t:'hot', n:'Stewart Mineral Springs', d:'Historic thermal mineral baths + sauna + cold plunge — 15 min from town'},
+    {t:'eat', n:'Berryvale Grocery & Café', d:'Best natural foods store on the route — exceptional deli'},
+    {t:'other', n:'Headwaters Spring', d:'Sacred spring of pure mountain water — bring bottles'},
+    {t:'swim', n:'McCloud River Falls', d:'Three-tiered waterfall system 30 min east — spectacular'},
+  ],
+  'Ashland, OR': [
+    {t:'eat', n:'Standing Stone Brewing', d:'Excellent brewpub — great food, house-brewed beers, lively atmosphere'},
+    {t:'eat', n:'Lark\'s Home Kitchen Cuisine', d:'Farm-to-table using Rogue Valley produce'},
+    {t:'hike', n:'Grizzly Peak Trail', d:'5 mi round trip — sweeping views of the Rogue Valley and Cascades'},
+    {t:'culture', n:'Oregon Shakespeare Festival', d:'World-class outdoor theater — check schedule'},
+    {t:'other', n:'Lithia Park', d:'120-acre park through the center of town — beautiful creek walk'},
+  ],
+  'Eugene, OR': [
+    {t:'market', n:'Eugene Saturday Market', d:'Legendary — largest continuous outdoor crafts market in the US, May–Nov'},
+    {t:'swim', n:'Blue River Reservoir', d:'45 min east on the McKenzie — popular swimming, camping'},
+    {t:'swim', n:'McKenzie River swimming holes', d:'Crystal-clear glacial water, multiple access points'},
+    {t:'hike', n:'Spencer Butte Trail', d:'5 mi round trip — sweeping Cascades and valley views'},
+    {t:'eat', n:'Noisette', d:'Outstanding farm-to-table in an intimate charming setting'},
+    {t:'other', n:'Prince Pückler\'s Ice Cream', d:'Eugene institution since 1975 — handmade, classic flavors'},
+  ],
+  'Bend / Sunriver, OR': [
+    {t:'swim', n:'Deschutes River Float', d:'Old Mill to Riverbend Park — classic Bend summer tubing/swimming'},
+    {t:'hike', n:'Tumalo Falls', d:'2.7 mi round trip to a stunning 97-ft waterfall'},
+    {t:'hike', n:'Smith Rock — Misery Ridge Loop', d:'4 mi, jaw-dropping volcanic canyon, world-class climbing area'},
+    {t:'scenic', n:'Cascade Lakes Scenic Byway', d:'100-mile drive past 13 alpine lakes — extraordinary on a clear day'},
+    {t:'eat', n:'Zydeco Kitchen & Cocktails', d:'Farm-to-table with Pacific Northwest ingredients — top choice in Bend'},
+    {t:'market', n:'Bend Farmers Market', d:'Wednesday & Saturday downtown — excellent local produce and vendors'},
+    {t:'other', n:'Hood River Day Trip', d:'1.5 hrs — world-class windsurfing, fruit loop, Columbia Gorge views'},
+  ],
+  'Twin Falls, ID': [
+    {t:'scenic', n:'Shoshone Falls', d:'"Niagara of the West" — at 212 ft, it\'s taller than Niagara Falls'},
+    {t:'swim', n:'Dierkes Lake', d:'Volcanic crater lake with rope swings and cliff jumping'},
+    {t:'hike', n:'Snake River Canyon Rim Trail', d:'5 mi rim trail with dramatic 486-ft canyon views'},
+    {t:'scenic', n:'Perrine Bridge', d:'The only legal year-round BASE jumping site in the US'},
+    {t:'eat', n:'The Anchor Bistro', d:'Farm-forward menu — best food in Twin Falls'},
+  ],
+  'Boise, ID': [
+    {t:'swim', n:'Boise River Greenbelt', d:'Barber Park to Ann Morrison — 25 mi of river access, excellent summer swimming'},
+    {t:'hike', n:'Table Rock Trail', d:'4 mi round trip with panoramic views over the whole Boise Valley'},
+    {t:'eat', n:'Leku Ona (Basque Block)', d:'Authentic Basque pintxos, cider pours, lamb chops — totally unique'},
+    {t:'eat', n:'Fork Restaurant', d:'Idaho farm-to-table pioneer using local ranchers and growers'},
+    {t:'market', n:'Capital City Public Market', d:'Saturday year-round downtown — one of Idaho\'s best farmers markets'},
+    {t:'culture', n:'Basque Block', d:'Historic cultural district unique to Boise — fascinating and lively'},
+  ],
+  'McCall, ID': [
+    {t:'swim', n:'Payette Lake — Rotary Park Beach', d:'Pristine mountain lake with a clean sandy beach'},
+    {t:'hike', n:'Brundage Mountain trails', d:'Alpine meadows, wildflowers, and Payette Lake views'},
+    {t:'hot', n:'Burgdorf Hot Springs', d:'Remote natural hot springs ~1 hr north of McCall — truly magical'},
+    {t:'eat', n:'Rupert\'s at Hotel McCall', d:'Farm-to-table with Payette Lake views — best dining in town'},
+  ],
+  'Coeur d\'Alene, ID': [
+    {t:'swim', n:'Independence Point Beach', d:'Downtown swimming beach — sandy, warm in summer, lifeguarded'},
+    {t:'hike', n:'Tubbs Hill Nature Trails', d:'3 mi loop on a rocky peninsula with stunning lake views'},
+    {t:'scenic', n:'Lake Coeur d\'Alene Cruise', d:'Classic scenic boat tour — turquoise water, forested shores'},
+    {t:'eat', n:'The Landings at Hagadone', d:'Waterfront Pacific Northwest cuisine — beautiful setting'},
+    {t:'market', n:'Coeur d\'Alene Farmers Market', d:'Wednesday & Saturday at City Park'},
+  ],
+  'Winthrop, WA': [
+    {t:'swim', n:'Methow River swimming holes', d:'Multiple access points — cold, clear, and stunning'},
+    {t:'hike', n:'Sun Mountain Lodge trail system', d:'200+ miles of trails through the Methow Valley'},
+    {t:'hike', n:'Washington Pass Overlook', d:'Short walk to incredible North Cascades peak views'},
+    {t:'scenic', n:'North Cascades Highway (WA-20)', d:'One of the great American scenic drives'},
+    {t:'eat', n:'Old Schoolhouse Brewery', d:'The best pub in the Methow Valley — great food, local ales'},
+  ],
+  'Seattle, WA': [
+    {t:'market', n:'Pike Place Market', d:'Historic daily market — fresh fish, flowers, produce'},
+    {t:'market', n:'Ballard Farmers Market', d:'Sunday year-round — Seattle\'s best neighborhood market'},
+    {t:'swim', n:'Golden Gardens Park', d:'Puget Sound saltwater beach — bonfires allowed at sundown'},
+    {t:'eat', n:'Sitka & Spruce', d:'Outstanding Pacific Northwest farm-to-table on Capitol Hill — a must'},
+    {t:'hike', n:'Discovery Park Loop Trail', d:'2.8 mi coastal loop with lighthouse, bluffs, and beach access'},
+    {t:'culture', n:'Capitol Hill neighborhood', d:'Best food, coffee, music, and bookstores in Seattle'},
+  ],
+  'Port Townsend, WA': [
+    {t:'market', n:'Port Townsend Farmers Market', d:'Saturday year-round — best small-town farmers market in Washington'},
+    {t:'swim', n:'Fort Worden State Park beach', d:'Rocky saltwater beach, tide pools, bald eagles overhead'},
+    {t:'hike', n:'Kah Tai Lagoon Nature Park', d:'Peaceful in-town lagoon trail, excellent birding'},
+    {t:'eat', n:'Alchemy Bistro & Wine Bar', d:'Farm-to-table with local Dungeness crab and oysters'},
+    {t:'eat', n:'The Public Coast Brewing', d:'Waterfront pub with excellent food and Puget Sound views'},
+    {t:'culture', n:'Victorian architecture walking tour', d:'Most intact Victorian seaport in the western United States'},
+  ],
+  'San Juan Islands, WA': [
+    {t:'swim', n:'Obstruction Pass State Park (Orcas)', d:'Remote cove, calm water, great kayaking'},
+    {t:'swim', n:'Cascade Lake (Orcas Island)', d:'Freshwater lake in Moran State Park — warm in summer'},
+    {t:'hike', n:'Mount Constitution (Orcas)', d:'2,409 ft summit — the best views in the entire San Juan archipelago'},
+    {t:'eat', n:'Doe Bay Café (Orcas)', d:'Farm-to-table, whole animal cooking in a spectacular setting'},
+    {t:'scenic', n:'Whale watching', d:'Orca sightings common June–Sept throughout San Juan waters'},
+  ],
+  'Olympia, WA': [
+    {t:'market', n:'Olympia Farmers Market', d:'Thursdays & Saturdays Apr–Dec — one of the oldest farmers markets in Washington'},
+    {t:'swim', n:'Tumwater Falls Park', d:'Scenic falls on the Deschutes River — swimming holes below'},
+    {t:'hike', n:'Nisqually National Wildlife Refuge', d:'30 min north — stunning tidal delta boardwalk, 300+ bird species'},
+    {t:'eat', n:'The Lemon Grass', d:'Pacific Rim cuisine, farm-fresh — beloved Olympia institution'},
+    {t:'eat', n:'Bread Peddler', d:'Outstanding wood-fired bakery + café — best breakfast in Olympia'},
+  ],
+  'Astoria, OR — OPTIONAL': [
+    {t:'eat', n:'Buoy Beer Company', d:'Brewpub on the Columbia River waterfront — excellent food and views'},
+    {t:'eat', n:'Blue Scorcher Bakery', d:'Worker-owned organic bakery — outstanding breads and pastries'},
+    {t:'scenic', n:'Astoria Column', d:'164-ft column with panoramic views of the Columbia and Pacific'},
+    {t:'hike', n:'Fort Stevens State Park', d:'Beach, dunes, and the wreck of the Peter Iredale'},
+  ],
+  'Eugene — Visit 2 (Pallas)': [
+    {t:'market', n:'Eugene Saturday Market', d:'Still running in September/October'},
+    {t:'swim', n:'McKenzie River swimming holes', d:'Still swimmable into early October'},
+    {t:'eat', n:'Noisette', d:'Outstanding farm-to-table — great for a return visit'},
+    {t:'hike', n:'Spencer Butte Trail', d:'Fall foliage on the summit ridge — excellent in late September'},
+  ],
+  'Crescent City / Smith River, CA': [
+    {t:'swim', n:'Smith River', d:'Most pristine river in the lower 48 — crystal clear, jade green'},
+    {t:'hike', n:'Stout Grove (Jedediah Smith Redwoods)', d:'Tallest old-growth redwood grove — otherworldly'},
+    {t:'hike', n:'Boy Scout Tree Trail', d:'6 mi round trip to a 1,000-year-old double-trunked redwood'},
+    {t:'hike', n:'Fern Canyon, Prairie Creek Redwoods', d:'Primordial 50-ft fern-covered canyon walls'},
+    {t:'eat', n:'Chart Room Restaurant', d:'Waterfront dining — fresh Dungeness crab and Pacific salmon'},
+  ],
+  'Big Sur, CA': [
+    {t:'hike', n:'McWay Falls Overlook', d:'80-ft waterfall onto a pristine turquoise beach — iconic California'},
+    {t:'hike', n:'Pfeiffer Beach Trail', d:'Short walk to purple sand beach with dramatic sea arch'},
+    {t:'eat', n:'Nepenthe Restaurant', d:'Clifftop terrace, Ambrosiaburger, and sweeping Pacific views since 1949'},
+    {t:'eat', n:'Big Sur Bakery & Restaurant', d:'Wood-fired breakfast and lunch with farm-fresh ingredients'},
+    {t:'scenic', n:'Bixby Creek Bridge', d:'The most photographed bridge in California'},
+  ],
+  'Drive to Ojai': [
+    {t:'eat', n:'Foremost Wine Co. (SLO)', d:'Great stop in San Luis Obispo for lunch and a glass'},
+    {t:'scenic', n:'Morro Bay', d:'The dramatic volcanic rock and estuary — worth a coffee stop'},
+  ],
+  'Ojai / Venice, CA': [
+    {t:'other', n:'You made it! 🎉', d:'Trip complete. October in Ojai is stunning — olive harvest, warm evenings, the "pink moment"'},
+    {t:'eat', n:'Farmer & Cook (Ojai)', d:'The organic farm-to-table pioneer of Ojai — best meal to come home to'},
+    {t:'market', n:'Ojai Certified Farmers Market', d:'Sunday year-round — limoneira citrus country'},
+    {t:'hike', n:'Shelf Road Trail', d:'Views of the Ojai Valley, Topa Topa bluffs, and the Channel Islands'},
+  ],
+};
+
+// ── DATA ─────────────────────────────────────────────
+const NE_ARRIVAL=[
+  {dates:"Thu 5/14",        stop:"Fly JFK → Centerport",      details:"Uber to Centerport, sleep the night, drop the pets off. Take Subaru or rent a car.",    housing:"N/A",               cost:null, nights:null, booked:true, s:"2026-05-14",e:"2026-05-14"},
+  {dates:"Fri–Sat 5/15–16", stop:"Montvale, NJ",              details:"Bat Mitzvah (2 Nights)",                                                                 housing:"Hotel (confirmed)", cost:0,free:true,confirmed:true,booked:true,nights:2,s:"2026-05-15",e:"2026-05-16"},
+  {dates:"Sun–Thu 5/17–22", stop:"Centerport",                details:"Mom's house — settle in with pets",                                                      housing:"Free",              cost:0,free:true,booked:true,nights:5,s:"2026-05-17",e:"2026-05-22"},
+  {dates:"Sat–Mon 5/23–25", stop:"Lloyd Harbor (Wayside)",    details:"Dad's house, w/o pets · Trevgela Engagement Party Sunday · Memorial Day",                housing:"Free",              cost:0,free:true,booked:true,nights:2,s:"2026-05-23",e:"2026-05-25"},
+  {dates:"Mon 5/26",        stop:"Lloyd Harbor → Centerport", details:"Memorial Day · Pick Up Rental Car in Woodbury",                                          housing:"Free",              cost:0,free:true,booked:true,nights:null,s:"2026-05-26",e:"2026-05-26"},
+];
+const NE_ROADTRIP=[
+  {dates:"Tues–Fri 5/27–29",  stop:"Becket, MA",                    drive:"~3 hrs",   details:"Big Bass Lane | 4 Nights · Barrington + Kripalu + Fly Fishing",                               housing:"Free",   cost:0,free:true,booked:true,nights:4,s:"2026-05-27",e:"2026-05-29"},
+  {dates:"Fri 5/29–Tues 6/2", stop:"Elmore, VT (Stowe/Burlington)", drive:"~3.5 hrs", details:"Chic Farm House | 4 Nights · Sunday Farmer's Market in Stowe · 45 min drive to Burlington",   housing:"Airbnb", cost:1251,booked:true,nights:4,s:"2026-05-29",e:"2026-06-02"},
+  {dates:"Tues 6/2–Fri 6/5",  stop:"Newfane, VT (Brattleboro)",     drive:"~2 hrs",   details:"Pondside Retreat | 3 Nights · Saturday Farmer's Market",                                      housing:"Airbnb", cost:776,booked:true,nights:3,s:"2026-06-02",e:"2026-06-05"},
+  {dates:"Fri 6/5–Sun 6/7",   stop:"Becket, MA → Long Island",      drive:"~2 hrs",   details:"Spend Fri/Sat at Becket solo, drive back to LI Sunday for Concert",                           housing:"Free",   cost:0,free:true,booked:true,nights:2,s:"2026-06-05",e:"2026-06-07"},
+];
+const NE_RETURN=[
+  {dates:"Mon 6/8–Weds 6/10",    stop:"Lloyd Harbor / Centerport",  details:"Drop off Rental Car · Regroup in Centerport",                                 housing:"Free",cost:0,free:true,booked:true,nights:2,s:"2026-06-08",e:"2026-06-10"},
+  {dates:"Weds 6/10–Thurs 6/11", stop:"Sag Harbor / Hamptons",      details:"1.5 Hour Drive · Leave Animals",                                              housing:"TBD", cost:null,nights:1,s:"2026-06-10",e:"2026-06-11"},
+  {dates:"Fri 6/12–Weds 6/17",   stop:"Lloyd Harbor & Centerport",  details:"Return Rental Car in Huntington · Last Stint with Parents | 5 Nights",       housing:"Free",cost:0,free:true,booked:true,nights:5,s:"2026-06-12",e:"2026-06-17"},
+];
+const PNW_SECTIONS=[
+  {type:"pre",label:"Pre-Trip — Los Angeles / Venice",stops:[
+    {dates:"Wed 6/17",stop:"Land in LA — Venice",nights:2,drive:"—",details:"Return from Northeast trip. Settle in, regroup before the big road trip begins.",housing:"Venice home",cost:0,free:true,booked:true,s:"2026-06-17",e:"2026-06-19"},
+    {dates:"Fri 6/19",stop:"Depart for Joshua Tree",nights:null,drive:"~2.5 hrs",details:"Pack the car and animals, head east into the desert.",housing:"—",cost:null,s:"2026-06-19",e:"2026-06-19"},
+  ]},
+  {type:"leg",label:"Leg 1 — California Desert",stops:[
+    {dates:"Fri 6/19–Mon 6/22",stop:"Joshua Tree, CA",nights:3,drive:"~2.5 hrs from LA",details:"Desert decompression. Joshua Tree National Park, Pioneertown, Pappy & Harriet's. Great stargazing and sunrise hikes.",housing:"Airbnb needed",cost:600,bookNow:true,s:"2026-06-19",e:"2026-06-22"},
+  ]},
+  {type:"leg",label:"Leg 2 — Sierra Nevada",stops:[
+    {dates:"Mon 6/22–Wed 6/24",stop:"Three Rivers, CA",nights:2,drive:"~2.5 hrs from JTree",details:"Sequoia / Kings Canyon gateway. General Sherman Tree, Giant Forest, Moro Rock. Roaring River swim spots.",housing:"Airbnb",cost:350,s:"2026-06-22",e:"2026-06-24"},
+    {dates:"Wed 6/24–Fri 6/26",stop:"Santa Cruz, CA",nights:2,drive:"~3 hrs via CA-99/CA-152",details:"Surf town layover. Boardwalk, Henry Cowell Redwoods, San Lorenzo River swim spots, farmers market.",housing:"Airbnb",cost:400,s:"2026-06-24",e:"2026-06-26"},
+  ]},
+  {type:"anchor",label:"⚓ Anchor 1 — SF / Marin / Stinson Beach",stops:[
+    {dates:"Fri 6/26–Wed 7/1",stop:"SF / Marin / Stinson Beach",nights:5,drive:"~1.5 hrs from Santa Cruz",details:"Stinson Beach and Bolinas corridor — most Ojai-adjacent community on this route. Tennessee Valley trails, Mill Valley, Fairfax. Farmers market in Marin.",housing:"Airbnb",cost:1250,anchor:true,s:"2026-06-26",e:"2026-07-01"},
+  ]},
+  {type:"leg",label:"Leg 3 — Wine Country & N. California Foothills",stops:[
+    {dates:"Wed 7/1–Sat 7/4",  stop:"Russian River / Guerneville",nights:3,drive:"~1.5 hrs from Marin",   details:"Funky redwood river town. Swimming holes on the Russian River. Arts community, farmers market.",housing:"Airbnb",cost:525,s:"2026-07-01",e:"2026-07-04"},
+    {dates:"Sat 7/4–Mon 7/6",  stop:"Napa Valley",               nights:2,drive:"~1 hr from Guerneville",details:"Stay with friends (confirm pet policy). World-class food and wine.",housing:"Friends' place (TBD)",cost:0,free:true,s:"2026-07-04",e:"2026-07-06"},
+    {dates:"Mon 7/6–Sat 7/11", stop:"Nevada City, CA",           nights:5,drive:"~1.5 hrs from Napa",    details:"Best 'could we live here' stop in CA. Victorian arts town, South Yuba River State Park — best swimming holes in NorCal. Saturday farmers market.",housing:"Airbnb",cost:750,s:"2026-07-06",e:"2026-07-11"},
+    {dates:"Sat 7/11–Tue 7/15",stop:"Incline Village, NV",       nights:4,drive:"~1 hr from Nevada City",details:"Splurge stop. Nevada side of Lake Tahoe — Sand Harbor, Kings Beach, crystal blue water.",housing:"Airbnb (splurge)",cost:1400,bookNow:true,s:"2026-07-11",e:"2026-07-15"},
+  ]},
+  {type:"leg",label:"Leg 4 — Northern California",stops:[
+    {dates:"Tue 7/15–Mon 7/21",stop:"Mount Shasta, CA",nights:6,drive:"~2.5 hrs from Incline", details:"Spiritual mountain town — intentional community, Castle Lake, Headwaters spring. Strong 'could we live here' candidate.",housing:"Airbnb",cost:800,s:"2026-07-15",e:"2026-07-21"},
+    {dates:"Mon 7/21–Tue 7/22",stop:"Ashland, OR",    nights:1,drive:"~1.5 hrs from Shasta",  details:"Routing overnight only. Shakespeare festival town — good dinner, rest, easy drive into Eugene.",housing:"Airbnb",cost:175,s:"2026-07-21",e:"2026-07-22"},
+  ]},
+  {type:"anchor",label:"⚓ Anchor 2 — Eugene, OR — Visit 1 (Pallas) 🎂",stops:[
+    {dates:"Tue 7/22–Mon 7/28",stop:"Eugene, OR",nights:6,drive:"~1 hr from Ashland",details:"Stay with Pallas. Arrive just before her birthday on 7/23. Eugene Saturday Market — legendary. McKenzie River swimming holes. Rest, regroup, celebrate.",housing:"Pallas — Free",cost:0,free:true,booked:true,anchor:true,s:"2026-07-22",e:"2026-07-28"},
+  ]},
+  {type:"anchor",label:"⚓ Anchor 3 — Bend / Sunriver, OR",stops:[
+    {dates:"Mon 7/28–Thu 8/7",stop:"Bend / Sunriver, OR",nights:10,drive:"~2.5 hrs from Eugene",details:"Ojai of the Pacific Northwest. 10 nights. Deschutes River float, Smith Rock State Park, Cascade Lakes Scenic Byway. Hood River day trip (1.5 hrs).",housing:"Airbnb — one rental",cost:1500,anchor:true,s:"2026-07-28",e:"2026-08-07"},
+  ]},
+  {type:"leg",label:"Leg 5 — Idaho",stops:[
+    {dates:"Thu 8/7–Sun 8/10",  stop:"Twin Falls, ID",    nights:3,drive:"~3 hrs from Bend via US-20/I-84",  details:"Shoshone Falls — larger than Niagara, one of the great swim spots. Snake River Canyon, Perrine Bridge (BASE jumping).",housing:"Airbnb",cost:400,s:"2026-08-07",e:"2026-08-10"},
+    {dates:"Sun 8/10–Sun 8/17", stop:"Boise, ID",          nights:7,drive:"~2 hrs from Twin Falls",           details:"Arts scene, Boise River Greenbelt, Basque Block, exceptional food. Off-grid comedian friend's land nearby.",housing:"Airbnb",cost:1050,s:"2026-08-10",e:"2026-08-17"},
+    {dates:"Sun 8/17–Thu 8/21", stop:"McCall, ID",          nights:4,drive:"~2.5 hrs from Boise via Hwy 55",  details:"Hidden gem. Payette Lake — pristine mountain swim spot. Feels like Tahoe 30 years ago.",housing:"Airbnb",cost:700,s:"2026-08-17",e:"2026-08-21"},
+    {dates:"Thu 8/21–Mon 8/25", stop:"Coeur d'Alene, ID",  nights:4,drive:"~2.5 hrs from McCall via US-95 N",details:"Beautiful lake town on the Idaho panhandle. Lake Coeur d'Alene is stunning. Charming walkable downtown, watersports.",housing:"Airbnb",cost:700,s:"2026-08-21",e:"2026-08-25"},
+  ]},
+  {type:"leg",label:"Leg 6 — Washington State",stops:[
+    {dates:"Mon 8/25–Fri 8/29",stop:"Winthrop, WA",nights:4,drive:"~3.5 hrs from CdA via Spokane/WA-20",details:"North Cascades Highway — one of the most spectacular drives in America. Old west aesthetic, Methow River swim spots, wildflower meadows.",housing:"Airbnb",cost:700,s:"2026-08-25",e:"2026-08-29"},
+    {dates:"Fri 8/29–Tue 9/2", stop:"Seattle, WA",  nights:4,drive:"~3 hrs from Winthrop",               details:"City stop. Pike Place Market, Capitol Hill, waterfront, music scene. Gateway to Port Townsend ferry.",housing:"Airbnb",cost:900,s:"2026-08-29",e:"2026-09-02"},
+  ]},
+  {type:"anchor",label:"⚓ Anchor 4 — Port Townsend, WA",stops:[
+    {dates:"Tue 9/2–Sun 9/14",stop:"Port Townsend, WA",nights:12,drive:"~2 hrs from Seattle via Kingston ferry",details:"Washington's most Ojai-adjacent community. Victorian seaport — largest arts community in the state, intentional living, weekly farmers market, stunning water views. Ask for monthly Airbnb rate.",housing:"Airbnb — ask for monthly",cost:1800,anchor:true,s:"2026-09-02",e:"2026-09-14"},
+  ]},
+  {type:"leg",label:"Leg 7 — San Juan Islands",stops:[
+    {dates:"Sun 9/14–Fri 9/19",stop:"San Juan Islands, WA",nights:5,drive:"Ferry from Anacortes (~1.5 hrs)",details:"San Juan, Lopez, or Orcas Island. Washington State Ferry takes cars and pets. Book ferry reservation well in advance.",housing:"Airbnb — book early",cost:900,bookNow:true,s:"2026-09-14",e:"2026-09-19"},
+  ]},
+  {type:"return",label:"↩ Return — Southbound",stops:[
+    {dates:"Fri 9/19–Tue 9/23", stop:"Olympia, WA",                   nights:4,drive:"~1.5 hrs from Anacortes",    details:"Intentional stop. One of the oldest farmers markets in WA. Capitol Lake, Puget Sound access, arts scene.",housing:"Airbnb",cost:600,s:"2026-09-19",e:"2026-09-23"},
+    {dates:"Tue 9/23–Thu 9/25", stop:"Astoria, OR — OPTIONAL",         nights:2,drive:"~3 hrs from Olympia",        details:"Victorian fishing port at the mouth of the Columbia River. Add if time and energy allow.",housing:"Airbnb if going",cost:350,optional:true,s:"2026-09-23",e:"2026-09-25"},
+    {dates:"Tue 9/23–Sat 9/27", stop:"Eugene — Visit 2 (Pallas)",      nights:4,drive:"~3 hrs from Olympia",        details:"Second stay with Pallas on the way back. Rest before the final coastal push south.",housing:"Pallas — Free",cost:0,free:true,booked:true,s:"2026-09-23",e:"2026-09-27"},
+    {dates:"Sat 9/27–Tue 9/30", stop:"Crescent City / Smith River, CA",nights:3,drive:"~2.5 hrs from Eugene",       details:"Coastal 101 southbound. Smith River — most pristine river in the lower 48. Redwood National Park.",housing:"Airbnb",cost:500,s:"2026-09-27",e:"2026-09-30"},
+    {dates:"Tue 9/30–Wed 10/1", stop:"Big Sur, CA",                    nights:1,drive:"~3.5 hrs from Crescent City",details:"One night on the way home. A single well-chosen Airbnb or inn on the cliffs.",housing:"Airbnb or inn",cost:350,s:"2026-09-30",e:"2026-10-01"},
+    {dates:"Wed 10/1–Thu 10/3", stop:"Drive to Ojai",                  nights:1,drive:"~2.5 hrs from Big Sur",      details:"Final transit day. Stop in SLO or Ventura if needed. Then home.",housing:"Airbnb if needed",cost:150,s:"2026-10-01",e:"2026-10-03"},
+    {dates:"~Thu 10/3",         stop:"Ojai / Venice, CA",              nights:null,drive:"—",                       details:"Home. Trip complete. 🎉",housing:"Home",cost:0,free:true,booked:true,s:"2026-10-03",e:"2026-10-03"},
+  ]},
+];
+const BOOK_URGENT=[
+  {label:"Incline Village, NV — Lake Tahoe July 4th week (peak pricing, $350–600+/night)",cost:"~$1,400",done:false},
+  {label:"San Juan Islands ferry reservation — Washington State Ferry (books up fast in summer)",cost:"Book early",done:false},
+  {label:"Joshua Tree, CA Airbnb — June 19–22",cost:"~$600",done:false},
+];
+const BOOK_TBD=[
+  {label:"Three Rivers, CA (Sequoia gateway) — June 22–24",cost:"~$350",done:false},
+  {label:"Santa Cruz, CA — June 24–26",cost:"~$400",done:false},
+  {label:"SF / Marin / Stinson Beach — June 26–July 1 (5 nights)",cost:"~$1,250",done:false},
+  {label:"Russian River / Guerneville — July 1–4",cost:"~$525",done:false},
+  {label:"Napa Valley — confirm pet policy with friends (July 4–6)",cost:"Free if confirmed",done:false},
+  {label:"Nevada City, CA — July 6–11 (5 nights)",cost:"~$750",done:false},
+  {label:"Mount Shasta, CA — July 15–21 (6 nights)",cost:"~$800",done:false},
+  {label:"Ashland, OR — July 21–22 (routing overnight)",cost:"~$175",done:false},
+  {label:"Bend / Sunriver, OR — July 28–Aug 7 (ask for weekly rate)",cost:"~$1,500",done:false},
+  {label:"Twin Falls, ID — Aug 7–10",cost:"~$400",done:false},
+  {label:"Boise, ID — Aug 10–17 (contact off-grid comedian friend)",cost:"~$1,050",done:false},
+  {label:"McCall, ID — Aug 17–21",cost:"~$700",done:false},
+  {label:"Coeur d'Alene, ID — Aug 21–25",cost:"~$700",done:false},
+  {label:"Winthrop, WA — Aug 25–29",cost:"~$700",done:false},
+  {label:"Seattle, WA — Aug 29–Sep 2",cost:"~$900",done:false},
+  {label:"Port Townsend, WA — Sep 2–14 (ask for monthly rate: 20–30% off)",cost:"~$1,800",done:false},
+  {label:"Olympia, WA — Sep 19–23",cost:"~$600",done:false},
+  {label:"Crescent City / Smith River, CA — Sep 27–30",cost:"~$500",done:false},
+  {label:"Big Sur, CA — Sep 30–Oct 1",cost:"~$350",done:false},
+  {label:"Portsmouth, NH Airbnb (Northeast trip)",cost:"TBD",done:false},
+  {label:"Sag Harbor / Hamptons Airbnb — June 10–11",cost:"TBD",done:false},
+];
+const BOOK_DONE=[
+  {label:"Montvale, NJ — Bat Mitzvah hotel (May 15–16)",cost:"Confirmed",done:true},
+  {label:"Elmore, VT (Stowe) — Chic Farm House, May 29–June 2",cost:"$1,251",done:true},
+  {label:"Newfane, VT (Brattleboro) — Pondside Retreat, June 2–5",cost:"$776",done:true},
+];
+
+// ── STATE ─────────────────────────────────────────────
+let DATA = {
+  'ne-arrival': NE_ARRIVAL.map(s=>({...s})),
+  'ne-roadtrip': NE_ROADTRIP.map(s=>({...s})),
+  'ne-return': NE_RETURN.map(s=>({...s})),
+};
+PNW_SECTIONS.forEach((sec,i)=>{
+  DATA[`pnw-${i}`] = sec.stops.map(s=>({...s}));
+});
+
+function loadState(){
+  Object.keys(DATA).forEach(k=>{
+    const saved=localStorage.getItem('data_'+k);
+    if(saved){try{DATA[k]=JSON.parse(saved);}catch(e){}}
+  });
+}
+function saveState(){
+  Object.keys(DATA).forEach(k=>{
+    localStorage.setItem('data_'+k,JSON.stringify(DATA[k]));
+  });
+}
+
+// ── HELPERS ───────────────────────────────────────────
+function pd(s){const[y,m,d]=s.split('-').map(Number);return new Date(y,m-1,d);}
+function st(s,e){const t=new Date();t.setHours(0,0,0,0);const ed=pd(e);ed.setHours(23,59,59);return t<pd(s)?'future':t>ed?'past':'current';}
+function fc(s){if(s.free||s.cost===0)return'<span class="cost-free">Free</span>';if(s.cost===null)return'<span class="cost-tbd">TBD</span>';return`<span class="cost-paid">$${s.cost.toLocaleString()}</span>`;}
+function bgs(s){let b='';if(s.booked)b+='<span class="badge b-booked">✓ booked</span>';else if(s.confirmed)b+='<span class="badge b-conf">confirmed</span>';if(s.bookNow&&!s.booked)b+='<span class="badge b-now">⚠ book now</span>';if(s.optional)b+='<span class="badge b-opt">optional</span>';if(s.anchor)b+='<span class="badge b-anch">anchor</span>';return b;}
+function handle(){return`<td class="col-handle"><div class="drag-handle" draggable="true" style="display:none"><span></span><span></span><span></span></div></td>`;}
+function escH(s){return(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');}
+function houseCell(s){const h=s.housing||'—';if(s.airbnb)return`<a class="house-link" href="${escH(s.airbnb)}" target="_blank" rel="noopener" onclick="event.stopPropagation()" title="Open Airbnb listing">${escH(h)} ↗</a>`;return escH(h)||'—';}
+
+// ── DRAG AND DROP ─────────────────────────────────────
+let dragState=null;
+function initDrag(tbody,dataKey){
+  function getRowIdx(row){return Array.from(tbody.querySelectorAll('tr.data-row')).indexOf(row);}
+  tbody.addEventListener('dragstart',e=>{
+    const dh=e.target.closest('.drag-handle');
+    if(!dh)return;
+    const row=dh.closest('tr');
+    dragState={dataKey,idx:getRowIdx(row),row};
+    row.classList.add('dragging');
+    e.dataTransfer.effectAllowed='move';
+    e.dataTransfer.setData('text/plain','');
+  });
+  tbody.addEventListener('dragend',()=>{
+    tbody.querySelectorAll('tr').forEach(r=>r.classList.remove('dragging','drag-over-top','drag-over-bottom'));
+    dragState=null;
+  });
+  tbody.addEventListener('dragover',e=>{
+    e.preventDefault();
+    if(!dragState)return;
+    const row=e.target.closest('tr.data-row');
+    if(!row||row===dragState.row)return;
+    tbody.querySelectorAll('tr').forEach(r=>r.classList.remove('drag-over-top','drag-over-bottom'));
+    const rect=row.getBoundingClientRect();
+    row.classList.add(e.clientY<rect.top+rect.height/2?'drag-over-top':'drag-over-bottom');
+  });
+  tbody.addEventListener('dragleave',e=>{
+    if(!e.currentTarget.contains(e.relatedTarget))
+      tbody.querySelectorAll('tr').forEach(r=>r.classList.remove('drag-over-top','drag-over-bottom'));
+  });
+  tbody.addEventListener('drop',e=>{
+    e.preventDefault();
+    if(!dragState||dragState.dataKey!==dataKey)return;
+    const row=e.target.closest('tr.data-row');
+    if(!row||row===dragState.row)return;
+    const rows=Array.from(tbody.querySelectorAll('tr.data-row'));
+    let ti=rows.indexOf(row);
+    const after=e.clientY>=row.getBoundingClientRect().top+row.getBoundingClientRect().height/2;
+    if(after)ti++;
+    const arr=DATA[dataKey];
+    const [moved]=arr.splice(dragState.idx,1);
+    arr.splice(dragState.idx<ti?ti-1:ti,0,moved);
+    saveState();renderAll();toast('Stop moved ✓');
+  });
+}
+
+// ── DETAIL PANEL (activities + friends) ──────────────
+let _rowClickTimer=null;
+const TYPE_ICON={eat:'🍽',swim:'🏊',hike:'🥾',market:'🛒',wine:'🍷',hot:'♨️',scenic:'🌄',culture:'🎨',other:'✨'};
+const TYPE_BG={eat:'var(--acc-lt)',swim:'var(--blt)',hike:'var(--glt)',market:'var(--alt)',wine:'var(--plt)',hot:'var(--tlt)',scenic:'var(--blt)',culture:'var(--plt)',other:'var(--acc-lt)'};
+
+function rowClick(dataKey,idx,row,colspan){
+  if(_rowClickTimer){clearTimeout(_rowClickTimer);_rowClickTimer=null;return;}
+  _rowClickTimer=setTimeout(()=>{_rowClickTimer=null;toggleDetail(dataKey,idx,row,colspan);},220);
+}
+function toggleDetail(dataKey,idx,row,colspan){
+  const pid=`dp-${dataKey}-${idx}`;
+  const ex=document.getElementById(pid);
+  if(ex){ex.remove();row.classList.remove('row-open');return;}
+  const stop=DATA[dataKey][idx];
+  const panel=buildDetailPanel(dataKey,idx,stop,colspan,pid);
+  row.classList.add('row-open');
+  row.insertAdjacentElement('afterend',panel);
+}
+
+function buildDetailPanel(dataKey,idx,stop,colspan,pid){
+  const acts=ACTS[stop.stop]||[];
+  const fkey=`friends_${dataKey}_${idx}`;
+  let friends=[];try{friends=JSON.parse(localStorage.getItem(fkey)||'[]');}catch(e){}
+  const actHTML=acts.length>0
+    ?acts.map(a=>`<div class="act-item"><div class="act-icon" style="background:${TYPE_BG[a.t]||'var(--acc-lt)'}">${TYPE_ICON[a.t]||'✨'}</div><div><div class="act-name">${a.n}</div>${a.d?`<div class="act-desc">${a.d}</div>`:''}</div></div>`).join('')
+    :'<div class="act-empty">No recommendations yet — edit this stop to add notes.</div>';
+  const chipsHTML=friends.length>0
+    ?friends.map((f,fi)=>`<span class="friend-chip">${escH(f)} <button onclick="removeFriend('${fkey}','${pid}',${fi})">✕</button></span>`).join('')
+    :'<span class="friend-empty">No friends added yet</span>';
+  const tr=document.createElement('tr');tr.id=pid;tr.className='detail-row';
+  tr.innerHTML=`<td colspan="${colspan}"><div class="detail-panel"><div class="detail-grid"><div><div class="detail-section-label">🗺 Activities &amp; Local Picks</div><div class="act-list">${actHTML}</div></div><div><div class="detail-section-label">👥 Friends to See in ${escH(stop.stop)}</div><div class="friend-chips" id="chips-${pid}">${chipsHTML}</div><div class="friend-add-row"><input type="text" id="finput-${pid}" placeholder="Friend's name…" onkeydown="if(event.key==='Enter'){event.preventDefault();addFriend('${fkey}','${pid}');}"><button class="friend-btn" onclick="addFriend('${fkey}','${pid}')">+ Add</button></div></div></div></div></td>`;
+  return tr;
+}
+
+function addFriend(fkey,pid){
+  const inp=document.getElementById('finput-'+pid);if(!inp)return;
+  const name=inp.value.trim();if(!name)return;
+  let f=[];try{f=JSON.parse(localStorage.getItem(fkey)||'[]');}catch(e){}
+  f.push(name);localStorage.setItem(fkey,JSON.stringify(f));inp.value='';refreshChips(fkey,pid,f);toast(name+' added ✓');
+}
+function removeFriend(fkey,pid,idx){
+  let f=[];try{f=JSON.parse(localStorage.getItem(fkey)||'[]');}catch(e){}
+  const r=f.splice(idx,1)[0];localStorage.setItem(fkey,JSON.stringify(f));refreshChips(fkey,pid,f);toast((r||'Friend')+' removed');
+}
+function refreshChips(fkey,pid,friends){
+  const el=document.getElementById('chips-'+pid);if(!el)return;
+  el.innerHTML=friends.length>0
+    ?friends.map((f,fi)=>`<span class="friend-chip">${escH(f)} <button onclick="removeFriend('${fkey}','${pid}',${fi})">✕</button></span>`).join('')
+    :'<span class="friend-empty">No friends added yet</span>';
+}
+
+// ── EDIT MODAL ────────────────────────────────────────
+let modalCtx=null;
+function openModal(dataKey,idx,e){
+  if(e){e.stopPropagation();}
+  // Cancel any pending single-click so edit button doesn't also toggle panel
+  if(_rowClickTimer){clearTimeout(_rowClickTimer);_rowClickTimer=null;}
+  const s=DATA[dataKey][idx];
+  modalCtx={dataKey,idx};
+  document.getElementById('modal-title').textContent='Edit Stop';
+  document.getElementById('f-stop').value=s.stop||'';
+  document.getElementById('f-dates').value=s.dates||'';
+  document.getElementById('f-housing').value=s.housing||'';
+  document.getElementById('f-cost').value=s.cost!==null&&s.cost!==undefined?s.cost:'';
+  document.getElementById('f-drive').value=s.drive||'';
+  document.getElementById('f-nights').value=s.nights!==null&&s.nights!==undefined?s.nights:'';
+  document.getElementById('f-details').value=s.details||'';
+  document.getElementById('f-airbnb').value=s.airbnb||'';
+  document.getElementById('f-booked').checked=!!(s.booked||s.free);
+  document.getElementById('edit-modal').style.display='flex';
+}
+function closeModalBg(e){
+  if(e.target===document.getElementById('edit-modal'))
+    document.getElementById('edit-modal').style.display='none';
+}
+function saveModal(){
+  if(!modalCtx)return;
+  const s=DATA[modalCtx.dataKey][modalCtx.idx];
+  s.stop    =document.getElementById('f-stop').value;
+  s.dates   =document.getElementById('f-dates').value;
+  s.housing =document.getElementById('f-housing').value;
+  const cv  =document.getElementById('f-cost').value;
+  s.cost    =cv===''?null:parseFloat(cv);
+  s.free    =s.cost===0&&(s.housing.toLowerCase().includes('free')||s.housing.toLowerCase().includes('pallas')||s.housing.toLowerCase().includes('venice')||s.housing.toLowerCase().includes('home'));
+  s.drive   =document.getElementById('f-drive').value;
+  const nv  =document.getElementById('f-nights').value;
+  s.nights  =nv===''?null:parseInt(nv);
+  s.details =document.getElementById('f-details').value;
+  s.airbnb  =document.getElementById('f-airbnb').value.trim();
+  s.booked  =document.getElementById('f-booked').checked;
+  saveState();renderAll();
+  document.getElementById('edit-modal').style.display='none';
+  toast('Stop saved ✓');
+}
+function deleteStop(){
+  if(!modalCtx)return;
+  const name=DATA[modalCtx.dataKey][modalCtx.idx].stop||'this stop';
+  if(!confirm(`Delete "${name}"? This cannot be undone.`))return;
+  DATA[modalCtx.dataKey].splice(modalCtx.idx,1);
+  saveState();renderAll();
+  document.getElementById('edit-modal').style.display='none';
+  toast('Stop deleted');
+}
+
+// ── ADD NEW STOP ──────────────────────────────────────
+function addStop(dataKey){
+  const newStop={dates:'New dates',stop:'New Stop',details:'',housing:'',cost:null,drive:'',nights:null,s:'2026-06-01',e:'2026-06-01'};
+  DATA[dataKey].push(newStop);
+  saveState();renderAll();
+  const idx=DATA[dataKey].length-1;
+  setTimeout(()=>openModal(dataKey,idx),60);
+}
+
+// ── RENDER ────────────────────────────────────────────
+function addStopRow(dataKey,colspan){
+  return`<tr class="add-stop-row"><td colspan="${colspan}"><div class="add-stop-inner"><button class="add-stop-btn" onclick="addStop('${dataKey}')"><span class="plus">＋</span> Add a new stop to this section</button></div></td></tr>`;
+}
+
+function renderNE(dataKey,tbodyId,hasDrive){
+  const tbody=document.getElementById(tbodyId);if(!tbody)return;
+  const colspan=hasDrive?8:7;
+  tbody.innerHTML=DATA[dataKey].map((s,i)=>{
+    const cls=st(s.s,s.e)==='current'?'is-current':st(s.s,s.e)==='past'?'is-past':'';
+    const dc=hasDrive?`<td class="col-drive">${s.drive||'—'}</td>`:'';
+    return`<tr class="data-row ${cls}" onclick="rowClick('${dataKey}',${i},this,${colspan})">
+      ${handle()}
+      <td class="col-edit"><button class="row-edit-btn" title="Edit this stop" onclick="openModal('${dataKey}',${i},event)">✏</button></td>
+      <td class="col-dates">${s.dates}</td>
+      <td class="col-stop">${s.stop}${bgs(s)}</td>
+      ${dc}
+      <td class="col-detail">${s.details}</td>
+      <td class="col-house">${houseCell(s)}</td>
+      <td class="col-cost">${fc(s)}</td>
+    </tr>`;
+  }).join('')+addStopRow(dataKey,colspan);
+  initDrag(tbody,dataKey);
+  if(reorderMode) tbody.querySelectorAll('.drag-handle').forEach(h=>h.style.display='inline-flex');
+}
+
+function renderPNW(){
+  const container=document.getElementById('pnw-sections');
+  const tc={pre:'pip-pre',leg:'pip-leg',anchor:'pip-anchor',return:'pip-return'};
+  const colspan=9;
+  container.innerHTML=PNW_SECTIONS.map((sec,si)=>{
+    const key=`pnw-${si}`;
+    const rows=DATA[key].map((s,i)=>{
+      const cls=st(s.s,s.e)==='current'?'is-current':st(s.s,s.e)==='past'?'is-past':'';
+      const np=s.nights?`<span class="nights-pill">${s.nights}n</span>`:'—';
+      return`<tr class="data-row ${cls}" onclick="rowClick('${key}',${i},this,${colspan})">
+        ${handle()}
+        <td class="col-edit"><button class="row-edit-btn" title="Edit this stop" onclick="openModal('${key}',${i},event)">✏</button></td>
+        <td class="col-dates">${s.dates}</td>
+        <td class="col-stop">${s.stop}${bgs(s)}</td>
+        <td class="col-nights">${np}</td>
+        <td class="col-drive">${s.drive||'—'}</td>
+        <td class="col-detail">${s.details}</td>
+        <td class="col-house">${houseCell(s)}</td>
+        <td class="col-cost">${fc(s)}</td>
+      </tr>`;
+    }).join('')+addStopRow(key,colspan);
+    return`<div class="sec-block">
+      <div class="sec-label"><span class="sec-pip ${tc[sec.type]||'pip-leg'}"></span>${sec.label}<span class="sec-label-right">✏ click row to edit · click row to expand activities</span></div>
+      <div class="tbl-wrap"><table class="stop-tbl">
+        <thead><tr><th class="th-handle"></th><th class="th-edit"></th><th class="col-dates">Dates</th><th class="col-stop">Stop</th><th class="col-nights">Nights</th><th class="col-drive">Drive</th><th class="col-detail">Details</th><th class="col-house">Housing / Airbnb</th><th class="col-cost">Cost</th></tr></thead>
+        <tbody id="tbody-pnw-${si}">${rows}</tbody>
+      </table></div>
+    </div>`;
+  }).join('');
+  PNW_SECTIONS.forEach((_,si)=>{
+    const tbody=document.getElementById(`tbody-pnw-${si}`);
+    if(tbody){
+      initDrag(tbody,`pnw-${si}`);
+      if(reorderMode) tbody.querySelectorAll('.drag-handle').forEach(h=>h.style.display='inline-flex');
+    }
+  });
+}
+
+function renderChecklist(data,id){
+  document.getElementById(id).innerHTML=data.map((item,i)=>{
+    const sv=localStorage.getItem(`chk_${id}_${i}`);
+    const checked=sv!==null?sv==='true':item.done;
+    return`<div class="cl-item"><input type="checkbox" ${checked?'checked':''} onchange="saveCheck('${id}',${i},this.checked)"><div class="cl-label ${checked?'done':''}">${item.label}</div><div class="cl-cost">${item.cost}</div></div>`;
+  }).join('');
+}
+function saveCheck(listId,idx,val){
+  localStorage.setItem(`chk_${listId}_${idx}`,val);
+  document.querySelectorAll(`#${listId} .cl-item`)[idx].querySelector('.cl-label').classList.toggle('done',val);
+}
+
+function renderAll(){
+  renderNE('ne-arrival','ne-arrival',false);
+  renderNE('ne-roadtrip','ne-roadtrip',true);
+  renderNE('ne-return','ne-return',false);
+  renderPNW();detectCurrent();updateProgress();
+}
+
+// ── CURRENT STOP ──────────────────────────────────────
+function allStops(){
+  return[...DATA['ne-arrival'],...DATA['ne-roadtrip'],...DATA['ne-return'],
+    ...PNW_SECTIONS.flatMap((_,i)=>DATA[`pnw-${i}`])];
+}
+function detectCurrent(){
+  const all=allStops();
+  const cur=all.find(s=>st(s.s,s.e)==='current');
+  const nxt=all.find(s=>st(s.s,s.e)==='future');
+  const show=cur||nxt;
+  if(show){
+    document.getElementById('here-loc').textContent=(cur?'':' → Next: ')+show.stop;
+    document.getElementById('here-sub').textContent=show.details.slice(0,95)+(show.details.length>95?'…':'');
+    document.getElementById('here-dates-d').textContent=show.dates;
+    document.getElementById('here-dates-t').textContent=show.housing||'';
+    if(!cur)document.querySelector('.here-dot').style.background='var(--teal)';
+  }
+}
+
+// ── PROGRESS ──────────────────────────────────────────
+function updateProgress(){
+  const start=pd('2026-05-14'),end=pd('2026-10-03');
+  const today=new Date();today.setHours(0,0,0,0);
+  const total=(end-start)/86400000,elapsed=Math.max(0,Math.min(total,(today-start)/86400000));
+  const pct=Math.round((elapsed/total)*100);
+  document.getElementById('prog-fill').style.width=pct+'%';
+  document.getElementById('prog-pct').textContent=pct+'% complete';
+  document.getElementById('stat-days').textContent=Math.round(elapsed);
+  const allS=allStops();
+  document.getElementById('stat-stops').textContent=allS.filter(s=>st(s.s,s.e)!=='past').length;
+  const bookedCount=allS.filter(s=>s.booked||s.free).length;
+  document.getElementById('stat-booked').textContent=`${bookedCount}/${allS.length}`;
+  document.getElementById('stat-booked-sub').textContent=`${allS.length-bookedCount} still need booking`;
+}
+
+// ── TABS ──────────────────────────────────────────────
+function switchTab(id){
+  document.querySelectorAll('.tab-content').forEach(el=>el.style.display='none');
+  document.querySelectorAll('.tab-btn').forEach(el=>el.classList.remove('active'));
+  document.getElementById('tab-'+id).style.display='block';
+  document.querySelectorAll('.tab-btn')[{ne:0,pnw:1,book:2,cal:3}[id]].classList.add('active');
+  if(id==='cal')renderCalendar();
+}
+
+// ── CALENDAR ──────────────────────────────────────────
+let calYear=2026,calMonth=4; // 0-indexed; 4=May
+
+const SEC_COL={
+  'ne-arrival': {bg:'rgba(34,85,184,.11)', border:'rgba(34,85,184,.22)',  text:'var(--blue)',   label:'NE Arrival & Events'},
+  'ne-roadtrip':{bg:'rgba(26,120,104,.11)',border:'rgba(26,120,104,.22)', text:'var(--teal)',   label:'NE Road Trip'},
+  'ne-return':  {bg:'rgba(107,74,174,.11)',border:'rgba(107,74,174,.22)', text:'var(--purple)', label:'NE Return'},
+  'pnw-pre':    {bg:'rgba(34,85,184,.11)', border:'rgba(34,85,184,.22)',  text:'var(--blue)',   label:'Pre-Trip (LA)'},
+  'pnw-leg':    {bg:'rgba(217,104,48,.11)',border:'rgba(217,104,48,.22)', text:'var(--accent)', label:'PNW Legs'},
+  'pnw-anchor': {bg:'rgba(46,125,82,.11)', border:'rgba(46,125,82,.22)',  text:'var(--green)',  label:'Anchor Stops'},
+  'pnw-return': {bg:'rgba(107,74,174,.11)',border:'rgba(107,74,174,.22)', text:'var(--purple)', label:'Return South'},
+};
+const MNAMES=['January','February','March','April','May','June','July','August','September','October','November','December'];
+
+function getSectionType(dataKey){
+  if(dataKey==='ne-arrival')return 'ne-arrival';
+  if(dataKey==='ne-roadtrip')return 'ne-roadtrip';
+  if(dataKey==='ne-return')return 'ne-return';
+  const m=dataKey.match(/^pnw-(\d+)$/);
+  if(m){const t=PNW_SECTIONS[+m[1]]?.type||'leg';return 'pnw-'+t;}
+  return 'pnw-leg';
+}
+
+function buildDayMap(){
+  const map={};
+  Object.keys(DATA).forEach(dk=>{
+    const secType=getSectionType(dk);
+    const col=SEC_COL[secType]||SEC_COL['pnw-leg'];
+    DATA[dk].forEach(stop=>{
+      if(!stop.s||!stop.e)return;
+      const start=pd(stop.s),end=pd(stop.e);
+      for(let d=new Date(start.getTime());d<=end;d.setDate(d.getDate()+1)){
+        const key=d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');
+        if(!map[key])map[key]={stop,col,secType};
+      }
+    });
+  });
+  return map;
+}
+
+function shortStopName(name){
+  // strip parentheticals and trailing city suffixes for compact calendar cells
+  return(name||'').replace(/\(.*?\)/g,'').replace(/—.*/,'').replace(/→\s*.*/,'').trim().replace(/,\s*[A-Z]{2}$/,'').trim();
+}
+
+function renderCalendar(){
+  const dayMap=buildDayMap();
+  const today=new Date();today.setHours(0,0,0,0);
+  const firstDay=new Date(calYear,calMonth,1);
+  const lastDay=new Date(calYear,calMonth+1,0);
+  const startDow=firstDay.getDay();
+
+  document.getElementById('cal-month-label').textContent=MNAMES[calMonth]+' '+calYear;
+  document.getElementById('cal-prev').disabled=(calMonth<=4&&calYear<=2026);
+  document.getElementById('cal-next').disabled=(calMonth>=9&&calYear>=2026);
+
+  let html='';
+  ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'].forEach(d=>{html+=`<div class="cal-dow">${d}</div>`;});
+  for(let i=0;i<startDow;i++)html+='<div class="cal-day cal-empty"></div>';
+
+  for(let day=1;day<=lastDay.getDate();day++){
+    const dateStr=calYear+'-'+String(calMonth+1).padStart(2,'0')+'-'+String(day).padStart(2,'0');
+    const entry=dayMap[dateStr];
+    const isToday=new Date(calYear,calMonth,day).getTime()===today.getTime();
+    if(entry){
+      const {stop,col}=entry;
+      const nm=shortStopName(stop.stop);
+      html+=`<div class="cal-day" style="background:${col.bg};border-color:${col.border}">
+        <div class="cal-day-num${isToday?' cal-today-num':''}" style="color:${isToday?'#fff':col.text}">${day}</div>
+        <div class="cal-stop-nm" style="color:${col.text}">${escH(nm)}</div>
+      </div>`;
+    } else {
+      html+=`<div class="cal-day cal-off"><div class="cal-day-num">${day}</div></div>`;
+    }
+  }
+  document.getElementById('cal-grid').innerHTML=html;
+
+  // Legend
+  const seen=new Set();
+  const legHTML=Object.entries(SEC_COL).map(([k,v])=>{
+    return`<div class="cal-legend-item"><div class="cal-legend-swatch" style="background:${v.bg};border:1px solid ${v.border}"></div>${v.label}</div>`;
+  }).join('');
+  document.getElementById('cal-legend').innerHTML=legHTML;
+}
+
+function calNav(dir){
+  calMonth+=dir;
+  if(calMonth<0){calMonth=11;calYear--;}
+  if(calMonth>11){calMonth=0;calYear++;}
+  renderCalendar();
+}
+
+// ── REORDER MODE ──────────────────────────────────────
+let reorderMode=false;
+function toggleReorder(){
+  reorderMode=!reorderMode;
+  document.body.classList.toggle('edit-on',reorderMode);
+  document.querySelector('.btn-reorder').textContent=reorderMode?'⠿ Done Reordering':'⠿ Reorder Stops';
+  renderAll();
+}
+
+// ── EXPORT ────────────────────────────────────────────
+function exportHTML(){
+  const blob=new Blob([document.documentElement.outerHTML],{type:'text/html'});
+  const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='index.html';a.click();
+  toast('Downloaded index.html — ready for GitHub!');
+}
+
+function toast(msg){
+  document.querySelectorAll('.toast').forEach(t=>t.remove());
+  const t=document.createElement('div');t.className='toast';t.textContent=msg;
+  document.body.appendChild(t);setTimeout(()=>t.remove(),2600);
+}
+
+// ── INIT ──────────────────────────────────────────────
+function init(){
+  loadState();
+  document.getElementById('today-display').textContent=new Date().toLocaleDateString('en-US',{weekday:'short',month:'short',day:'numeric',year:'numeric'});
+  // Start calendar on current month if within trip window (May–Oct 2026), else May
+  const nm=new Date().getMonth(),ny=new Date().getFullYear();
+  calMonth=(ny===2026&&nm>=4&&nm<=9)?nm:4;
+  calYear=2026;
+  renderAll();
+  renderChecklist(BOOK_URGENT,'checklist-urgent');
+  renderChecklist(BOOK_TBD,'checklist-tbd');
+  renderChecklist(BOOK_DONE,'checklist-done');
+}
+document.addEventListener('DOMContentLoaded',init);
+</script>
+
+
+</body></html>
