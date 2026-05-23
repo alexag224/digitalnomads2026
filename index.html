@@ -1,4 +1,12 @@
-<html lang="en"><head>
+<html lang="en"><head><script type="application/json" id="cowork-artifact-meta">
+{
+  "name": "Digital Nomads 2026",
+  "schemaVersion": 1,
+  "description": "Digital Nomads 2026 travel dashboard for Branden + Alexa. Shows full Northeast Trip (May–June) and Pacific Northwest road trip (June–October) itineraries, auto-detected current stop, budget summaries, and booking checklist. Editable with localStorage persistence and Export for GitHub button."
+}
+</script>
+
+
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Digital Nomads 2026 · Branden + Alexa</title>
@@ -207,13 +215,6 @@ tr:hover .drag-handle{opacity:.7;}
 .act-add-btn:hover{background:var(--acc-md);}
 .act-edit-hint{font-size:10px;color:var(--t4);font-style:italic;margin-bottom:8px;}
 
-/* ⚡ Supercharger row info */
-.sc-info{display:inline-flex;align-items:center;gap:4px;margin-top:5px;font-size:11px;padding:3px 8px 3px 5px;background:rgba(232,160,32,.09);border:1px solid rgba(232,160,32,.2);border-radius:6px;white-space:normal;}
-.sc-icon{font-size:11px;flex-shrink:0;}
-.sc-name{font-weight:700;color:var(--amber);}
-.sc-dist{color:var(--t3);font-style:italic;}
-.sc-warn{color:var(--red);font-weight:700;}
-
 /* ── Budget ── */
 .budget-row{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-top:26px;}
 .bcard{background:var(--glass);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);border:1px solid var(--gb);border-radius:var(--r-xl);padding:22px 24px;box-shadow:var(--s1);}
@@ -346,7 +347,7 @@ tr.detail-row > td{padding:0 !important;border-bottom:1px solid var(--div) !impo
     <div class="here-dot"></div>
     <div style="flex:1">
       <div class="here-chip">📍 You are here</div>
-      <div class="here-loc" id="here-loc">Lloyd Harbor (Wayside)</div>
+      <div class="here-loc" id="here-loc">Centerport/ Wayside</div>
       <div class="here-sub" id="here-sub">Dad's house, w/o pets · Trevgela Engagement Party Sunday · Memorial Day</div>
     </div>
     <div class="here-badge">
@@ -366,8 +367,8 @@ tr.detail-row > td{padding:0 !important;border-bottom:1px solid var(--div) !impo
 
   <div class="stats-grid">
     <div class="stat-card"><div class="s-label">Days traveled</div><div class="s-val ca" id="stat-days">9</div><div class="s-sub">of ~143 total</div></div>
-    <div class="stat-card"><div class="s-label">Stops remaining</div><div class="s-val ct" id="stat-stops">38</div><div class="s-sub">across both trips</div></div>
-    <div class="stat-card"><div class="s-label">Locations booked</div><div class="s-val cg" id="stat-booked">16/41</div><div class="s-sub" id="stat-booked-sub">25 still need booking</div></div>
+    <div class="stat-card"><div class="s-label">Stops remaining</div><div class="s-val ct" id="stat-stops">40</div><div class="s-sub">across both trips</div></div>
+    <div class="stat-card"><div class="s-label">Locations booked</div><div class="s-val cg" id="stat-booked">15/43</div><div class="s-sub" id="stat-booked-sub">28 still need booking</div></div>
     <div class="stat-card"><div class="s-label">Free nights saved</div><div class="s-val cg">$3.8k+</div><div class="s-sub">Eugene ×2, Venice, family</div></div>
   </div>
 
@@ -388,39 +389,39 @@ tr.detail-row > td{padding:0 !important;border-bottom:1px solid var(--div) !impo
         <table class="stop-tbl"><thead><tr><th class="th-handle"></th><th class="th-edit"></th><th class="col-dates">Dates</th><th class="col-stop">Stop</th><th class="col-detail">Details</th><th class="col-house">Housing</th><th class="col-cost">Cost</th></tr></thead><tbody id="ne-arrival"><tr class="data-row is-past" onclick="rowClick('ne-arrival',0,this,7)">
       <td class="col-handle"><div class="drag-handle" draggable="true" style="display:none"><span></span><span></span><span></span></div></td>
       <td class="col-edit"><button class="row-edit-btn" title="Edit this stop" onclick="openModal('ne-arrival',0,event)">✏</button></td>
-      <td class="col-dates">Thu 5/14</td>
-      <td class="col-stop">Fly JFK → Centerport<span class="badge b-booked">✓ booked</span></td>
-      
-      <td class="col-detail">Uber to Centerport, sleep the night, drop the pets off. Take Subaru or rent a car.</td>
-      <td class="col-house">N/A</td>
-      <td class="col-cost"><span class="cost-tbd">TBD</span></td>
-    </tr><tr class="data-row is-past" onclick="rowClick('ne-arrival',1,this,7)">
-      <td class="col-handle"><div class="drag-handle" draggable="true" style="display:none"><span></span><span></span><span></span></div></td>
-      <td class="col-edit"><button class="row-edit-btn" title="Edit this stop" onclick="openModal('ne-arrival',1,event)">✏</button></td>
       <td class="col-dates">Fri–Sat 5/15–16</td>
-      <td class="col-stop">Montvale, NJ<span class="badge b-booked">✓ booked</span></td>
+      <td class="col-stop">Montvale, NJ<span class="badge b-conf">confirmed</span></td>
       
       <td class="col-detail">Bat Mitzvah (2 Nights)</td>
       <td class="col-house">Hotel (confirmed)</td>
       <td class="col-cost"><span class="cost-free">Free</span></td>
-    </tr><tr class="data-row is-past" onclick="rowClick('ne-arrival',2,this,7)">
+    </tr><tr class="data-row is-past" onclick="rowClick('ne-arrival',1,this,7)">
       <td class="col-handle"><div class="drag-handle" draggable="true" style="display:none"><span></span><span></span><span></span></div></td>
-      <td class="col-edit"><button class="row-edit-btn" title="Edit this stop" onclick="openModal('ne-arrival',2,event)">✏</button></td>
+      <td class="col-edit"><button class="row-edit-btn" title="Edit this stop" onclick="openModal('ne-arrival',1,event)">✏</button></td>
       <td class="col-dates">Sun–Thu 5/17–22</td>
-      <td class="col-stop">Centerport<span class="badge b-booked">✓ booked</span></td>
+      <td class="col-stop">Centerport</td>
       
       <td class="col-detail">Mom's house — settle in with pets</td>
       <td class="col-house">Free</td>
       <td class="col-cost"><span class="cost-free">Free</span></td>
-    </tr><tr class="data-row is-current" onclick="rowClick('ne-arrival',3,this,7)">
+    </tr><tr class="data-row is-current" onclick="rowClick('ne-arrival',2,this,7)">
       <td class="col-handle"><div class="drag-handle" draggable="true" style="display:none"><span></span><span></span><span></span></div></td>
-      <td class="col-edit"><button class="row-edit-btn" title="Edit this stop" onclick="openModal('ne-arrival',3,event)">✏</button></td>
+      <td class="col-edit"><button class="row-edit-btn" title="Edit this stop" onclick="openModal('ne-arrival',2,event)">✏</button></td>
       <td class="col-dates">Sat–Mon 5/23–25</td>
-      <td class="col-stop">Lloyd Harbor (Wayside)<span class="badge b-booked">✓ booked</span></td>
+      <td class="col-stop">Centerport/ Wayside<span class="badge b-booked">✓ booked</span></td>
       
       <td class="col-detail">Dad's house, w/o pets · Trevgela Engagement Party Sunday · Memorial Day</td>
       <td class="col-house">Free</td>
       <td class="col-cost"><span class="cost-free">Free</span></td>
+    </tr><tr class="data-row is-past" onclick="rowClick('ne-arrival',3,this,7)">
+      <td class="col-handle"><div class="drag-handle" draggable="true" style="display:none"><span></span><span></span><span></span></div></td>
+      <td class="col-edit"><button class="row-edit-btn" title="Edit this stop" onclick="openModal('ne-arrival',3,event)">✏</button></td>
+      <td class="col-dates">Thu 5/14</td>
+      <td class="col-stop">Fly JFK → Centerport</td>
+      
+      <td class="col-detail">Uber to Centerport, sleep the night, drop the pets off. Take Subaru or rent a car.</td>
+      <td class="col-house">N/A</td>
+      <td class="col-cost"><span class="cost-tbd">TBD</span></td>
     </tr><tr class="data-row " onclick="rowClick('ne-arrival',4,this,7)">
       <td class="col-handle"><div class="drag-handle" draggable="true" style="display:none"><span></span><span></span><span></span></div></td>
       <td class="col-edit"><button class="row-edit-btn" title="Edit this stop" onclick="openModal('ne-arrival',4,event)">✏</button></td>
@@ -440,7 +441,7 @@ tr.detail-row > td{padding:0 !important;border-bottom:1px solid var(--div) !impo
       <td class="col-handle"><div class="drag-handle" draggable="true" style="display:none"><span></span><span></span><span></span></div></td>
       <td class="col-edit"><button class="row-edit-btn" title="Edit this stop" onclick="openModal('ne-roadtrip',0,event)">✏</button></td>
       <td class="col-dates">Tues–Fri 5/27–29</td>
-      <td class="col-stop">Becket, MA<span class="badge b-booked">✓ booked</span></td>
+      <td class="col-stop">Becket, MA</td>
       <td class="col-drive">~3 hrs</td>
       <td class="col-detail">Big Bass Lane | 4 Nights · Barrington + Kripalu + Fly Fishing</td>
       <td class="col-house">Free</td>
@@ -449,7 +450,7 @@ tr.detail-row > td{padding:0 !important;border-bottom:1px solid var(--div) !impo
       <td class="col-handle"><div class="drag-handle" draggable="true" style="display:none"><span></span><span></span><span></span></div></td>
       <td class="col-edit"><button class="row-edit-btn" title="Edit this stop" onclick="openModal('ne-roadtrip',1,event)">✏</button></td>
       <td class="col-dates">Fri 5/29–Tues 6/2</td>
-      <td class="col-stop">Elmore, VT (Stowe/Burlington)<span class="badge b-booked">✓ booked</span></td>
+      <td class="col-stop">Elmore, VT (Stowe/Burlington)</td>
       <td class="col-drive">~3.5 hrs</td>
       <td class="col-detail">Chic Farm House | 4 Nights · Sunday Farmer's Market in Stowe · 45 min drive to Burlington</td>
       <td class="col-house">Airbnb</td>
@@ -458,7 +459,7 @@ tr.detail-row > td{padding:0 !important;border-bottom:1px solid var(--div) !impo
       <td class="col-handle"><div class="drag-handle" draggable="true" style="display:none"><span></span><span></span><span></span></div></td>
       <td class="col-edit"><button class="row-edit-btn" title="Edit this stop" onclick="openModal('ne-roadtrip',2,event)">✏</button></td>
       <td class="col-dates">Tues 6/2–Fri 6/5</td>
-      <td class="col-stop">Newfane, VT (Brattleboro)<span class="badge b-booked">✓ booked</span></td>
+      <td class="col-stop">Newfane, VT (Brattleboro)</td>
       <td class="col-drive">~2 hrs</td>
       <td class="col-detail">Pondside Retreat | 3 Nights · Saturday Farmer's Market</td>
       <td class="col-house">Airbnb</td>
@@ -467,7 +468,7 @@ tr.detail-row > td{padding:0 !important;border-bottom:1px solid var(--div) !impo
       <td class="col-handle"><div class="drag-handle" draggable="true" style="display:none"><span></span><span></span><span></span></div></td>
       <td class="col-edit"><button class="row-edit-btn" title="Edit this stop" onclick="openModal('ne-roadtrip',3,event)">✏</button></td>
       <td class="col-dates">Fri 6/5–Sun 6/7</td>
-      <td class="col-stop">Becket, MA → Long Island<span class="badge b-booked">✓ booked</span></td>
+      <td class="col-stop">Becket, MA → Long Island</td>
       <td class="col-drive">~2 hrs</td>
       <td class="col-detail">Spend Fri/Sat at Becket solo, drive back to LI Sunday for Concert</td>
       <td class="col-house">Free</td>
@@ -482,7 +483,7 @@ tr.detail-row > td{padding:0 !important;border-bottom:1px solid var(--div) !impo
       <td class="col-handle"><div class="drag-handle" draggable="true" style="display:none"><span></span><span></span><span></span></div></td>
       <td class="col-edit"><button class="row-edit-btn" title="Edit this stop" onclick="openModal('ne-return',0,event)">✏</button></td>
       <td class="col-dates">Mon 6/8–Weds 6/10</td>
-      <td class="col-stop">Lloyd Harbor / Centerport<span class="badge b-booked">✓ booked</span></td>
+      <td class="col-stop">Lloyd Harbor / Centerport</td>
       
       <td class="col-detail">Drop off Rental Car · Regroup in Centerport</td>
       <td class="col-house">Free</td>
@@ -490,16 +491,16 @@ tr.detail-row > td{padding:0 !important;border-bottom:1px solid var(--div) !impo
     </tr><tr class="data-row " onclick="rowClick('ne-return',1,this,7)">
       <td class="col-handle"><div class="drag-handle" draggable="true" style="display:none"><span></span><span></span><span></span></div></td>
       <td class="col-edit"><button class="row-edit-btn" title="Edit this stop" onclick="openModal('ne-return',1,event)">✏</button></td>
-      <td class="col-dates">Weds 6/10–Thurs 6/11</td>
-      <td class="col-stop">Sag Harbor / Hamptons</td>
+      <td class="col-dates">Fri 6/12- Sunday 6/14</td>
+      <td class="col-stop">Sag Harbor / Hamptons<span class="badge b-booked">✓ booked</span></td>
       
       <td class="col-detail">1.5 Hour Drive · Leave Animals</td>
-      <td class="col-house">TBD</td>
+      <td class="col-house">Debbie's House</td>
       <td class="col-cost"><span class="cost-tbd">TBD</span></td>
     </tr><tr class="data-row " onclick="rowClick('ne-return',2,this,7)">
       <td class="col-handle"><div class="drag-handle" draggable="true" style="display:none"><span></span><span></span><span></span></div></td>
       <td class="col-edit"><button class="row-edit-btn" title="Edit this stop" onclick="openModal('ne-return',2,event)">✏</button></td>
-      <td class="col-dates">Fri 6/12–Weds 6/17</td>
+      <td class="col-dates">Sunday 6/14–Weds 6/17</td>
       <td class="col-stop">Lloyd Harbor &amp; Centerport<span class="badge b-booked">✓ booked</span></td>
       
       <td class="col-detail">Return Rental Car in Huntington · Last Stint with Parents | 5 Nights</td>
@@ -542,10 +543,10 @@ tr.detail-row > td{padding:0 !important;border-bottom:1px solid var(--div) !impo
         <td class="col-handle"><div class="drag-handle" draggable="true" style="display:none"><span></span><span></span><span></span></div></td>
         <td class="col-edit"><button class="row-edit-btn" title="Edit this stop" onclick="openModal('pnw-0',0,event)">✏</button></td>
         <td class="col-dates">Wed 6/17</td>
-        <td class="col-stop">Land in LA — Venice<span class="badge b-booked">✓ booked</span></td>
+        <td class="col-stop">Land in LA — Venice</td>
         <td class="col-nights"><span class="nights-pill">2n</span></td>
         <td class="col-drive">—</td>
-        <td class="col-detail">Return from Northeast trip. Settle in, regroup before the big road trip begins.<div class="sc-info" title="Multiple SCs in LA — Venice Blvd SC ~3 min from home base"><span class="sc-icon">⚡</span><span class="sc-name">Venice Blvd, Los Angeles</span>&nbsp;<span class="sc-dist">in the neighborhood</span></div></td>
+        <td class="col-detail">Return from Northeast trip. Settle in, regroup before the big road trip begins.</td>
         <td class="col-house">Venice home</td>
         <td class="col-cost"><span class="cost-free">Free</span></td>
       </tr><tr class="data-row " onclick="rowClick('pnw-0',1,this,9)">
@@ -555,7 +556,7 @@ tr.detail-row > td{padding:0 !important;border-bottom:1px solid var(--div) !impo
         <td class="col-stop">Depart for Joshua Tree</td>
         <td class="col-nights">—</td>
         <td class="col-drive">~2.5 hrs</td>
-        <td class="col-detail">Pack the car and animals, head east into the desert.<div class="sc-info" title="Charge at Cabazon Supercharger en route to JTree — good stopping point"><span class="sc-icon">⚡</span><span class="sc-name">Cabazon, CA (I-10)</span>&nbsp;<span class="sc-dist">~45 min on route</span></div></td>
+        <td class="col-detail">Pack the car and animals, head east into the desert.</td>
         <td class="col-house">—</td>
         <td class="col-cost"><span class="cost-tbd">TBD</span></td>
       </tr><tr class="add-stop-row"><td colspan="9"><div class="add-stop-inner"><button class="add-stop-btn" onclick="addStop('pnw-0')"><span class="plus">＋</span> Add a new stop to this section</button></div></td></tr></tbody>
@@ -568,12 +569,22 @@ tr.detail-row > td{padding:0 !important;border-bottom:1px solid var(--div) !impo
         <td class="col-handle"><div class="drag-handle" draggable="true" style="display:none"><span></span><span></span><span></span></div></td>
         <td class="col-edit"><button class="row-edit-btn" title="Edit this stop" onclick="openModal('pnw-1',0,event)">✏</button></td>
         <td class="col-dates">Fri 6/19–Mon 6/22</td>
-        <td class="col-stop">Joshua Tree, CA<span class="badge b-now">⚠ book now</span></td>
+        <td class="col-stop">Joshua Tree, CA<span class="badge b-booked">✓ booked</span></td>
         <td class="col-nights"><span class="nights-pill">3n</span></td>
         <td class="col-drive">~2.5 hrs from LA</td>
-        <td class="col-detail">Desert decompression. Joshua Tree National Park, Pioneertown, Pappy &amp; Harriet's. Great stargazing and sunrise hikes.<div class="sc-info" title="73829 Baseline Rd — 8 stalls, right at the park entrance area"><span class="sc-icon">⚡</span><span class="sc-name">Twentynine Palms, CA</span>&nbsp;<span class="sc-dist">~5 min</span></div></td>
-        <td class="col-house">Airbnb needed</td>
+        <td class="col-detail">Desert decompression. Joshua Tree National Park, Pioneertown, Pappy &amp; Harriet's. Great stargazing and sunrise hikes.</td>
+        <td class="col-house"><a class="house-link" href="https://www.airbnb.com/rooms/1238611828849311315?source_impression_id=p3_1779550866_P3yTe5lKVxbpGZou" target="_blank" rel="noopener" onclick="event.stopPropagation()" title="Listing">Airbnb - Jen and Michelle visiting ↗</a></td>
         <td class="col-cost"><span class="cost-paid">$600</span></td>
+      </tr><tr class="data-row " onclick="rowClick('pnw-1',1,this,9)">
+        <td class="col-handle"><div class="drag-handle" draggable="true" style="display:none"><span></span><span></span><span></span></div></td>
+        <td class="col-edit"><button class="row-edit-btn" title="Edit this stop" onclick="openModal('pnw-1',1,event)">✏</button></td>
+        <td class="col-dates">New dates</td>
+        <td class="col-stop">New Stop</td>
+        <td class="col-nights">—</td>
+        <td class="col-drive">—</td>
+        <td class="col-detail"></td>
+        <td class="col-house">—</td>
+        <td class="col-cost"><span class="cost-tbd">TBD</span></td>
       </tr><tr class="add-stop-row"><td colspan="9"><div class="add-stop-inner"><button class="add-stop-btn" onclick="addStop('pnw-1')"><span class="plus">＋</span> Add a new stop to this section</button></div></td></tr></tbody>
       </table></div>
     </div><div class="sec-block">
@@ -587,19 +598,19 @@ tr.detail-row > td{padding:0 !important;border-bottom:1px solid var(--div) !impo
         <td class="col-stop">Three Rivers, CA</td>
         <td class="col-nights"><span class="nights-pill">2n</span></td>
         <td class="col-drive">~2.5 hrs from JTree</td>
-        <td class="col-detail">Sequoia / Kings Canyon gateway. General Sherman Tree, Giant Forest, Moro Rock. Roaring River swim spots.<div class="sc-info" title="Charge before heading into Sequoia — no chargers in Three Rivers itself"><span class="sc-icon">⚡</span><span class="sc-name">Visalia, CA</span>&nbsp;<span class="sc-warn">~35 min</span></div></td>
-        <td class="col-house">Airbnb</td>
-        <td class="col-cost"><span class="cost-paid">$350</span></td>
+        <td class="col-detail">Sequoia / Kings Canyon gateway. General Sherman Tree, Giant Forest, Moro Rock. Roaring River swim spots.</td>
+        <td class="col-house"><a class="house-link" href="https://www.airbnb.com/rooms/1284028908621751002?adults=2&amp;check_in=2026-06-22&amp;check_out=2026-06-24&amp;pets=2&amp;search_mode=regular_search&amp;source_impression_id=p3_1779554667_P3SRu7r7cLwCsNG8&amp;previous_page_section_name=1000&amp;federated_search_id=127448e2-a97e-4f4d-82f7-def62ea1967f" target="_blank" rel="noopener" onclick="event.stopPropagation()" title="Listing">Airbnb ↗</a></td>
+        <td class="col-cost"><span class="cost-paid">$963</span></td>
       </tr><tr class="data-row " onclick="rowClick('pnw-2',1,this,9)">
         <td class="col-handle"><div class="drag-handle" draggable="true" style="display:none"><span></span><span></span><span></span></div></td>
         <td class="col-edit"><button class="row-edit-btn" title="Edit this stop" onclick="openModal('pnw-2',1,event)">✏</button></td>
         <td class="col-dates">Wed 6/24–Fri 6/26</td>
-        <td class="col-stop">Santa Cruz, CA</td>
+        <td class="col-stop">Santa Cruz or La Selva</td>
         <td class="col-nights"><span class="nights-pill">2n</span></td>
         <td class="col-drive">~3 hrs via CA-99/CA-152</td>
-        <td class="col-detail">Surf town layover. Boardwalk, Henry Cowell Redwoods, San Lorenzo River swim spots, farmers market.<div class="sc-info" title="SC at Capitola Mall — easy and very convenient"><span class="sc-icon">⚡</span><span class="sc-name">Capitola, CA</span>&nbsp;<span class="sc-dist">~10 min</span></div></td>
-        <td class="col-house">Airbnb</td>
-        <td class="col-cost"><span class="cost-paid">$400</span></td>
+        <td class="col-detail">Surf town layover. Boardwalk, Henry Cowell Redwoods, San Lorenzo River swim spots, farmers market.</td>
+        <td class="col-house"><a class="house-link" href="https://www.airbnb.com/rooms/40425386?adults=2&amp;check_in=2026-06-24&amp;check_out=2026-06-26&amp;pets=2&amp;search_mode=regular_search&amp;source_impression_id=p3_1779557896_P3JwlpgIjWnK1Znq&amp;previous_page_section_name=1000&amp;federated_search_id=f7597d52-fe90-4685-8498-0dcdc2a81b5e" target="_blank" rel="noopener" onclick="event.stopPropagation()" title="Listing">Airbnb ↗</a></td>
+        <td class="col-cost"><span class="cost-paid">$688</span></td>
       </tr><tr class="add-stop-row"><td colspan="9"><div class="add-stop-inner"><button class="add-stop-btn" onclick="addStop('pnw-2')"><span class="plus">＋</span> Add a new stop to this section</button></div></td></tr></tbody>
       </table></div>
     </div><div class="sec-block">
@@ -610,11 +621,11 @@ tr.detail-row > td{padding:0 !important;border-bottom:1px solid var(--div) !impo
         <td class="col-handle"><div class="drag-handle" draggable="true" style="display:none"><span></span><span></span><span></span></div></td>
         <td class="col-edit"><button class="row-edit-btn" title="Edit this stop" onclick="openModal('pnw-3',0,event)">✏</button></td>
         <td class="col-dates">Fri 6/26–Wed 7/1</td>
-        <td class="col-stop">SF / Marin / Stinson Beach<span class="badge b-anch">anchor</span></td>
+        <td class="col-stop">SF / Marin / Marshall/ Mill Valley / Inverness / Point Reyes<span class="badge b-anch">anchor</span></td>
         <td class="col-nights"><span class="nights-pill">5n</span></td>
         <td class="col-drive">~1.5 hrs from Santa Cruz</td>
-        <td class="col-detail">Stinson Beach and Bolinas corridor — most Ojai-adjacent community on this route. Tennessee Valley trails, Mill Valley, Fairfax. Farmers market in Marin.<div class="sc-info" title="Multiple SCs in Marin; well covered for this whole leg"><span class="sc-icon">⚡</span><span class="sc-name">Corte Madera / Mill Valley, CA</span>&nbsp;<span class="sc-dist">~15 min</span></div></td>
-        <td class="col-house">Airbnb</td>
+        <td class="col-detail">Stinson Beach and Bolinas corridor — most Ojai-adjacent community on this route. Tennessee Valley trails, Mill Valley, Fairfax. Farmers market in Marin.</td>
+        <td class="col-house"><a class="house-link" href="https://www.airbnb.com/rooms/1296351960867951265?adults=2&amp;check_in=2026-06-27&amp;check_out=2026-07-01&amp;pets=2&amp;search_mode=regular_search&amp;children=0&amp;infants=0&amp;source_impression_id=p3_1779558164_P3pCBxJdDECAVKgo&amp;previous_page_section_name=1000&amp;federated_search_id=73f81923-45a0-430b-821f-fd72354a58ef" target="_blank" rel="noopener" onclick="event.stopPropagation()" title="Listing">Airbnb ↗</a></td>
         <td class="col-cost"><span class="cost-paid">$1,250</span></td>
       </tr><tr class="add-stop-row"><td colspan="9"><div class="add-stop-inner"><button class="add-stop-btn" onclick="addStop('pnw-3')"><span class="plus">＋</span> Add a new stop to this section</button></div></td></tr></tbody>
       </table></div>
@@ -629,7 +640,7 @@ tr.detail-row > td{padding:0 !important;border-bottom:1px solid var(--div) !impo
         <td class="col-stop">Russian River / Guerneville</td>
         <td class="col-nights"><span class="nights-pill">3n</span></td>
         <td class="col-drive">~1.5 hrs from Marin</td>
-        <td class="col-detail">Funky redwood river town. Swimming holes on the Russian River. Arts community, farmers market.<div class="sc-info" title="Nearest SC; West Sonoma Inn in Guerneville has Tesla Destination Charger for overnight top-up"><span class="sc-icon">⚡</span><span class="sc-name">Santa Rosa, CA</span>&nbsp;<span class="sc-dist">~20 min</span></div></td>
+        <td class="col-detail">Funky redwood river town. Swimming holes on the Russian River. Arts community, farmers market.</td>
         <td class="col-house">Airbnb</td>
         <td class="col-cost"><span class="cost-paid">$525</span></td>
       </tr><tr class="data-row " onclick="rowClick('pnw-4',1,this,9)">
@@ -639,7 +650,7 @@ tr.detail-row > td{padding:0 !important;border-bottom:1px solid var(--div) !impo
         <td class="col-stop">Napa Valley</td>
         <td class="col-nights"><span class="nights-pill">2n</span></td>
         <td class="col-drive">~1 hr from Guerneville</td>
-        <td class="col-detail">Stay with friends (confirm pet policy). World-class food and wine.<div class="sc-info" title="Bel Aire Plaza + Factory Stores Dr — excellent coverage right in Napa"><span class="sc-icon">⚡</span><span class="sc-name">Napa, CA — 2 locations</span>&nbsp;<span class="sc-dist">in town</span></div></td>
+        <td class="col-detail">Stay with friends (confirm pet policy). World-class food and wine.</td>
         <td class="col-house">Friends' place (TBD)</td>
         <td class="col-cost"><span class="cost-free">Free</span></td>
       </tr><tr class="data-row " onclick="rowClick('pnw-4',2,this,9)">
@@ -649,7 +660,7 @@ tr.detail-row > td{padding:0 !important;border-bottom:1px solid var(--div) !impo
         <td class="col-stop">Nevada City, CA</td>
         <td class="col-nights"><span class="nights-pill">5n</span></td>
         <td class="col-drive">~1.5 hrs from Napa</td>
-        <td class="col-detail">Best 'could we live here' stop in CA. Victorian arts town, South Yuba River State Park — best swimming holes in NorCal. Saturday farmers market.<div class="sc-info" title="Charge at Auburn SC before heading into the foothills — no Supercharger in Nevada City"><span class="sc-icon">⚡</span><span class="sc-name">Auburn, CA</span>&nbsp;<span class="sc-warn">~25 min S</span></div></td>
+        <td class="col-detail">Best 'could we live here' stop in CA. Victorian arts town, South Yuba River State Park — best swimming holes in NorCal. Saturday farmers market.</td>
         <td class="col-house">Airbnb</td>
         <td class="col-cost"><span class="cost-paid">$750</span></td>
       </tr><tr class="data-row " onclick="rowClick('pnw-4',3,this,9)">
@@ -659,8 +670,8 @@ tr.detail-row > td{padding:0 !important;border-bottom:1px solid var(--div) !impo
         <td class="col-stop">Incline Village, NV<span class="badge b-now">⚠ book now</span></td>
         <td class="col-nights"><span class="nights-pill">4n</span></td>
         <td class="col-drive">~1 hr from Nevada City</td>
-        <td class="col-detail">Splurge stop. Nevada side of Lake Tahoe — Sand Harbor, Kings Beach, crystal blue water.<div class="sc-info" title="930 Tahoe Blvd — 10 stalls, 150kW, right in the village"><span class="sc-icon">⚡</span><span class="sc-name">Incline Village, NV</span>&nbsp;<span class="sc-dist">in town</span></div></td>
-        <td class="col-house">Airbnb (splurge)</td>
+        <td class="col-detail">Splurge stop. Nevada side of Lake Tahoe — Sand Harbor, Kings Beach, crystal blue water.</td>
+        <td class="col-house"><a class="house-link" href="https://www.vacasa.com/unit/1016280" target="_blank" rel="noopener" onclick="event.stopPropagation()" title="Sabrina Link">Airbnb (splurge) ↗</a></td>
         <td class="col-cost"><span class="cost-paid">$1,400</span></td>
       </tr><tr class="add-stop-row"><td colspan="9"><div class="add-stop-inner"><button class="add-stop-btn" onclick="addStop('pnw-4')"><span class="plus">＋</span> Add a new stop to this section</button></div></td></tr></tbody>
       </table></div>
@@ -675,7 +686,7 @@ tr.detail-row > td{padding:0 !important;border-bottom:1px solid var(--div) !impo
         <td class="col-stop">Mount Shasta, CA</td>
         <td class="col-nights"><span class="nights-pill">6n</span></td>
         <td class="col-drive">~2.5 hrs from Incline</td>
-        <td class="col-detail">Spiritual mountain town — intentional community, Castle Lake, Headwaters spring. Strong 'could we live here' candidate.<div class="sc-info" title="Charge in Redding before driving up; Yreka SC on route to Ashland. Tree House in town has Tesla Destination Charger"><span class="sc-icon">⚡</span><span class="sc-name">Redding, CA (1 hr S) or Yreka, CA (30 min N)</span>&nbsp;<span class="sc-warn">30–60 min</span></div></td>
+        <td class="col-detail">Spiritual mountain town — intentional community, Castle Lake, Black Bear Diner, Headwaters spring. Strong 'could we live here' candidate.</td>
         <td class="col-house">Airbnb</td>
         <td class="col-cost"><span class="cost-paid">$800</span></td>
       </tr><tr class="data-row " onclick="rowClick('pnw-5',1,this,9)">
@@ -685,7 +696,7 @@ tr.detail-row > td{padding:0 !important;border-bottom:1px solid var(--div) !impo
         <td class="col-stop">Ashland, OR</td>
         <td class="col-nights"><span class="nights-pill">1n</span></td>
         <td class="col-drive">~1.5 hrs from Shasta</td>
-        <td class="col-detail">Routing overnight only. Shakespeare festival town — good dinner, rest, easy drive into Eugene.<div class="sc-info" title="24-stall SC right off I-5 — great stop at the Oregon border"><span class="sc-icon">⚡</span><span class="sc-name">Ashland, OR</span>&nbsp;<span class="sc-dist">in town</span></div></td>
+        <td class="col-detail">Routing overnight only. Shakespeare festival town — good dinner, rest, easy drive into Eugene.</td>
         <td class="col-house">Airbnb</td>
         <td class="col-cost"><span class="cost-paid">$175</span></td>
       </tr><tr class="add-stop-row"><td colspan="9"><div class="add-stop-inner"><button class="add-stop-btn" onclick="addStop('pnw-5')"><span class="plus">＋</span> Add a new stop to this section</button></div></td></tr></tbody>
@@ -698,10 +709,10 @@ tr.detail-row > td{padding:0 !important;border-bottom:1px solid var(--div) !impo
         <td class="col-handle"><div class="drag-handle" draggable="true" style="display:none"><span></span><span></span><span></span></div></td>
         <td class="col-edit"><button class="row-edit-btn" title="Edit this stop" onclick="openModal('pnw-6',0,event)">✏</button></td>
         <td class="col-dates">Tue 7/22–Mon 7/28</td>
-        <td class="col-stop">Eugene, OR<span class="badge b-booked">✓ booked</span><span class="badge b-anch">anchor</span></td>
+        <td class="col-stop">Eugene, OR<span class="badge b-anch">anchor</span></td>
         <td class="col-nights"><span class="nights-pill">6n</span></td>
         <td class="col-drive">~1 hr from Ashland</td>
-        <td class="col-detail">Stay with Pallas. Arrive just before her birthday on 7/23. Eugene Saturday Market — legendary. McKenzie River swimming holes. Rest, regroup, celebrate.<div class="sc-info" title="New SC near Autzen Stadium; Valley River Center also has chargers"><span class="sc-icon">⚡</span><span class="sc-name">Eugene, OR (Oakmont Way)</span>&nbsp;<span class="sc-dist">~10 min</span></div></td>
+        <td class="col-detail">Stay with Pallas. Arrive just before her birthday on 7/23. Eugene Saturday Market — legendary. McKenzie River swimming holes. Rest, regroup, celebrate.</td>
         <td class="col-house">Pallas — Free</td>
         <td class="col-cost"><span class="cost-free">Free</span></td>
       </tr><tr class="add-stop-row"><td colspan="9"><div class="add-stop-inner"><button class="add-stop-btn" onclick="addStop('pnw-6')"><span class="plus">＋</span> Add a new stop to this section</button></div></td></tr></tbody>
@@ -717,7 +728,7 @@ tr.detail-row > td{padding:0 !important;border-bottom:1px solid var(--div) !impo
         <td class="col-stop">Bend / Sunriver, OR<span class="badge b-anch">anchor</span></td>
         <td class="col-nights"><span class="nights-pill">10n</span></td>
         <td class="col-drive">~2.5 hrs from Eugene</td>
-        <td class="col-detail">Ojai of the Pacific Northwest. 10 nights. Deschutes River float, Smith Rock State Park, Cascade Lakes Scenic Byway. Hood River day trip (1.5 hrs).<div class="sc-info" title="S Hwy 97 + SW Industrial Way — excellent coverage in Bend"><span class="sc-icon">⚡</span><span class="sc-name">Bend, OR — 2 locations</span>&nbsp;<span class="sc-dist">~5 min</span></div></td>
+        <td class="col-detail">Ojai of the Pacific Northwest. 10 nights. Deschutes River float, Smith Rock State Park, Cascade Lakes Scenic Byway. Hood River day trip (1.5 hrs).</td>
         <td class="col-house">Airbnb — one rental</td>
         <td class="col-cost"><span class="cost-paid">$1,500</span></td>
       </tr><tr class="add-stop-row"><td colspan="9"><div class="add-stop-inner"><button class="add-stop-btn" onclick="addStop('pnw-7')"><span class="plus">＋</span> Add a new stop to this section</button></div></td></tr></tbody>
@@ -733,7 +744,7 @@ tr.detail-row > td{padding:0 !important;border-bottom:1px solid var(--div) !impo
         <td class="col-stop">Twin Falls, ID</td>
         <td class="col-nights"><span class="nights-pill">3n</span></td>
         <td class="col-drive">~3 hrs from Bend via US-20/I-84</td>
-        <td class="col-detail">Shoshone Falls — larger than Niagara, one of the great swim spots. Snake River Canyon, Perrine Bridge (BASE jumping).<div class="sc-info" title="2015 Neilsen Point Pl — 8 stalls, at the Visitor Center area near Shoshone Falls"><span class="sc-icon">⚡</span><span class="sc-name">Twin Falls, ID</span>&nbsp;<span class="sc-dist">in town</span></div></td>
+        <td class="col-detail">Shoshone Falls — larger than Niagara, one of the great swim spots. Snake River Canyon, Perrine Bridge (BASE jumping).</td>
         <td class="col-house">Airbnb</td>
         <td class="col-cost"><span class="cost-paid">$400</span></td>
       </tr><tr class="data-row " onclick="rowClick('pnw-8',1,this,9)">
@@ -743,7 +754,7 @@ tr.detail-row > td{padding:0 !important;border-bottom:1px solid var(--div) !impo
         <td class="col-stop">Boise, ID</td>
         <td class="col-nights"><span class="nights-pill">7n</span></td>
         <td class="col-drive">~2 hrs from Twin Falls</td>
-        <td class="col-detail">Arts scene, Boise River Greenbelt, Basque Block, exceptional food. Off-grid comedian friend's land nearby.<div class="sc-info" title="Supercharger confirmed in Boise — check Tesla app for exact location &amp; stall count"><span class="sc-icon">⚡</span><span class="sc-name">Boise, ID</span>&nbsp;<span class="sc-dist">~10 min</span></div></td>
+        <td class="col-detail">Arts scene, Boise River Greenbelt, Basque Block, exceptional food. Off-grid comedian friend's land nearby.</td>
         <td class="col-house">Airbnb</td>
         <td class="col-cost"><span class="cost-paid">$1,050</span></td>
       </tr><tr class="data-row " onclick="rowClick('pnw-8',2,this,9)">
@@ -753,7 +764,7 @@ tr.detail-row > td{padding:0 !important;border-bottom:1px solid var(--div) !impo
         <td class="col-stop">McCall, ID</td>
         <td class="col-nights"><span class="nights-pill">4n</span></td>
         <td class="col-drive">~2.5 hrs from Boise via Hwy 55</td>
-        <td class="col-detail">Hidden gem. Payette Lake — pristine mountain swim spot. Feels like Tahoe 30 years ago.<div class="sc-info" title="No Supercharger in McCall — charge fully in Boise before heading up Hwy 55. Beautiful but remote stretch"><span class="sc-icon">⚡</span><span class="sc-name">Boise, ID</span>&nbsp;<span class="sc-warn">~1.5 hrs S</span></div></td>
+        <td class="col-detail">Hidden gem. Payette Lake — pristine mountain swim spot. Feels like Tahoe 30 years ago.</td>
         <td class="col-house">Airbnb</td>
         <td class="col-cost"><span class="cost-paid">$700</span></td>
       </tr><tr class="data-row " onclick="rowClick('pnw-8',3,this,9)">
@@ -763,7 +774,7 @@ tr.detail-row > td{padding:0 !important;border-bottom:1px solid var(--div) !impo
         <td class="col-stop">Coeur d'Alene, ID</td>
         <td class="col-nights"><span class="nights-pill">4n</span></td>
         <td class="col-drive">~2.5 hrs from McCall via US-95 N</td>
-        <td class="col-detail">Beautiful lake town on the Idaho panhandle. Lake Coeur d'Alene is stunning. Charming walkable downtown, watersports.<div class="sc-info" title="3458 N Fruitland Ln — 14 stalls, 250kW V3 Supercharger, excellent coverage"><span class="sc-icon">⚡</span><span class="sc-name">Coeur d'Alene, ID</span>&nbsp;<span class="sc-dist">in town</span></div></td>
+        <td class="col-detail">Beautiful lake town on the Idaho panhandle. Lake Coeur d'Alene is stunning. Charming walkable downtown, watersports.</td>
         <td class="col-house">Airbnb</td>
         <td class="col-cost"><span class="cost-paid">$700</span></td>
       </tr><tr class="add-stop-row"><td colspan="9"><div class="add-stop-inner"><button class="add-stop-btn" onclick="addStop('pnw-8')"><span class="plus">＋</span> Add a new stop to this section</button></div></td></tr></tbody>
@@ -779,7 +790,7 @@ tr.detail-row > td{padding:0 !important;border-bottom:1px solid var(--div) !impo
         <td class="col-stop">Winthrop, WA</td>
         <td class="col-nights"><span class="nights-pill">4n</span></td>
         <td class="col-drive">~3.5 hrs from CdA via Spokane/WA-20</td>
-        <td class="col-detail">North Cascades Highway — one of the most spectacular drives in America. Old west aesthetic, Methow River swim spots, wildflower meadows.<div class="sc-info" title="No SC in Winthrop — charge in Wenatchee or Chelan before heading up WA-20 through the Cascades"><span class="sc-icon">⚡</span><span class="sc-name">Wenatchee, WA</span>&nbsp;<span class="sc-warn">~1.5 hrs W</span></div></td>
+        <td class="col-detail">North Cascades Highway — one of the most spectacular drives in America. Old west aesthetic, Methow River swim spots, wildflower meadows.</td>
         <td class="col-house">Airbnb</td>
         <td class="col-cost"><span class="cost-paid">$700</span></td>
       </tr><tr class="data-row " onclick="rowClick('pnw-9',1,this,9)">
@@ -789,9 +800,19 @@ tr.detail-row > td{padding:0 !important;border-bottom:1px solid var(--div) !impo
         <td class="col-stop">Seattle, WA</td>
         <td class="col-nights"><span class="nights-pill">4n</span></td>
         <td class="col-drive">~3 hrs from Winthrop</td>
-        <td class="col-detail">City stop. Pike Place Market, Capitol Hill, waterfront, music scene. Gateway to Port Townsend ferry.<div class="sc-info" title="Bothell SC + downtown Seattle locations — well covered"><span class="sc-icon">⚡</span><span class="sc-name">Seattle, WA — multiple</span>&nbsp;<span class="sc-dist">~10 min</span></div></td>
+        <td class="col-detail">City stop. Pike Place Market, Capitol Hill, waterfront, music scene. Gateway to Port Townsend ferry.</td>
         <td class="col-house">Airbnb</td>
         <td class="col-cost"><span class="cost-paid">$900</span></td>
+      </tr><tr class="data-row " onclick="rowClick('pnw-9',2,this,9)">
+        <td class="col-handle"><div class="drag-handle" draggable="true" style="display:none"><span></span><span></span><span></span></div></td>
+        <td class="col-edit"><button class="row-edit-btn" title="Edit this stop" onclick="openModal('pnw-9',2,event)">✏</button></td>
+        <td class="col-dates">New dates</td>
+        <td class="col-stop">New Stop</td>
+        <td class="col-nights">—</td>
+        <td class="col-drive">—</td>
+        <td class="col-detail"></td>
+        <td class="col-house">—</td>
+        <td class="col-cost"><span class="cost-tbd">TBD</span></td>
       </tr><tr class="add-stop-row"><td colspan="9"><div class="add-stop-inner"><button class="add-stop-btn" onclick="addStop('pnw-9')"><span class="plus">＋</span> Add a new stop to this section</button></div></td></tr></tbody>
       </table></div>
     </div><div class="sec-block">
@@ -805,7 +826,7 @@ tr.detail-row > td{padding:0 !important;border-bottom:1px solid var(--div) !impo
         <td class="col-stop">Port Townsend, WA<span class="badge b-anch">anchor</span></td>
         <td class="col-nights"><span class="nights-pill">12n</span></td>
         <td class="col-drive">~2 hrs from Seattle via Kingston ferry</td>
-        <td class="col-detail">Washington's most Ojai-adjacent community. Victorian seaport — largest arts community in the state, intentional living, weekly farmers market, stunning water views. Ask for monthly Airbnb rate.<div class="sc-info" title="1441 E Washington St (Holiday Inn Express) — charge before or after Kingston/Keystone ferry crossing"><span class="sc-icon">⚡</span><span class="sc-name">Sequim, WA</span>&nbsp;<span class="sc-warn">~30 min W</span></div></td>
+        <td class="col-detail">Washington's most Ojai-adjacent community. Victorian seaport — largest arts community in the state, intentional living, weekly farmers market, stunning water views. Ask for monthly Airbnb rate.</td>
         <td class="col-house">Airbnb — ask for monthly</td>
         <td class="col-cost"><span class="cost-paid">$1,800</span></td>
       </tr><tr class="add-stop-row"><td colspan="9"><div class="add-stop-inner"><button class="add-stop-btn" onclick="addStop('pnw-10')"><span class="plus">＋</span> Add a new stop to this section</button></div></td></tr></tbody>
@@ -821,7 +842,7 @@ tr.detail-row > td{padding:0 !important;border-bottom:1px solid var(--div) !impo
         <td class="col-stop">San Juan Islands, WA<span class="badge b-now">⚠ book now</span></td>
         <td class="col-nights"><span class="nights-pill">5n</span></td>
         <td class="col-drive">Ferry from Anacortes (~1.5 hrs)</td>
-        <td class="col-detail">San Juan, Lopez, or Orcas Island. Washington State Ferry takes cars and pets. Book ferry reservation well in advance.<div class="sc-info" title="Charge at Burlington SC (just off I-5, 4 mi north of SR-20 turnoff) before boarding ferry — no Supercharger on the islands"><span class="sc-icon">⚡</span><span class="sc-name">Burlington, WA</span>&nbsp;<span class="sc-warn">~30 min from Anacortes</span></div></td>
+        <td class="col-detail">San Juan, Lopez, or Orcas Island. Washington State Ferry takes cars and pets. Book ferry reservation well in advance.</td>
         <td class="col-house">Airbnb — book early</td>
         <td class="col-cost"><span class="cost-paid">$900</span></td>
       </tr><tr class="add-stop-row"><td colspan="9"><div class="add-stop-inner"><button class="add-stop-btn" onclick="addStop('pnw-11')"><span class="plus">＋</span> Add a new stop to this section</button></div></td></tr></tbody>
@@ -837,7 +858,7 @@ tr.detail-row > td{padding:0 !important;border-bottom:1px solid var(--div) !impo
         <td class="col-stop">Olympia, WA</td>
         <td class="col-nights"><span class="nights-pill">4n</span></td>
         <td class="col-drive">~1.5 hrs from Anacortes</td>
-        <td class="col-detail">Intentional stop. One of the oldest farmers markets in WA. Capitol Lake, Puget Sound access, arts scene.<div class="sc-info" title="SC on I-5 corridor — well placed for the southbound return leg"><span class="sc-icon">⚡</span><span class="sc-name">Olympia, WA</span>&nbsp;<span class="sc-dist">~10 min</span></div></td>
+        <td class="col-detail">Intentional stop. One of the oldest farmers markets in WA. Capitol Lake, Puget Sound access, arts scene.</td>
         <td class="col-house">Airbnb</td>
         <td class="col-cost"><span class="cost-paid">$600</span></td>
       </tr><tr class="data-row " onclick="rowClick('pnw-12',1,this,9)">
@@ -847,17 +868,17 @@ tr.detail-row > td{padding:0 !important;border-bottom:1px solid var(--div) !impo
         <td class="col-stop">Astoria, OR — OPTIONAL<span class="badge b-opt">optional</span></td>
         <td class="col-nights"><span class="nights-pill">2n</span></td>
         <td class="col-drive">~3 hrs from Olympia</td>
-        <td class="col-detail">Victorian fishing port at the mouth of the Columbia River. Add if time and energy allow.<div class="sc-info" title="No SC in Astoria — charge at Longview/Kelso WA or Seaside OR if taking Hwy 101 south"><span class="sc-icon">⚡</span><span class="sc-name">Longview / Kelso, WA</span>&nbsp;<span class="sc-warn">~1 hr N</span></div></td>
+        <td class="col-detail">Victorian fishing port at the mouth of the Columbia River. Add if time and energy allow.</td>
         <td class="col-house">Airbnb if going</td>
         <td class="col-cost"><span class="cost-paid">$350</span></td>
       </tr><tr class="data-row " onclick="rowClick('pnw-12',2,this,9)">
         <td class="col-handle"><div class="drag-handle" draggable="true" style="display:none"><span></span><span></span><span></span></div></td>
         <td class="col-edit"><button class="row-edit-btn" title="Edit this stop" onclick="openModal('pnw-12',2,event)">✏</button></td>
         <td class="col-dates">Tue 9/23–Sat 9/27</td>
-        <td class="col-stop">Eugene — Visit 2 (Pallas)<span class="badge b-booked">✓ booked</span></td>
+        <td class="col-stop">Eugene — Visit 2 (Pallas)</td>
         <td class="col-nights"><span class="nights-pill">4n</span></td>
         <td class="col-drive">~3 hrs from Olympia</td>
-        <td class="col-detail">Second stay with Pallas on the way back. Rest before the final coastal push south.<div class="sc-info" title="Same SC as Visit 1 — easy charge during return stay with Pallas"><span class="sc-icon">⚡</span><span class="sc-name">Eugene, OR (Oakmont Way)</span>&nbsp;<span class="sc-dist">~10 min</span></div></td>
+        <td class="col-detail">Second stay with Pallas on the way back. Rest before the final coastal push south.</td>
         <td class="col-house">Pallas — Free</td>
         <td class="col-cost"><span class="cost-free">Free</span></td>
       </tr><tr class="data-row " onclick="rowClick('pnw-12',3,this,9)">
@@ -867,7 +888,7 @@ tr.detail-row > td{padding:0 !important;border-bottom:1px solid var(--div) !impo
         <td class="col-stop">Crescent City / Smith River, CA</td>
         <td class="col-nights"><span class="nights-pill">3n</span></td>
         <td class="col-drive">~2.5 hrs from Eugene</td>
-        <td class="col-detail">Coastal 101 southbound. Smith River — most pristine river in the lower 48. Redwood National Park.<div class="sc-info" title="1000 Front St — 6 stalls, 150kW, convenient downtown location"><span class="sc-icon">⚡</span><span class="sc-name">Crescent City, CA</span>&nbsp;<span class="sc-dist">in town</span></div></td>
+        <td class="col-detail">Coastal 101 southbound. Smith River — most pristine river in the lower 48. Redwood National Park, Avenue of the Giants.</td>
         <td class="col-house">Airbnb</td>
         <td class="col-cost"><span class="cost-paid">$500</span></td>
       </tr><tr class="data-row " onclick="rowClick('pnw-12',4,this,9)">
@@ -877,7 +898,7 @@ tr.detail-row > td{padding:0 !important;border-bottom:1px solid var(--div) !impo
         <td class="col-stop">Big Sur, CA</td>
         <td class="col-nights"><span class="nights-pill">1n</span></td>
         <td class="col-drive">~3.5 hrs from Crescent City</td>
-        <td class="col-detail">One night on the way home. A single well-chosen Airbnb or inn on the cliffs.<div class="sc-info" title="No SC in Big Sur — charge fully in Salinas before heading down Hwy 1, or King City/Paso Robles heading south"><span class="sc-icon">⚡</span><span class="sc-name">Salinas, CA (N) or King City, CA (S)</span>&nbsp;<span class="sc-warn">~1 hr each way</span></div></td>
+        <td class="col-detail">One night on the way home. A single well-chosen Airbnb or inn on the cliffs.</td>
         <td class="col-house">Airbnb or inn</td>
         <td class="col-cost"><span class="cost-paid">$350</span></td>
       </tr><tr class="data-row " onclick="rowClick('pnw-12',5,this,9)">
@@ -887,17 +908,17 @@ tr.detail-row > td{padding:0 !important;border-bottom:1px solid var(--div) !impo
         <td class="col-stop">Drive to Ojai</td>
         <td class="col-nights"><span class="nights-pill">1n</span></td>
         <td class="col-drive">~2.5 hrs from Big Sur</td>
-        <td class="col-detail">Final transit day. Stop in SLO or Ventura if needed. Then home.<div class="sc-info" title="SLO SC is a perfect pit stop on the drive south; Ventura SC also on route before Ojai"><span class="sc-icon">⚡</span><span class="sc-name">San Luis Obispo, CA</span>&nbsp;<span class="sc-dist">on route</span></div></td>
+        <td class="col-detail">Final transit day. Stop in SLO or Ventura if needed. Then home.</td>
         <td class="col-house">Airbnb if needed</td>
         <td class="col-cost"><span class="cost-paid">$150</span></td>
       </tr><tr class="data-row " onclick="rowClick('pnw-12',6,this,9)">
         <td class="col-handle"><div class="drag-handle" draggable="true" style="display:none"><span></span><span></span><span></span></div></td>
         <td class="col-edit"><button class="row-edit-btn" title="Edit this stop" onclick="openModal('pnw-12',6,event)">✏</button></td>
         <td class="col-dates">~Thu 10/3</td>
-        <td class="col-stop">Ojai / Venice, CA<span class="badge b-booked">✓ booked</span></td>
+        <td class="col-stop">Ojai / Venice, CA</td>
         <td class="col-nights">—</td>
         <td class="col-drive">—</td>
-        <td class="col-detail">Home. Trip complete. 🎉<div class="sc-info" title="987 W Ojai Ave — 12 stalls, right in town. You're home! 🎉"><span class="sc-icon">⚡</span><span class="sc-name">Ojai, CA</span>&nbsp;<span class="sc-dist">in town</span></div></td>
+        <td class="col-detail">Home. Trip complete. 🎉</td>
         <td class="col-house">Home</td>
         <td class="col-cost"><span class="cost-free">Free</span></td>
       </tr><tr class="add-stop-row"><td colspan="9"><div class="add-stop-inner"><button class="add-stop-btn" onclick="addStop('pnw-12')"><span class="plus">＋</span> Add a new stop to this section</button></div></td></tr></tbody>
@@ -947,7 +968,7 @@ tr.detail-row > td{padding:0 !important;border-bottom:1px solid var(--div) !impo
 </main>
 
 <!-- Edit modal -->
-<div class="edit-modal-wrap" id="edit-modal" style="display:none" onclick="closeModalBg(event)">
+<div class="edit-modal-wrap" id="edit-modal" style="display: none;" onclick="closeModalBg(event)">
   <div class="edit-modal">
     <button class="close-modal" onclick="document.getElementById('edit-modal').style.display='none'">✕</button>
     <h3 id="modal-title">Edit Stop</h3>
@@ -1259,40 +1280,6 @@ const ACTS = {
   ],
 };
 
-// ── SUPERCHARGER DATA ─────────────────────────────────
-// sc: { name, dist, note, warn? }  warn=true turns dist red (plan ahead)
-const SC_DATA = {
-  'Land in LA — Venice':            {name:'Venice Blvd, Los Angeles',               dist:'in the neighborhood',  note:'Multiple SCs in LA — Venice Blvd SC ~3 min from home base'},
-  'Depart for Joshua Tree':         {name:'Cabazon, CA (I-10)',                      dist:'~45 min on route',     note:'Charge at Cabazon Supercharger en route to JTree — good stopping point'},
-  'Joshua Tree, CA':                {name:'Twentynine Palms, CA',                   dist:'~5 min',               note:'73829 Baseline Rd — 8 stalls, right at the park entrance area'},
-  'Three Rivers, CA':               {name:'Visalia, CA',                             dist:'~35 min',              note:'Charge before heading into Sequoia — no chargers in Three Rivers itself', warn:true},
-  'Santa Cruz, CA':                 {name:'Capitola, CA',                            dist:'~10 min',              note:'SC at Capitola Mall — easy and very convenient'},
-  'SF / Marin / Stinson Beach':     {name:'Corte Madera / Mill Valley, CA',         dist:'~15 min',              note:'Multiple SCs in Marin; well covered for this whole leg'},
-  'Russian River / Guerneville':    {name:'Santa Rosa, CA',                          dist:'~20 min',              note:'Nearest SC; West Sonoma Inn in Guerneville has Tesla Destination Charger for overnight top-up'},
-  'Napa Valley':                    {name:'Napa, CA — 2 locations',                 dist:'in town',              note:'Bel Aire Plaza + Factory Stores Dr — excellent coverage right in Napa'},
-  'Nevada City, CA':                {name:'Auburn, CA',                              dist:'~25 min S',            note:'Charge at Auburn SC before heading into the foothills — no Supercharger in Nevada City', warn:true},
-  'Incline Village, NV':            {name:'Incline Village, NV',                    dist:'in town',              note:'930 Tahoe Blvd — 10 stalls, 150kW, right in the village'},
-  'Mount Shasta, CA':               {name:'Redding, CA (1 hr S) or Yreka, CA (30 min N)', dist:'30–60 min',     note:'Charge in Redding before driving up; Yreka SC on route to Ashland. Tree House in town has Tesla Destination Charger', warn:true},
-  'Ashland, OR':                    {name:'Ashland, OR',                             dist:'in town',              note:'24-stall SC right off I-5 — great stop at the Oregon border'},
-  'Eugene, OR':                     {name:'Eugene, OR (Oakmont Way)',               dist:'~10 min',              note:'New SC near Autzen Stadium; Valley River Center also has chargers'},
-  'Bend / Sunriver, OR':            {name:'Bend, OR — 2 locations',                 dist:'~5 min',               note:'S Hwy 97 + SW Industrial Way — excellent coverage in Bend'},
-  'Twin Falls, ID':                 {name:'Twin Falls, ID',                          dist:'in town',              note:'2015 Neilsen Point Pl — 8 stalls, at the Visitor Center area near Shoshone Falls'},
-  'Boise, ID':                      {name:'Boise, ID',                               dist:'~10 min',              note:'Supercharger confirmed in Boise — check Tesla app for exact location & stall count'},
-  'McCall, ID':                     {name:'Boise, ID',                               dist:'~1.5 hrs S',           note:'No Supercharger in McCall — charge fully in Boise before heading up Hwy 55. Beautiful but remote stretch', warn:true},
-  "Coeur d'Alene, ID":              {name:"Coeur d'Alene, ID",                       dist:'in town',              note:"3458 N Fruitland Ln — 14 stalls, 250kW V3 Supercharger, excellent coverage"},
-  'Winthrop, WA':                   {name:'Wenatchee, WA',                           dist:'~1.5 hrs W',           note:'No SC in Winthrop — charge in Wenatchee or Chelan before heading up WA-20 through the Cascades', warn:true},
-  'Seattle, WA':                    {name:'Seattle, WA — multiple',                 dist:'~10 min',              note:'Bothell SC + downtown Seattle locations — well covered'},
-  'Port Townsend, WA':              {name:'Sequim, WA',                              dist:'~30 min W',            note:'1441 E Washington St (Holiday Inn Express) — charge before or after Kingston/Keystone ferry crossing', warn:true},
-  'San Juan Islands, WA':           {name:'Burlington, WA',                          dist:'~30 min from Anacortes', note:'Charge at Burlington SC (just off I-5, 4 mi north of SR-20 turnoff) before boarding ferry — no Supercharger on the islands', warn:true},
-  'Olympia, WA':                    {name:'Olympia, WA',                             dist:'~10 min',              note:'SC on I-5 corridor — well placed for the southbound return leg'},
-  'Astoria, OR — OPTIONAL':         {name:'Longview / Kelso, WA',                   dist:'~1 hr N',              note:'No SC in Astoria — charge at Longview/Kelso WA or Seaside OR if taking Hwy 101 south', warn:true},
-  'Eugene — Visit 2 (Pallas)':      {name:'Eugene, OR (Oakmont Way)',               dist:'~10 min',              note:'Same SC as Visit 1 — easy charge during return stay with Pallas'},
-  'Crescent City / Smith River, CA':{name:'Crescent City, CA',                       dist:'in town',              note:'1000 Front St — 6 stalls, 150kW, convenient downtown location'},
-  'Big Sur, CA':                    {name:'Salinas, CA (N) or King City, CA (S)',   dist:'~1 hr each way',       note:'No SC in Big Sur — charge fully in Salinas before heading down Hwy 1, or King City/Paso Robles heading south', warn:true},
-  'Drive to Ojai':                  {name:'San Luis Obispo, CA',                     dist:'on route',             note:'SLO SC is a perfect pit stop on the drive south; Ventura SC also on route before Ojai'},
-  'Ojai / Venice, CA':              {name:'Ojai, CA',                                dist:'in town',              note:"987 W Ojai Ave — 12 stalls, right in town. You're home! 🎉"},
-};
-
 // ── DATA ─────────────────────────────────────────────
 const NE_ARRIVAL=[
   {dates:"Thu 5/14",        stop:"Fly JFK → Centerport",      details:"Uber to Centerport, sleep the night, drop the pets off. Take Subaru or rent a car.",    housing:"N/A",               cost:null, nights:null, booked:true, s:"2026-05-14",e:"2026-05-14"},
@@ -1432,12 +1419,6 @@ function fc(s){if(s.free||s.cost===0)return'<span class="cost-free">Free</span>'
 function bgs(s){let b='';if(s.booked)b+='<span class="badge b-booked">✓ booked</span>';else if(s.confirmed)b+='<span class="badge b-conf">confirmed</span>';if(s.bookNow&&!s.booked)b+='<span class="badge b-now">⚠ book now</span>';if(s.optional)b+='<span class="badge b-opt">optional</span>';if(s.anchor)b+='<span class="badge b-anch">anchor</span>';return b;}
 function handle(){return`<td class="col-handle"><div class="drag-handle" draggable="true" style="display:none"><span></span><span></span><span></span></div></td>`;}
 function escH(s){return(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');}
-function scCell(s){
-  const sc=SC_DATA[s.stop];
-  if(!sc)return'';
-  const distCls=sc.warn?'sc-warn':'sc-dist';
-  return`<div class="sc-info" title="${escH(sc.note)}"><span class="sc-icon">⚡</span><span class="sc-name">${escH(sc.name)}</span>&nbsp;<span class="${distCls}">${escH(sc.dist)}</span></div>`;
-}
 function houseCell(s){
   const h=s.housing||'—';
   const links=s.airbnbs&&s.airbnbs.length>0?s.airbnbs:(s.airbnb?[{url:s.airbnb,label:'Listing'}]:[]);
@@ -1569,8 +1550,6 @@ function buildActListHTML(acts,dataKey,idx,pid){
 }
 
 function buildDetailPanel(dataKey,idx,stop,colspan,pid){
-  const sc=SC_DATA[stop.stop];
-  const scPanelHTML=sc?`<div style="margin-bottom:16px;padding:10px 14px;background:rgba(232,160,32,.07);border:1px solid rgba(232,160,32,.2);border-radius:10px;font-size:12px;"><div style="font-size:10px;text-transform:uppercase;letter-spacing:.6px;font-weight:700;color:var(--amber);margin-bottom:5px;">⚡ Nearest Tesla Supercharger</div><div style="font-weight:700;color:var(--text)">${escH(sc.name)}</div><div style="color:var(--t3);margin-top:2px;">${sc.warn?'<span style="color:var(--red);font-weight:700">⚠ Plan ahead — </span>':''}${escH(sc.dist)} · ${escH(sc.note)}</div></div>`:'';
   const acts=getStopActs(dataKey,idx);
   const fkey=`friends_${dataKey}_${idx}`;
   let friends=[];try{friends=JSON.parse(localStorage.getItem(fkey)||'[]');}catch(e){}
@@ -1579,7 +1558,7 @@ function buildDetailPanel(dataKey,idx,stop,colspan,pid){
     ?friends.map((f,fi)=>`<span class="friend-chip">${escH(f)} <button onclick="removeFriend('${fkey}','${pid}',${fi})">✕</button></span>`).join('')
     :'<span class="friend-empty">No friends added yet</span>';
   const tr=document.createElement('tr');tr.id=pid;tr.className='detail-row';
-  tr.innerHTML=`<td colspan="${colspan}"><div class="detail-panel">${scPanelHTML}<div class="detail-grid">
+  tr.innerHTML=`<td colspan="${colspan}"><div class="detail-panel"><div class="detail-grid">
     <div>
       <div class="detail-section-label">🗺 Activities &amp; Local Picks</div>
       <div class="act-edit-hint">Hover any item to remove it</div>
@@ -1764,7 +1743,7 @@ function renderPNW(){
         <td class="col-stop">${s.stop}${bgs(s)}</td>
         <td class="col-nights">${np}</td>
         <td class="col-drive">${s.drive||'—'}</td>
-        <td class="col-detail">${s.details}${scCell(s)}</td>
+        <td class="col-detail">${s.details}</td>
         <td class="col-house">${houseCell(s)}</td>
         <td class="col-cost">${fc(s)}</td>
       </tr>`;
