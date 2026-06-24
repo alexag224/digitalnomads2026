@@ -334,6 +334,40 @@ tr.detail-row > td{padding:0 !important;border-bottom:1px solid var(--div) !impo
 .cal-legend-item{display:flex;align-items:center;gap:7px;font-size:11px;color:var(--t2);font-weight:600;}
 .cal-legend-swatch{width:12px;height:12px;border-radius:4px;flex-shrink:0;}
 
+/* ── AI Trip Chat ── */
+.chat-fab{position:fixed;bottom:28px;right:28px;z-index:450;width:54px;height:54px;border-radius:50%;background:linear-gradient(135deg,var(--accent),#b05820);color:#fff;font-size:22px;border:none;cursor:pointer;box-shadow:0 4px 20px rgba(217,104,48,.4);display:flex;align-items:center;justify-content:center;transition:all .2s ease;}
+.chat-fab:hover{transform:scale(1.08);box-shadow:0 6px 28px rgba(217,104,48,.5);}
+.chat-fab-label{position:absolute;right:62px;background:var(--text);color:#fff;font-size:11px;font-weight:700;padding:5px 10px;border-radius:var(--pill);white-space:nowrap;opacity:0;pointer-events:none;transition:opacity .2s;}
+.chat-fab:hover .chat-fab-label{opacity:1;}
+.chat-panel{position:fixed;bottom:96px;right:28px;z-index:450;width:390px;max-width:calc(100vw - 40px);background:var(--ww);border-radius:var(--r-xl);box-shadow:0 8px 48px rgba(0,0,0,.2);display:flex;flex-direction:column;max-height:560px;border:1px solid var(--sb);transition:all .22s ease;transform-origin:bottom right;}
+.chat-panel.hidden{opacity:0;transform:scale(.92) translateY(12px);pointer-events:none;}
+.chat-hdr{padding:16px 20px 14px;border-bottom:1px solid var(--div);display:flex;align-items:center;gap:12px;flex-shrink:0;}
+.chat-hdr-icon{width:34px;height:34px;border-radius:10px;background:linear-gradient(135deg,var(--accent),#b05820);display:flex;align-items:center;justify-content:center;font-size:16px;flex-shrink:0;}
+.chat-hdr-text{flex:1;}
+.chat-hdr-title{font-size:14px;font-weight:700;color:var(--text);}
+.chat-hdr-sub{font-size:11px;color:var(--t3);margin-top:1px;}
+.chat-close{background:none;border:none;cursor:pointer;color:var(--t3);font-size:18px;padding:4px;border-radius:8px;line-height:1;transition:all .15s;}
+.chat-close:hover{background:var(--cream);color:var(--text);}
+.chat-msgs{flex:1;overflow-y:auto;padding:14px 16px;display:flex;flex-direction:column;gap:8px;min-height:120px;}
+.chat-bubble{max-width:90%;padding:10px 14px;font-size:13px;line-height:1.55;}
+.chat-bubble.user{background:var(--text);color:#fff;align-self:flex-end;border-radius:14px 14px 3px 14px;}
+.chat-bubble.assistant{background:var(--cream);color:var(--t2);align-self:flex-start;border-radius:14px 14px 14px 3px;border:1px solid var(--div);}
+.chat-bubble.loading{opacity:.55;}
+.chat-dots{display:inline-flex;gap:4px;align-items:center;height:18px;}
+.chat-dots span{width:5px;height:5px;border-radius:50%;background:var(--t3);animation:chatdot 1.2s ease-in-out infinite;}
+.chat-dots span:nth-child(2){animation-delay:.2s;}
+.chat-dots span:nth-child(3){animation-delay:.4s;}
+@keyframes chatdot{0%,80%,100%{transform:scale(.6);opacity:.4}40%{transform:scale(1);opacity:1}}
+.chat-sugs{padding:0 16px 10px;display:flex;flex-wrap:wrap;gap:5px;}
+.chat-sug{background:var(--acc-lt);border:1px solid rgba(217,104,48,.2);border-radius:var(--pill);padding:5px 11px;font-size:11px;color:var(--accent);cursor:pointer;font-weight:600;transition:all .15s;font-family:inherit;}
+.chat-sug:hover{background:var(--acc-md);}
+.chat-input-row{padding:12px 14px;border-top:1px solid var(--div);display:flex;gap:8px;flex-shrink:0;}
+.chat-input{flex:1;background:var(--cream);border:1px solid rgba(180,150,120,.3);border-radius:10px;padding:9px 12px;font-size:13px;color:var(--text);outline:none;font-family:inherit;resize:none;}
+.chat-input:focus{border-color:var(--accent);box-shadow:0 0 0 3px rgba(217,104,48,.1);}
+.chat-send{height:36px;padding:0 16px;border-radius:var(--pill);border:none;background:var(--text);color:#fff;font-size:12px;font-weight:700;cursor:pointer;white-space:nowrap;transition:all .15s;font-family:inherit;}
+.chat-send:hover{background:#2e2420;}
+.chat-send:disabled{opacity:.35;cursor:not-allowed;}
+
 @media(max-width:900px){.stats-grid{grid-template-columns:repeat(2,1fr)}.budget-row{grid-template-columns:1fr}.col-drive,.col-nights{display:none}.hdr{padding:0 16px}.main{padding:18px 14px 40px}.detail-grid{grid-template-columns:1fr}.cal-day{min-height:56px;padding:5px 6px}.cal-stop-nm{font-size:10px}.cal-leg-lbl{display:none}}
 @media(max-width:580px){.col-house{display:none}.here-badge{display:none}.here-loc{font-size:20px}.tab-bar{width:100%;justify-content:center}.cal-day{min-height:44px}.cal-stop-nm{-webkit-line-clamp:1}}
 </style>
@@ -349,7 +383,7 @@ tr.detail-row > td{padding:0 !important;border-bottom:1px solid var(--div) !impo
     </div>
   </div>
   <div class="hdr-right">
-    <span class="hdr-date" id="today-display">Sun, May 24, 2026</span>
+    <span class="hdr-date" id="today-display">Tue, Jun 23, 2026</span>
     <button class="btn btn-reorder" onclick="toggleReorder()">⠿ Reorder Stops</button>
     <button class="btn btn-dark" onclick="exportHTML()">↓ Export for GitHub</button>
   </div>
@@ -361,34 +395,34 @@ tr.detail-row > td{padding:0 !important;border-bottom:1px solid var(--div) !impo
     <div class="here-dot"></div>
     <div style="flex:1">
       <div class="here-chip">📍 You are here</div>
-      <div class="here-loc" id="here-loc">Centerport/ Wayside</div>
-      <div class="here-sub" id="here-sub">Dad's house, w/o pets · Trevgela Engagement Party Sunday · Memorial Day</div>
+      <div class="here-loc" id="here-loc">Tehachapi</div>
+      <div class="here-sub" id="here-sub"></div>
     </div>
     <div class="here-badge">
-      <div class="hbd" id="here-dates-d">Sat–Mon 5/23–25</div>
-      <div class="hbt" id="here-dates-t">Free</div>
+      <div class="hbd" id="here-dates-d">Mon 6/22–Tue 6/23</div>
+      <div class="hbt" id="here-dates-t">Airbnb</div>
     </div>
   </div>
 
   <div class="prog-wrap">
     <div class="prog-row">
       <span>May 14, 2026</span>
-      <span id="prog-pct" style="color:var(--accent);font-weight:700">7% complete</span>
+      <span id="prog-pct" style="color:var(--accent);font-weight:700">28% complete</span>
       <span>Oct 3, 2026</span>
     </div>
-    <div class="prog-track"><div class="prog-fill" id="prog-fill" style="width: 7%;"></div></div>
+    <div class="prog-track"><div class="prog-fill" id="prog-fill" style="width: 28%;"></div></div>
   </div>
 
   <div class="stats-grid">
-    <div class="stat-card"><div class="s-label">Days traveled</div><div class="s-val ca" id="stat-days">10</div><div class="s-sub">of ~143 total</div></div>
-    <div class="stat-card"><div class="s-label">Stops remaining</div><div class="s-val ct" id="stat-stops">41</div><div class="s-sub">across both trips</div></div>
-    <div class="stat-card"><div class="s-label">Locations booked</div><div class="s-val cg" id="stat-booked">15/43</div><div class="s-sub" id="stat-booked-sub">28 still need booking</div></div>
+    <div class="stat-card"><div class="s-label">Days traveled</div><div class="s-val ca" id="stat-days">40</div><div class="s-sub">of ~143 total</div></div>
+    <div class="stat-card"><div class="s-label">Stops remaining</div><div class="s-val ct" id="stat-stops">27</div><div class="s-sub">across both trips</div></div>
+    <div class="stat-card"><div class="s-label">Locations booked</div><div class="s-val cg" id="stat-booked">22/43</div><div class="s-sub" id="stat-booked-sub">21 still need booking</div></div>
     <div class="stat-card"><div class="s-label">Free nights saved</div><div class="s-val cg">$3.8k+</div><div class="s-sub">Eugene ×2, Venice, family</div></div>
   </div>
 
   <div class="tab-bar">
-    <button class="tab-btn active" onclick="switchTab('ne')">🗺 Northeast Trip</button>
-    <button class="tab-btn" onclick="switchTab('pnw')">🌲 Pacific Northwest</button>
+    <button class="tab-btn" onclick="switchTab('ne')">🗺 Northeast Trip</button>
+    <button class="tab-btn active" onclick="switchTab('pnw')">🌲 Pacific Northwest</button>
     <button class="tab-btn" onclick="switchTab('book')">📋 Booking Checklist</button>
     <button class="tab-btn" onclick="switchTab('cal')">📅 Calendar</button>
   </div>
@@ -396,7 +430,7 @@ tr.detail-row > td{padding:0 !important;border-bottom:1px solid var(--div) !impo
   <div class="reorder-hint">⠿ Reorder mode — grab the handles to drag stops. Click ✏ on any row to edit it.</div>
 
   <!-- NORTHEAST -->
-  <div id="tab-ne" class="tab-content">
+  <div id="tab-ne" class="tab-content" style="display: none;">
     <div class="sec-block">
       <div class="sec-label"><span class="sec-pip pip-pre"></span>Arrival + Events — Long Island<span class="sec-label-right">✏ click any row to edit · click row to expand</span></div>
       <div class="tbl-wrap">
@@ -418,7 +452,7 @@ tr.detail-row > td{padding:0 !important;border-bottom:1px solid var(--div) !impo
       <td class="col-detail">Mom's house — settle in with pets</td>
       <td class="col-house">Free</td>
       <td class="col-cost"><span class="cost-free">Free</span></td>
-    </tr><tr class="data-row is-current" onclick="rowClick('ne-arrival',2,this,7)">
+    </tr><tr class="data-row is-past" onclick="rowClick('ne-arrival',2,this,7)">
       <td class="col-handle"><div class="drag-handle" draggable="true" style="display:none"><span></span><span></span><span></span></div></td>
       <td class="col-edit"><button class="row-edit-btn" title="Edit this stop" onclick="openModal('ne-arrival',2,event)">✏</button></td>
       <td class="col-dates">Sat–Mon 5/23–25</td>
@@ -427,7 +461,7 @@ tr.detail-row > td{padding:0 !important;border-bottom:1px solid var(--div) !impo
       <td class="col-detail">Dad's house, w/o pets · Trevgela Engagement Party Sunday · Memorial Day</td>
       <td class="col-house">Free</td>
       <td class="col-cost"><span class="cost-free">Free</span></td>
-    </tr><tr class="data-row " onclick="rowClick('ne-arrival',3,this,7)">
+    </tr><tr class="data-row is-past" onclick="rowClick('ne-arrival',3,this,7)">
       <td class="col-handle"><div class="drag-handle" draggable="true" style="display:none"><span></span><span></span><span></span></div></td>
       <td class="col-edit"><button class="row-edit-btn" title="Edit this stop" onclick="openModal('ne-arrival',3,event)">✏</button></td>
       <td class="col-dates">Tue 5/26</td>
@@ -436,7 +470,7 @@ tr.detail-row > td{padding:0 !important;border-bottom:1px solid var(--div) !impo
       <td class="col-detail">Uber to Centerport, sleep the night, drop the pets off. Take Subaru or rent a car.</td>
       <td class="col-house">N/A</td>
       <td class="col-cost"><span class="cost-tbd">TBD</span></td>
-    </tr><tr class="data-row " onclick="rowClick('ne-arrival',4,this,7)">
+    </tr><tr class="data-row is-past" onclick="rowClick('ne-arrival',4,this,7)">
       <td class="col-handle"><div class="drag-handle" draggable="true" style="display:none"><span></span><span></span><span></span></div></td>
       <td class="col-edit"><button class="row-edit-btn" title="Edit this stop" onclick="openModal('ne-arrival',4,event)">✏</button></td>
       <td class="col-dates">Mon 5/26</td>
@@ -451,7 +485,7 @@ tr.detail-row > td{padding:0 !important;border-bottom:1px solid var(--div) !impo
     <div class="sec-block">
       <div class="sec-label"><span class="sec-pip pip-leg"></span>Road Trip — With Pets<span class="sec-label-right">✏ click any row to edit · click row to expand</span></div>
       <div class="tbl-wrap">
-        <table class="stop-tbl"><thead><tr><th class="th-handle"></th><th class="th-edit"></th><th class="col-dates">Dates</th><th class="col-stop">Stop</th><th class="col-drive">Drive</th><th class="col-detail">Details</th><th class="col-house">Housing</th><th class="col-cost">Cost</th></tr></thead><tbody id="ne-roadtrip"><tr class="data-row " onclick="rowClick('ne-roadtrip',0,this,8)">
+        <table class="stop-tbl"><thead><tr><th class="th-handle"></th><th class="th-edit"></th><th class="col-dates">Dates</th><th class="col-stop">Stop</th><th class="col-drive">Drive</th><th class="col-detail">Details</th><th class="col-house">Housing</th><th class="col-cost">Cost</th></tr></thead><tbody id="ne-roadtrip"><tr class="data-row is-past" onclick="rowClick('ne-roadtrip',0,this,8)">
       <td class="col-handle"><div class="drag-handle" draggable="true" style="display:none"><span></span><span></span><span></span></div></td>
       <td class="col-edit"><button class="row-edit-btn" title="Edit this stop" onclick="openModal('ne-roadtrip',0,event)">✏</button></td>
       <td class="col-dates">Tues–Fri 5/27–29</td>
@@ -460,7 +494,7 @@ tr.detail-row > td{padding:0 !important;border-bottom:1px solid var(--div) !impo
       <td class="col-detail">Big Bass Lane | 4 Nights · Barrington + Kripalu + Fly Fishing</td>
       <td class="col-house">Free</td>
       <td class="col-cost"><span class="cost-free">Free</span></td>
-    </tr><tr class="data-row " onclick="rowClick('ne-roadtrip',1,this,8)">
+    </tr><tr class="data-row is-past" onclick="rowClick('ne-roadtrip',1,this,8)">
       <td class="col-handle"><div class="drag-handle" draggable="true" style="display:none"><span></span><span></span><span></span></div></td>
       <td class="col-edit"><button class="row-edit-btn" title="Edit this stop" onclick="openModal('ne-roadtrip',1,event)">✏</button></td>
       <td class="col-dates">Fri 5/29–Tues 6/2</td>
@@ -469,7 +503,7 @@ tr.detail-row > td{padding:0 !important;border-bottom:1px solid var(--div) !impo
       <td class="col-detail">Chic Farm House | 4 Nights · Sunday Farmer's Market in Stowe · 45 min drive to Burlington</td>
       <td class="col-house">Airbnb</td>
       <td class="col-cost"><span class="cost-paid">$1,251</span></td>
-    </tr><tr class="data-row " onclick="rowClick('ne-roadtrip',2,this,8)">
+    </tr><tr class="data-row is-past" onclick="rowClick('ne-roadtrip',2,this,8)">
       <td class="col-handle"><div class="drag-handle" draggable="true" style="display:none"><span></span><span></span><span></span></div></td>
       <td class="col-edit"><button class="row-edit-btn" title="Edit this stop" onclick="openModal('ne-roadtrip',2,event)">✏</button></td>
       <td class="col-dates">Tues 6/2–Fri 6/5</td>
@@ -478,7 +512,7 @@ tr.detail-row > td{padding:0 !important;border-bottom:1px solid var(--div) !impo
       <td class="col-detail">Pondside Retreat | 3 Nights · Saturday Farmer's Market</td>
       <td class="col-house">Airbnb</td>
       <td class="col-cost"><span class="cost-paid">$776</span></td>
-    </tr><tr class="data-row " onclick="rowClick('ne-roadtrip',3,this,8)">
+    </tr><tr class="data-row is-past" onclick="rowClick('ne-roadtrip',3,this,8)">
       <td class="col-handle"><div class="drag-handle" draggable="true" style="display:none"><span></span><span></span><span></span></div></td>
       <td class="col-edit"><button class="row-edit-btn" title="Edit this stop" onclick="openModal('ne-roadtrip',3,event)">✏</button></td>
       <td class="col-dates">Fri 6/5–Sun 6/7</td>
@@ -493,7 +527,7 @@ tr.detail-row > td{padding:0 !important;border-bottom:1px solid var(--div) !impo
     <div class="sec-block">
       <div class="sec-label"><span class="sec-pip pip-return"></span>Return — Long Island<span class="sec-label-right">✏ click any row to edit · click row to expand</span></div>
       <div class="tbl-wrap">
-        <table class="stop-tbl"><thead><tr><th class="th-handle"></th><th class="th-edit"></th><th class="col-dates">Dates</th><th class="col-stop">Stop</th><th class="col-detail">Details</th><th class="col-house">Housing</th><th class="col-cost">Cost</th></tr></thead><tbody id="ne-return"><tr class="data-row " onclick="rowClick('ne-return',0,this,7)">
+        <table class="stop-tbl"><thead><tr><th class="th-handle"></th><th class="th-edit"></th><th class="col-dates">Dates</th><th class="col-stop">Stop</th><th class="col-detail">Details</th><th class="col-house">Housing</th><th class="col-cost">Cost</th></tr></thead><tbody id="ne-return"><tr class="data-row is-past" onclick="rowClick('ne-return',0,this,7)">
       <td class="col-handle"><div class="drag-handle" draggable="true" style="display:none"><span></span><span></span><span></span></div></td>
       <td class="col-edit"><button class="row-edit-btn" title="Edit this stop" onclick="openModal('ne-return',0,event)">✏</button></td>
       <td class="col-dates">Mon 6/8–Weds 6/10</td>
@@ -502,7 +536,7 @@ tr.detail-row > td{padding:0 !important;border-bottom:1px solid var(--div) !impo
       <td class="col-detail">Drop off Rental Car · Regroup in Centerport</td>
       <td class="col-house">Free</td>
       <td class="col-cost"><span class="cost-free">Free</span></td>
-    </tr><tr class="data-row " onclick="rowClick('ne-return',1,this,7)">
+    </tr><tr class="data-row is-past" onclick="rowClick('ne-return',1,this,7)">
       <td class="col-handle"><div class="drag-handle" draggable="true" style="display:none"><span></span><span></span><span></span></div></td>
       <td class="col-edit"><button class="row-edit-btn" title="Edit this stop" onclick="openModal('ne-return',1,event)">✏</button></td>
       <td class="col-dates">Fri 6/12- Sunday 6/14</td>
@@ -511,7 +545,7 @@ tr.detail-row > td{padding:0 !important;border-bottom:1px solid var(--div) !impo
       <td class="col-detail">1.5 Hour Drive · Leave Animals</td>
       <td class="col-house">Debbie's House</td>
       <td class="col-cost"><span class="cost-tbd">TBD</span></td>
-    </tr><tr class="data-row " onclick="rowClick('ne-return',2,this,7)">
+    </tr><tr class="data-row is-past" onclick="rowClick('ne-return',2,this,7)">
       <td class="col-handle"><div class="drag-handle" draggable="true" style="display:none"><span></span><span></span><span></span></div></td>
       <td class="col-edit"><button class="row-edit-btn" title="Edit this stop" onclick="openModal('ne-return',2,event)">✏</button></td>
       <td class="col-dates">Sunday 6/14–Weds 6/17</td>
@@ -544,7 +578,7 @@ tr.detail-row > td{padding:0 !important;border-bottom:1px solid var(--div) !impo
   </div>
 
   <!-- PNW -->
-  <div id="tab-pnw" class="tab-content" style="display:none">
+  <div id="tab-pnw" class="tab-content" style="display: block;">
     <div class="trip-bar">
       <span>🐕 Charlie (Maltipoo)</span><span>🐈 Dee Dee (cat)</span><span>🚗 Own car</span>
       <span>🌊 Swim spots · farmers markets · community roots</span><span>📅 June 17 – ~Oct 3, 2026</span>
@@ -553,7 +587,7 @@ tr.detail-row > td{padding:0 !important;border-bottom:1px solid var(--div) !impo
       <div class="sec-label"><span class="sec-pip pip-pre"></span>Pre-Trip — Los Angeles / Venice<span class="sec-label-right">✏ click row to edit · click row to expand activities</span></div>
       <div class="tbl-wrap"><table class="stop-tbl">
         <thead><tr><th class="th-handle"></th><th class="th-edit"></th><th class="col-dates">Dates</th><th class="col-stop">Stop</th><th class="col-nights">Nights</th><th class="col-drive">Drive</th><th class="col-detail">Details</th><th class="col-house">Housing / Airbnb</th><th class="col-cost">Cost</th></tr></thead>
-        <tbody id="tbody-pnw-0"><tr class="data-row " onclick="rowClick('pnw-0',0,this,9)">
+        <tbody id="tbody-pnw-0"><tr class="data-row is-past" onclick="rowClick('pnw-0',0,this,9)">
         <td class="col-handle"><div class="drag-handle" draggable="true" style="display:none"><span></span><span></span><span></span></div></td>
         <td class="col-edit"><button class="row-edit-btn" title="Edit this stop" onclick="openModal('pnw-0',0,event)">✏</button></td>
         <td class="col-dates">Wed 6/17</td>
@@ -563,7 +597,7 @@ tr.detail-row > td{padding:0 !important;border-bottom:1px solid var(--div) !impo
         <td class="col-detail">Return from Northeast trip. Settle in, regroup before the big road trip begins.<div class="sc-info" title="Multiple SCs in LA — Venice Blvd SC ~3 min from home base"><span class="sc-icon">⚡</span><span class="sc-name">Venice Blvd, Los Angeles</span>&nbsp;<span class="sc-dist">in the neighborhood</span></div></td>
         <td class="col-house">Venice home</td>
         <td class="col-cost"><span class="cost-free">Free</span></td>
-      </tr><tr class="data-row " onclick="rowClick('pnw-0',1,this,9)">
+      </tr><tr class="data-row is-past" onclick="rowClick('pnw-0',1,this,9)">
         <td class="col-handle"><div class="drag-handle" draggable="true" style="display:none"><span></span><span></span><span></span></div></td>
         <td class="col-edit"><button class="row-edit-btn" title="Edit this stop" onclick="openModal('pnw-0',1,event)">✏</button></td>
         <td class="col-dates">Fri 6/19</td>
@@ -579,7 +613,7 @@ tr.detail-row > td{padding:0 !important;border-bottom:1px solid var(--div) !impo
       <div class="sec-label"><span class="sec-pip pip-leg"></span>Leg 1 — California Desert<span class="sec-label-right">✏ click row to edit · click row to expand activities</span></div>
       <div class="tbl-wrap"><table class="stop-tbl">
         <thead><tr><th class="th-handle"></th><th class="th-edit"></th><th class="col-dates">Dates</th><th class="col-stop">Stop</th><th class="col-nights">Nights</th><th class="col-drive">Drive</th><th class="col-detail">Details</th><th class="col-house">Housing / Airbnb</th><th class="col-cost">Cost</th></tr></thead>
-        <tbody id="tbody-pnw-1"><tr class="data-row " onclick="rowClick('pnw-1',0,this,9)">
+        <tbody id="tbody-pnw-1"><tr class="data-row is-past" onclick="rowClick('pnw-1',0,this,9)">
         <td class="col-handle"><div class="drag-handle" draggable="true" style="display:none"><span></span><span></span><span></span></div></td>
         <td class="col-edit"><button class="row-edit-btn" title="Edit this stop" onclick="openModal('pnw-1',0,event)">✏</button></td>
         <td class="col-dates">Fri 6/19–Mon 6/22</td>
@@ -588,43 +622,93 @@ tr.detail-row > td{padding:0 !important;border-bottom:1px solid var(--div) !impo
         <td class="col-drive">~2.5 hrs from LA</td>
         <td class="col-detail">Desert decompression. Joshua Tree National Park, Pioneertown, Pappy &amp; Harriet's. Great stargazing and sunrise hikes.<div class="sc-info" title="73829 Baseline Rd — 8 stalls, right at the park entrance area"><span class="sc-icon">⚡</span><span class="sc-name">Twentynine Palms, CA</span>&nbsp;<span class="sc-dist">~5 min</span></div></td>
         <td class="col-house"><a class="house-link" href="https://www.airbnb.com/rooms/1238611828849311315?source_impression_id=p3_1779550866_P3yTe5lKVxbpGZou" target="_blank" rel="noopener" onclick="event.stopPropagation()" title="Listing">Airbnb - Jen and Michelle visiting ↗</a></td>
-        <td class="col-cost"><span class="cost-paid">$600</span></td>
-      </tr><tr class="data-row " onclick="rowClick('pnw-1',1,this,9)">
+        <td class="col-cost"><span class="cost-paid">$1,000</span></td>
+      </tr><tr class="data-row is-current" onclick="rowClick('pnw-1',1,this,9)">
         <td class="col-handle"><div class="drag-handle" draggable="true" style="display:none"><span></span><span></span><span></span></div></td>
         <td class="col-edit"><button class="row-edit-btn" title="Edit this stop" onclick="openModal('pnw-1',1,event)">✏</button></td>
-        <td class="col-dates">New dates</td>
-        <td class="col-stop">New Stop<div class="row-expand-hint"><span class="exp-arrow">▾</span>🗺 activities · 👥 friends</div></td>
-        <td class="col-nights">—</td>
-        <td class="col-drive">—</td>
+        <td class="col-dates">Mon 6/22–Tue 6/23</td>
+        <td class="col-stop">Tehachapi<span class="badge b-booked">✓ booked</span><div class="row-expand-hint"><span class="exp-arrow">▾</span>🗺 activities · 👥 friends</div></td>
+        <td class="col-nights"><span class="nights-pill">1n</span></td>
+        <td class="col-drive">~3hrs from Joshua Tree</td>
         <td class="col-detail"></td>
-        <td class="col-house">—</td>
-        <td class="col-cost"><span class="cost-tbd">TBD</span></td>
+        <td class="col-house"><a class="house-link" href="https://www.airbnb.com/trips/v1/reservation-details/ro/RESERVATION2_CHECKIN/HMBXB39ENM" target="_blank" rel="noopener" onclick="event.stopPropagation()" title="Airbnb">Airbnb ↗</a></td>
+        <td class="col-cost"><span class="cost-paid">$370</span></td>
       </tr><tr class="add-stop-row"><td colspan="9"><div class="add-stop-inner"><button class="add-stop-btn" onclick="addStop('pnw-1')"><span class="plus">＋</span> Add a new stop to this section</button></div></td></tr></tbody>
       </table></div>
     </div><div class="sec-block">
       <div class="sec-label"><span class="sec-pip pip-leg"></span>Leg 2 — Sierra Nevada<span class="sec-label-right">✏ click row to edit · click row to expand activities</span></div>
       <div class="tbl-wrap"><table class="stop-tbl">
         <thead><tr><th class="th-handle"></th><th class="th-edit"></th><th class="col-dates">Dates</th><th class="col-stop">Stop</th><th class="col-nights">Nights</th><th class="col-drive">Drive</th><th class="col-detail">Details</th><th class="col-house">Housing / Airbnb</th><th class="col-cost">Cost</th></tr></thead>
-        <tbody id="tbody-pnw-2"><tr class="data-row " onclick="rowClick('pnw-2',0,this,9)">
+        <tbody id="tbody-pnw-2"><tr class="data-row is-current" onclick="rowClick('pnw-2',0,this,9)">
         <td class="col-handle"><div class="drag-handle" draggable="true" style="display:none"><span></span><span></span><span></span></div></td>
         <td class="col-edit"><button class="row-edit-btn" title="Edit this stop" onclick="openModal('pnw-2',0,event)">✏</button></td>
-        <td class="col-dates">Mon 6/22–Wed 6/24</td>
-        <td class="col-stop">Three Rivers, CA<div class="row-expand-hint"><span class="exp-arrow">▾</span>🗺 activities · 👥 friends</div></td>
+        <td class="col-dates">Tue 6/23–Thu 6/25</td>
+        <td class="col-stop">Three Rivers, CA<span class="badge b-booked">✓ booked</span><div class="row-expand-hint"><span class="exp-arrow">▾</span>🗺 activities · 👥 friends</div></td>
         <td class="col-nights"><span class="nights-pill">2n</span></td>
         <td class="col-drive">~2.5 hrs from JTree</td>
-        <td class="col-detail">Sequoia / Kings Canyon gateway. General Sherman Tree, Giant Forest, Moro Rock. Roaring River swim spots.<div class="sc-info" title="Charge before heading into Sequoia — no chargers in Three Rivers itself"><span class="sc-icon">⚡</span><span class="sc-name">Visalia, CA</span>&nbsp;<span class="sc-warn">~35 min</span></div></td>
-        <td class="col-house"><a class="house-link" href="https://www.airbnb.com/rooms/1284028908621751002?adults=2&amp;check_in=2026-06-22&amp;check_out=2026-06-24&amp;pets=2&amp;search_mode=regular_search&amp;source_impression_id=p3_1779554667_P3SRu7r7cLwCsNG8&amp;previous_page_section_name=1000&amp;federated_search_id=127448e2-a97e-4f4d-82f7-def62ea1967f" target="_blank" rel="noopener" onclick="event.stopPropagation()" title="Listing">Airbnb ↗</a></td>
-        <td class="col-cost"><span class="cost-paid">$963</span></td>
+        <td class="col-detail">Three Rivers<div class="sc-info" title="Charge before heading into Sequoia — no chargers in Three Rivers itself"><span class="sc-icon">⚡</span><span class="sc-name">Visalia, CA</span>&nbsp;<span class="sc-warn">~35 min</span></div></td>
+        <td class="col-house"><a class="house-link" href="https://www.airbnb.com/rooms/1495334602364809004?%3FconfirmationCode=HM9B395TFQ&amp;reservationType=STAY&amp;source_impression_id=p3_1779827123_P3-QZRTZIhEzE0Co" target="_blank" rel="noopener" onclick="event.stopPropagation()" title="Airbnb">Airbnb ↗</a></td>
+        <td class="col-cost"><span class="cost-paid">$662</span></td>
       </tr><tr class="data-row " onclick="rowClick('pnw-2',1,this,9)">
         <td class="col-handle"><div class="drag-handle" draggable="true" style="display:none"><span></span><span></span><span></span></div></td>
         <td class="col-edit"><button class="row-edit-btn" title="Edit this stop" onclick="openModal('pnw-2',1,event)">✏</button></td>
-        <td class="col-dates">Wed 6/24–Fri 6/26</td>
-        <td class="col-stop">Santa Cruz or La Selva<div class="row-expand-hint"><span class="exp-arrow">▾</span>🗺 activities · 👥 friends</div></td>
-        <td class="col-nights"><span class="nights-pill">2n</span></td>
+        <td class="col-dates">Thu 6/25–Mon 6/29</td>
+        <td class="col-stop">Yosemite/ Bass Lake<span class="badge b-booked">✓ booked</span><div class="row-expand-hint"><span class="exp-arrow">▾</span>🗺 activities · 👥 friends</div></td>
+        <td class="col-nights"><span class="nights-pill">7n</span></td>
         <td class="col-drive">~3 hrs via CA-99/CA-152</td>
-        <td class="col-detail">Surf town layover. Boardwalk, Henry Cowell Redwoods, San Lorenzo River swim spots, farmers market.</td>
-        <td class="col-house"><a class="house-link" href="https://www.airbnb.com/rooms/40425386?adults=2&amp;check_in=2026-06-24&amp;check_out=2026-06-26&amp;pets=2&amp;search_mode=regular_search&amp;source_impression_id=p3_1779557896_P3JwlpgIjWnK1Znq&amp;previous_page_section_name=1000&amp;federated_search_id=f7597d52-fe90-4685-8498-0dcdc2a81b5e" target="_blank" rel="noopener" onclick="event.stopPropagation()" title="Listing">Airbnb ↗</a></td>
-        <td class="col-cost"><span class="cost-paid">$688</span></td>
+        <td class="col-detail"></td>
+        <td class="col-house"><a class="house-link" href="https://www.airbnb.com/rooms/562303469130701010?unique_share_id=41200b3f-2a00-45e9-976e-c51161231298&amp;viralityEntryPoint=1&amp;s=76" target="_blank" rel="noopener" onclick="event.stopPropagation()" title="Listing">Airbnb ↗</a></td>
+        <td class="col-cost"><span class="cost-free">Free</span></td>
+      </tr><tr class="data-row " onclick="rowClick('pnw-2',2,this,9)">
+        <td class="col-handle"><div class="drag-handle" draggable="true" style="display:none"><span></span><span></span><span></span></div></td>
+        <td class="col-edit"><button class="row-edit-btn" title="Edit this stop" onclick="openModal('pnw-2',2,event)">✏</button></td>
+        <td class="col-dates">Mon 6/29–Thu 7/2</td>
+        <td class="col-stop">Nevada City<span class="badge b-booked">✓ booked</span><div class="row-expand-hint"><span class="exp-arrow">▾</span>🗺 activities · 👥 friends</div></td>
+        <td class="col-nights">—</td>
+        <td class="col-drive">—</td>
+        <td class="col-detail"></td>
+        <td class="col-house"><a class="house-link" href="https://www.airbnb.com/l/JPqWlFJk?s=67&amp;unique_share_id=24b5adbd-7013-4f4c-85b2-86b47a87898a" target="_blank" rel="noopener" onclick="event.stopPropagation()" title="Cabin">AirBnb ↗</a></td>
+        <td class="col-cost"><span class="cost-paid">$888</span></td>
+      </tr><tr class="data-row " onclick="rowClick('pnw-2',3,this,9)">
+        <td class="col-handle"><div class="drag-handle" draggable="true" style="display:none"><span></span><span></span><span></span></div></td>
+        <td class="col-edit"><button class="row-edit-btn" title="Edit this stop" onclick="openModal('pnw-2',3,event)">✏</button></td>
+        <td class="col-dates">Thu 7/2–Tue 7/7</td>
+        <td class="col-stop">Lake Tahoe<span class="badge b-booked">✓ booked</span><div class="row-expand-hint"><span class="exp-arrow">▾</span>🗺 activities · 👥 friends</div></td>
+        <td class="col-nights">—</td>
+        <td class="col-drive">—</td>
+        <td class="col-detail"></td>
+        <td class="col-house"><a class="house-link" href="https://www.airbnb.com/l/R36v35iU" target="_blank" rel="noopener" onclick="event.stopPropagation()" title="Airbnb">— ↗</a></td>
+        <td class="col-cost"><span class="cost-tbd">TBD</span></td>
+      </tr><tr class="data-row " onclick="rowClick('pnw-2',4,this,9)">
+        <td class="col-handle"><div class="drag-handle" draggable="true" style="display:none"><span></span><span></span><span></span></div></td>
+        <td class="col-edit"><button class="row-edit-btn" title="Edit this stop" onclick="openModal('pnw-2',4,event)">✏</button></td>
+        <td class="col-dates">Tue 7/7–Sun 7/12</td>
+        <td class="col-stop">Lake Shasta<span class="badge b-booked">✓ booked</span><div class="row-expand-hint"><span class="exp-arrow">▾</span>🗺 activities · 👥 friends</div></td>
+        <td class="col-nights">—</td>
+        <td class="col-drive">—</td>
+        <td class="col-detail"></td>
+        <td class="col-house"><a class="house-link" href="https://www.airbnb.com/trips/v1/reservation-details/ro/RESERVATION2_CHECKIN/HMQ5KA3XBT" target="_blank" rel="noopener" onclick="event.stopPropagation()" title="Airbnb">Airbnb ↗</a></td>
+        <td class="col-cost"><span class="cost-paid">$1,500</span></td>
+      </tr><tr class="data-row " onclick="rowClick('pnw-2',5,this,9)">
+        <td class="col-handle"><div class="drag-handle" draggable="true" style="display:none"><span></span><span></span><span></span></div></td>
+        <td class="col-edit"><button class="row-edit-btn" title="Edit this stop" onclick="openModal('pnw-2',5,event)">✏</button></td>
+        <td class="col-dates">Sun 7/12–Sun 7/19</td>
+        <td class="col-stop">Eugene<span class="badge b-booked">✓ booked</span><div class="row-expand-hint"><span class="exp-arrow">▾</span>🗺 activities · 👥 friends</div></td>
+        <td class="col-nights">—</td>
+        <td class="col-drive">—</td>
+        <td class="col-detail"></td>
+        <td class="col-house">—</td>
+        <td class="col-cost"><span class="cost-tbd">TBD</span></td>
+      </tr><tr class="data-row " onclick="rowClick('pnw-2',6,this,9)">
+        <td class="col-handle"><div class="drag-handle" draggable="true" style="display:none"><span></span><span></span><span></span></div></td>
+        <td class="col-edit"><button class="row-edit-btn" title="Edit this stop" onclick="openModal('pnw-2',6,event)">✏</button></td>
+        <td class="col-dates">Mon 7/20–Mon 7/27</td>
+        <td class="col-stop">Bend<span class="badge b-booked">✓ booked</span><div class="row-expand-hint"><span class="exp-arrow">▾</span>🗺 activities · 👥 friends</div></td>
+        <td class="col-nights">—</td>
+        <td class="col-drive">—</td>
+        <td class="col-detail"></td>
+        <td class="col-house">—</td>
+        <td class="col-cost"><span class="cost-paid">$1,400</span></td>
       </tr><tr class="add-stop-row"><td colspan="9"><div class="add-stop-inner"><button class="add-stop-btn" onclick="addStop('pnw-2')"><span class="plus">＋</span> Add a new stop to this section</button></div></td></tr></tbody>
       </table></div>
     </div><div class="sec-block">
@@ -635,7 +719,7 @@ tr.detail-row > td{padding:0 !important;border-bottom:1px solid var(--div) !impo
         <td class="col-handle"><div class="drag-handle" draggable="true" style="display:none"><span></span><span></span><span></span></div></td>
         <td class="col-edit"><button class="row-edit-btn" title="Edit this stop" onclick="openModal('pnw-3',0,event)">✏</button></td>
         <td class="col-dates">Fri 6/26–Wed 7/1</td>
-        <td class="col-stop">SF / Marin / Marshall/ Mill Valley / Inverness / Point Reyes<span class="badge b-anch">anchor</span><div class="row-expand-hint"><span class="exp-arrow">▾</span>🗺 activities · 👥 friends</div></td>
+        <td class="col-stop">{CHANGE DATES} SF / Marin / Marshall/ Mill Valley / Inverness / Point Reyes<span class="badge b-anch">anchor</span><div class="row-expand-hint"><span class="exp-arrow">▾</span>🗺 activities · 👥 friends</div></td>
         <td class="col-nights"><span class="nights-pill">5n</span></td>
         <td class="col-drive">~1.5 hrs from Santa Cruz</td>
         <td class="col-detail">Stinson Beach and Bolinas corridor — most Ojai-adjacent community on this route. Tennessee Valley trails, Mill Valley, Fairfax. Farmers market in Marin.</td>
@@ -647,47 +731,7 @@ tr.detail-row > td{padding:0 !important;border-bottom:1px solid var(--div) !impo
       <div class="sec-label"><span class="sec-pip pip-leg"></span>Leg 3 — Wine Country &amp; N. California Foothills<span class="sec-label-right">✏ click row to edit · click row to expand activities</span></div>
       <div class="tbl-wrap"><table class="stop-tbl">
         <thead><tr><th class="th-handle"></th><th class="th-edit"></th><th class="col-dates">Dates</th><th class="col-stop">Stop</th><th class="col-nights">Nights</th><th class="col-drive">Drive</th><th class="col-detail">Details</th><th class="col-house">Housing / Airbnb</th><th class="col-cost">Cost</th></tr></thead>
-        <tbody id="tbody-pnw-4"><tr class="data-row " onclick="rowClick('pnw-4',0,this,9)">
-        <td class="col-handle"><div class="drag-handle" draggable="true" style="display:none"><span></span><span></span><span></span></div></td>
-        <td class="col-edit"><button class="row-edit-btn" title="Edit this stop" onclick="openModal('pnw-4',0,event)">✏</button></td>
-        <td class="col-dates">Wed 7/1–Sat 7/4</td>
-        <td class="col-stop">Russian River / Guerneville<div class="row-expand-hint"><span class="exp-arrow">▾</span>🗺 activities · 👥 friends</div></td>
-        <td class="col-nights"><span class="nights-pill">3n</span></td>
-        <td class="col-drive">~1.5 hrs from Marin</td>
-        <td class="col-detail">Funky redwood river town. Swimming holes on the Russian River. Arts community, farmers market.<div class="sc-info" title="Nearest SC; West Sonoma Inn in Guerneville has Tesla Destination Charger for overnight top-up"><span class="sc-icon">⚡</span><span class="sc-name">Santa Rosa, CA</span>&nbsp;<span class="sc-dist">~20 min</span></div></td>
-        <td class="col-house">Airbnb</td>
-        <td class="col-cost"><span class="cost-paid">$525</span></td>
-      </tr><tr class="data-row " onclick="rowClick('pnw-4',1,this,9)">
-        <td class="col-handle"><div class="drag-handle" draggable="true" style="display:none"><span></span><span></span><span></span></div></td>
-        <td class="col-edit"><button class="row-edit-btn" title="Edit this stop" onclick="openModal('pnw-4',1,event)">✏</button></td>
-        <td class="col-dates">Sat 7/4–Mon 7/6</td>
-        <td class="col-stop">Napa Valley<div class="row-expand-hint"><span class="exp-arrow">▾</span>🗺 activities · 👥 friends</div></td>
-        <td class="col-nights"><span class="nights-pill">2n</span></td>
-        <td class="col-drive">~1 hr from Guerneville</td>
-        <td class="col-detail">Stay with friends (confirm pet policy). World-class food and wine.<div class="sc-info" title="Bel Aire Plaza + Factory Stores Dr — excellent coverage right in Napa"><span class="sc-icon">⚡</span><span class="sc-name">Napa, CA — 2 locations</span>&nbsp;<span class="sc-dist">in town</span></div></td>
-        <td class="col-house">Friends' place (TBD)</td>
-        <td class="col-cost"><span class="cost-free">Free</span></td>
-      </tr><tr class="data-row " onclick="rowClick('pnw-4',2,this,9)">
-        <td class="col-handle"><div class="drag-handle" draggable="true" style="display:none"><span></span><span></span><span></span></div></td>
-        <td class="col-edit"><button class="row-edit-btn" title="Edit this stop" onclick="openModal('pnw-4',2,event)">✏</button></td>
-        <td class="col-dates">Mon 7/6–Sat 7/11</td>
-        <td class="col-stop">Nevada City, CA<div class="row-expand-hint"><span class="exp-arrow">▾</span>🗺 activities · 👥 friends</div></td>
-        <td class="col-nights"><span class="nights-pill">5n</span></td>
-        <td class="col-drive">~1.5 hrs from Napa</td>
-        <td class="col-detail">Best 'could we live here' stop in CA. Victorian arts town, South Yuba River State Park — best swimming holes in NorCal. Saturday farmers market.<div class="sc-info" title="Charge at Auburn SC before heading into the foothills — no Supercharger in Nevada City"><span class="sc-icon">⚡</span><span class="sc-name">Auburn, CA</span>&nbsp;<span class="sc-warn">~25 min S</span></div></td>
-        <td class="col-house">Airbnb</td>
-        <td class="col-cost"><span class="cost-paid">$750</span></td>
-      </tr><tr class="data-row " onclick="rowClick('pnw-4',3,this,9)">
-        <td class="col-handle"><div class="drag-handle" draggable="true" style="display:none"><span></span><span></span><span></span></div></td>
-        <td class="col-edit"><button class="row-edit-btn" title="Edit this stop" onclick="openModal('pnw-4',3,event)">✏</button></td>
-        <td class="col-dates">Sat 7/11–Tue 7/15</td>
-        <td class="col-stop">Incline Village, NV<span class="badge b-now">⚠ book now</span><div class="row-expand-hint"><span class="exp-arrow">▾</span>🗺 activities · 👥 friends</div></td>
-        <td class="col-nights"><span class="nights-pill">4n</span></td>
-        <td class="col-drive">~1 hr from Nevada City</td>
-        <td class="col-detail">Splurge stop. Nevada side of Lake Tahoe — Sand Harbor, Kings Beach, crystal blue water.<div class="sc-info" title="930 Tahoe Blvd — 10 stalls, 150kW, right in the village"><span class="sc-icon">⚡</span><span class="sc-name">Incline Village, NV</span>&nbsp;<span class="sc-dist">in town</span></div></td>
-        <td class="col-house"><a class="house-link" href="https://www.vacasa.com/unit/1016280" target="_blank" rel="noopener" onclick="event.stopPropagation()" title="Sabrina Link">Airbnb (splurge) ↗</a></td>
-        <td class="col-cost"><span class="cost-paid">$1,400</span></td>
-      </tr><tr class="add-stop-row"><td colspan="9"><div class="add-stop-inner"><button class="add-stop-btn" onclick="addStop('pnw-4')"><span class="plus">＋</span> Add a new stop to this section</button></div></td></tr></tbody>
+        <tbody id="tbody-pnw-4"><tr class="add-stop-row"><td colspan="9"><div class="add-stop-inner"><button class="add-stop-btn" onclick="addStop('pnw-4')"><span class="plus">＋</span> Add a new stop to this section</button></div></td></tr></tbody>
       </table></div>
     </div><div class="sec-block">
       <div class="sec-label"><span class="sec-pip pip-leg"></span>Leg 4 — Northern California<span class="sec-label-right">✏ click row to edit · click row to expand activities</span></div>
@@ -703,16 +747,6 @@ tr.detail-row > td{padding:0 !important;border-bottom:1px solid var(--div) !impo
         <td class="col-detail">Spiritual mountain town — intentional community, Castle Lake, Black Bear Diner, Headwaters spring. Strong 'could we live here' candidate.<div class="sc-info" title="Charge in Redding before driving up; Yreka SC on route to Ashland. Tree House in town has Tesla Destination Charger"><span class="sc-icon">⚡</span><span class="sc-name">Redding, CA (1 hr S) or Yreka, CA (30 min N)</span>&nbsp;<span class="sc-warn">30–60 min</span></div></td>
         <td class="col-house">Airbnb</td>
         <td class="col-cost"><span class="cost-paid">$800</span></td>
-      </tr><tr class="data-row " onclick="rowClick('pnw-5',1,this,9)">
-        <td class="col-handle"><div class="drag-handle" draggable="true" style="display:none"><span></span><span></span><span></span></div></td>
-        <td class="col-edit"><button class="row-edit-btn" title="Edit this stop" onclick="openModal('pnw-5',1,event)">✏</button></td>
-        <td class="col-dates">Mon 7/21–Tue 7/22</td>
-        <td class="col-stop">Ashland, OR<div class="row-expand-hint"><span class="exp-arrow">▾</span>🗺 activities · 👥 friends</div></td>
-        <td class="col-nights"><span class="nights-pill">1n</span></td>
-        <td class="col-drive">~1.5 hrs from Shasta</td>
-        <td class="col-detail">Routing overnight only. Shakespeare festival town — good dinner, rest, easy drive into Eugene.<div class="sc-info" title="24-stall SC right off I-5 — great stop at the Oregon border"><span class="sc-icon">⚡</span><span class="sc-name">Ashland, OR</span>&nbsp;<span class="sc-dist">in town</span></div></td>
-        <td class="col-house">Airbnb</td>
-        <td class="col-cost"><span class="cost-paid">$175</span></td>
       </tr><tr class="add-stop-row"><td colspan="9"><div class="add-stop-inner"><button class="add-stop-btn" onclick="addStop('pnw-5')"><span class="plus">＋</span> Add a new stop to this section</button></div></td></tr></tbody>
       </table></div>
     </div><div class="sec-block">
@@ -817,7 +851,7 @@ tr.detail-row > td{padding:0 !important;border-bottom:1px solid var(--div) !impo
         <td class="col-detail">City stop. Pike Place Market, Capitol Hill, waterfront, music scene. Gateway to Port Townsend ferry.<div class="sc-info" title="Bothell SC + downtown Seattle locations — well covered"><span class="sc-icon">⚡</span><span class="sc-name">Seattle, WA — multiple</span>&nbsp;<span class="sc-dist">~10 min</span></div></td>
         <td class="col-house">Airbnb</td>
         <td class="col-cost"><span class="cost-paid">$900</span></td>
-      </tr><tr class="data-row " onclick="rowClick('pnw-9',2,this,9)">
+      </tr><tr class="data-row is-past" onclick="rowClick('pnw-9',2,this,9)">
         <td class="col-handle"><div class="drag-handle" draggable="true" style="display:none"><span></span><span></span><span></span></div></td>
         <td class="col-edit"><button class="row-edit-btn" title="Edit this stop" onclick="openModal('pnw-9',2,event)">✏</button></td>
         <td class="col-dates">New dates</td>
@@ -982,7 +1016,7 @@ tr.detail-row > td{padding:0 !important;border-bottom:1px solid var(--div) !impo
 </main>
 
 <!-- Edit modal -->
-<div class="edit-modal-wrap" id="edit-modal" style="display: none;" onclick="closeModalBg(event)">
+<div class="edit-modal-wrap" id="edit-modal" style="display:none" onclick="closeModalBg(event)">
   <div class="edit-modal">
     <button class="close-modal" onclick="document.getElementById('edit-modal').style.display='none'">✕</button>
     <h3 id="modal-title">Edit Stop</h3>
@@ -995,7 +1029,7 @@ tr.detail-row > td{padding:0 !important;border-bottom:1px solid var(--div) !impo
       <div class="field-wrap"><label>Start Date</label><input id="f-date-start" type="date" min="2026-05-14" max="2026-10-05"></div>
       <div class="field-wrap"><label>End Date</label><input id="f-date-end" type="date" min="2026-05-14" max="2026-10-05"></div>
     </div>
-    <div id="f-dates-preview" style="display: block; font-size: 12px; color: var(--t3); margin: -6px 0px 8px; padding: 5px 10px; background: var(--cream); border-radius: 8px;">📅 Will display as: "Tue 5/26"</div>
+    <div id="f-dates-preview" style="display:none;font-size:12px;color:var(--t3);margin:-6px 0 8px;padding:5px 10px;background:var(--cream);border-radius:8px;"></div>
     <div class="field-group single">
       <div class="field-wrap"><label>Details / Notes</label><textarea id="f-details" rows="3" placeholder="What's happening here — hikes, events, highlights…"></textarea></div>
     </div>
@@ -1034,6 +1068,35 @@ tr.detail-row > td{padding:0 !important;border-bottom:1px solid var(--div) !impo
         <button class="btn btn-dark" onclick="saveModal()">Save stop ✓</button>
       </div>
     </div>
+  </div>
+</div>
+
+<!-- AI Trip Assistant -->
+<button class="chat-fab" onclick="toggleChat()" title="Ask the trip assistant">
+  🤖<span class="chat-fab-label">Ask the trip assistant</span>
+</button>
+
+<div class="chat-panel hidden" id="chat-panel">
+  <div class="chat-hdr">
+    <div class="chat-hdr-icon">🗺</div>
+    <div class="chat-hdr-text">
+      <div class="chat-hdr-title">Trip Assistant</div>
+      <div class="chat-hdr-sub">Ask anything about your Digital Nomads 2026 trip</div>
+    </div>
+    <button class="chat-close" onclick="toggleChat()">✕</button>
+  </div>
+  <div class="chat-msgs" id="chat-msgs">
+    <div class="chat-bubble assistant">Hey Alexa! 👋 Ask me anything about the trip — drive times, cool towns along the way, things to do, Supercharger planning, pet-friendly spots, or anything else!</div>
+  </div>
+  <div class="chat-sugs" id="chat-sugs">
+    <button class="chat-sug" onclick="askSuggestion(this)">How long is the drive from Bend to Twin Falls?</button>
+    <button class="chat-sug" onclick="askSuggestion(this)">Cool towns between Eugene and Crescent City?</button>
+    <button class="chat-sug" onclick="askSuggestion(this)">Where should we charge leaving McCall?</button>
+    <button class="chat-sug" onclick="askSuggestion(this)">Best swimming stops on the whole trip?</button>
+  </div>
+  <div class="chat-input-row">
+    <input class="chat-input" id="chat-input" type="text" placeholder="Ask about drives, towns, activities…" onkeydown="if(event.key==='Enter'&amp;&amp;!event.shiftKey){event.preventDefault();sendChat();}">
+    <button class="chat-send" id="chat-send" onclick="sendChat()">Send ↑</button>
   </div>
 </div>
 
@@ -2037,6 +2100,102 @@ function toast(msg){
   document.querySelectorAll('.toast').forEach(t=>t.remove());
   const t=document.createElement('div');t.className='toast';t.textContent=msg;
   document.body.appendChild(t);setTimeout(()=>t.remove(),2600);
+}
+
+// ── AI TRIP ASSISTANT ─────────────────────────────────
+let chatOpen=false;
+
+function toggleChat(){
+  chatOpen=!chatOpen;
+  document.getElementById('chat-panel').classList.toggle('hidden',!chatOpen);
+  if(chatOpen)document.getElementById('chat-input').focus();
+}
+
+function askSuggestion(btn){
+  document.getElementById('chat-input').value=btn.textContent;
+  document.getElementById('chat-sugs').style.display='none';
+  sendChat();
+}
+
+function buildTripContext(){
+  const lines=[];
+  lines.push('TRIP: Digital Nomads 2026 — Alexa & Branden, May 14–Oct 3, 2026');
+  lines.push('VEHICLE: Tesla (electric). PETS: Charlie (Maltipoo dog) + Dee Dee (cat).');
+  lines.push('');
+  lines.push('=== NORTHEAST TRIP (May 14–Jun 17) ===');
+  [...DATA['ne-arrival'],...DATA['ne-roadtrip'],...DATA['ne-return']].forEach(s=>{
+    lines.push(`• ${s.dates}: ${s.stop} | ${s.nights!=null?s.nights+'n ':''} ${s.drive?'Drive: '+s.drive+' | ':''} Housing: ${s.housing} | Cost: ${s.cost!=null?'$'+s.cost:'TBD'} | ${s.details}`);
+  });
+  lines.push('');
+  lines.push('=== PNW ROAD TRIP (Jun 17–Oct 3) ===');
+  PNW_SECTIONS.forEach((sec,si)=>{
+    lines.push(`[${sec.label}]`);
+    DATA[`pnw-${si}`].forEach(s=>{
+      const sc=SC_DATA[s.stop];
+      lines.push(`• ${s.dates}: ${s.stop} | ${s.nights!=null?s.nights+'n | ':''} Drive: ${s.drive||'—'} | ${s.details} | SC: ${sc?sc.name+' ('+sc.dist+')':'unknown'}`);
+    });
+  });
+  lines.push('');
+  lines.push('=== ACTIVITIES BY STOP (selected) ===');
+  Object.entries(ACTS).forEach(([k,v])=>{
+    lines.push(`${k}: ${v.map(a=>a.n+(a.d?' — '+a.d:'')).join(' | ')}`);
+  });
+  lines.push('');
+  lines.push('=== SUPERCHARGER PLANNING NOTES ===');
+  Object.entries(SC_DATA).forEach(([stop,sc])=>{
+    lines.push(`${stop}: nearest SC = ${sc.name} (${sc.dist})${sc.warn?' ⚠ plan ahead':''} — ${sc.note}`);
+  });
+  return lines.join('\n');
+}
+
+async function sendChat(){
+  const input=document.getElementById('chat-input');
+  const btn=document.getElementById('chat-send');
+  const msg=input.value.trim();
+  if(!msg)return;
+
+  addBubble(msg,'user');
+  input.value='';
+  btn.disabled=true;
+
+  // hide suggestion chips after first message
+  document.getElementById('chat-sugs').style.display='none';
+
+  const loadId='load-'+Date.now();
+  addBubble('<div class="chat-dots"><span></span><span></span><span></span></div>','assistant loading',loadId);
+
+  try{
+    if(!window.cowork?.askClaude)throw new Error('no-cowork');
+    const ctx=buildTripContext();
+    const reply=await window.cowork.askClaude(
+      `You are a friendly, knowledgeable trip assistant for Alexa and Branden's "Digital Nomads 2026" road trip. Answer their question concisely and helpfully. Focus on practical, actionable information. If relevant, mention drive times, stops, pet-friendliness, or Tesla Supercharger logistics. Keep answers to 2–4 sentences unless a list is clearly better.\n\nQuestion: ${msg}`,
+      [ctx]
+    );
+    removeBubble(loadId);
+    addBubble(reply,'assistant');
+  }catch(err){
+    removeBubble(loadId);
+    if(err.message==='no-cowork'){
+      addBubble('The AI assistant works in the Cowork app. On the live site, open it in Cowork to chat! 🤖','assistant');
+    }else{
+      addBubble('Hmm, I had trouble with that one — try rephrasing or ask something else!','assistant');
+    }
+  }
+  btn.disabled=false;
+  input.focus();
+}
+
+function addBubble(html,cls,id){
+  const msgs=document.getElementById('chat-msgs');
+  const div=document.createElement('div');
+  div.className='chat-bubble '+cls;
+  if(id)div.id=id;
+  div.innerHTML=html;
+  msgs.appendChild(div);
+  msgs.scrollTop=msgs.scrollHeight;
+}
+function removeBubble(id){
+  document.getElementById(id)?.remove();
 }
 
 // ── INIT ──────────────────────────────────────────────
